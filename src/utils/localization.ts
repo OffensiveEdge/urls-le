@@ -18,7 +18,7 @@ export function createLocalizer(): Localizer {
 	const localize = nls.config({ messageFormat: nls.MessageFormat.file })()
 
 	return Object.freeze({
-		localize(key: string, ...args: unknown[]): string {
+		localize(key: string, ..._args: unknown[]): string {
 			return localize(key, key)
 		},
 
@@ -26,19 +26,19 @@ export function createLocalizer(): Localizer {
 			return localize(`runtime.command.${command}`, command)
 		},
 
-		localizeError(error: string, ...args: unknown[]): string {
+		localizeError(error: string, ..._args: unknown[]): string {
 			return localize(`runtime.error.${error}`, error)
 		},
 
-		localizeWarning(warning: string, ...args: unknown[]): string {
+		localizeWarning(warning: string, ..._args: unknown[]): string {
 			return localize(`runtime.warning.${warning}`, warning)
 		},
 
-		localizeInfo(info: string, ...args: unknown[]): string {
+		localizeInfo(info: string, ..._args: unknown[]): string {
 			return localize(`runtime.info.${info}`, info)
 		},
 
-		localizeProgress(progress: string, ...args: unknown[]): string {
+		localizeProgress(progress: string, ..._args: unknown[]): string {
 			return localize(`runtime.progress.${progress}`, progress)
 		},
 
@@ -50,11 +50,11 @@ export function createLocalizer(): Localizer {
 			return localize(`runtime.recovery.${recovery}`, recovery)
 		},
 
-		localizePerformance(performance: string, ...args: unknown[]): string {
+		localizePerformance(performance: string, ..._args: unknown[]): string {
 			return localize(`runtime.performance.${performance}`, performance)
 		},
 
-		localizeSafety(safety: string, ...args: unknown[]): string {
+		localizeSafety(safety: string, ..._args: unknown[]): string {
 			return localize(`runtime.safety.${safety}`, safety)
 		},
 
@@ -150,7 +150,7 @@ export function formatBytes(bytes: number): string {
 	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
 	const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-	return parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i]
+	return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
 }
 
 export function formatDuration(milliseconds: number): string {

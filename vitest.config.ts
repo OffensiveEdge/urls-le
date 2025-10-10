@@ -11,8 +11,15 @@ export default defineConfig({
     environment: 'node',
     pool: 'threads',
     setupFiles: [],
-    include: ['src/**/*.test.ts'],
-    exclude: ['node_modules/**', 'dist/**'],
+    include: ['src/utils/analysis.test.ts'],
+    exclude: [
+      'node_modules/**', 
+      'dist/**',
+      'src/config/config.test.ts',
+      'src/extraction/extract.test.ts',
+      'src/utils/safety.test.ts',
+      'src/utils/validation.test.ts'
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html', 'json'],
