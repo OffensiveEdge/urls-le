@@ -77,15 +77,30 @@ function generateAnalysisReport(analysis: Record<string, unknown>): string {
 
   if (analysis.security) {
     lines.push('## Security Analysis')
-    lines.push(`- Secure: ${analysis.security.secure}`)
-    lines.push(`- Insecure: ${analysis.security.insecure}`)
-    lines.push(`- Suspicious: ${analysis.security.suspicious}`)
+    lines.push(`- Secure: ${(analysis.security as any).secure}`)
+    lines.push(`- Insecure: ${(analysis.security as any).insecure}`)
+    lines.push(`- Suspicious: ${(analysis.security as any).suspicious}`)
     lines.push('')
   }
 
   if (analysis.domains) {
     lines.push('## Domain Analysis')
-    lines.push(`- Unique Domains: ${analysis.domains.uniqueDomains}`)
+    lines.push(`- Unique Domains: ${(analysis.domains as any).uniqueDomains}`)
+    lines.push('')
+  }
+
+  // Handle legacy properties for compatibility
+  if (analysis.secure !== undefined || analysis.insecure !== undefined || analysis.suspicious !== undefined) {
+    lines.push('## Security Summary')
+    if (analysis.secure !== undefined) lines.push(`- Secure: ${analysis.secure}`)
+    if (analysis.insecure !== undefined) lines.push(`- Insecure: ${analysis.insecure}`)
+    if (analysis.suspicious !== undefined) lines.push(`- Suspicious: ${analysis.suspicious}`)
+    lines.push('')
+  }
+
+  if (analysis.uniqueDomains !== undefined) {
+    lines.push('## Domain Summary')
+    lines.push(`- Unique Domains: ${analysis.uniqueDomains}`)
     lines.push('')
   }
 
