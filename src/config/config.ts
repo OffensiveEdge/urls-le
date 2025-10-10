@@ -4,30 +4,40 @@ import type { Configuration } from '../types'
 export function getConfiguration(): Configuration {
 	const config = vscode.workspace.getConfiguration('urls-le')
 
+	// Backward-compat: support both `notificationLevel` (preferred) and legacy `notificationsLevel`
+	const notifRaw = config.get('notificationLevel', config.get('notificationsLevel', 'silent')) as unknown as string
+	const notificationsLevel = isValidNotificationLevel(notifRaw) ? notifRaw : 'silent'
+
 	return Object.freeze({
-		copyToClipboardEnabled: config.get<boolean>('copyToClipboardEnabled', false),
-		dedupeEnabled: config.get<boolean>('dedupeEnabled', false),
-		notificationsLevel: config.get<'all' | 'important' | 'silent'>('notificationsLevel', 'silent'),
-		postProcessOpenInNewFile: config.get<boolean>('postProcess.openInNewFile', false),
-		openResultsSideBySide: config.get<boolean>('openResultsSideBySide', false),
-		safetyEnabled: config.get<boolean>('safety.enabled', true),
-		safetyFileSizeWarnBytes: config.get<number>('safety.fileSizeWarnBytes', 1000000),
-		safetyLargeOutputLinesThreshold: config.get<number>('safety.largeOutputLinesThreshold', 50000),
-		safetyManyDocumentsThreshold: config.get<number>('safety.manyDocumentsThreshold', 8),
-		showParseErrors: config.get<boolean>('showParseErrors', false),
-		statusBarEnabled: config.get<boolean>('statusBar.enabled', true),
-		telemetryEnabled: config.get<boolean>('telemetryEnabled', false),
-		analysisEnabled: config.get<boolean>('analysis.enabled', true),
-		analysisIncludeSecurity: config.get<boolean>('analysis.includeSecurity', true),
-		analysisIncludeAccessibility: config.get<boolean>('analysis.includeAccessibility', true),
-		validationEnabled: config.get<boolean>('validation.enabled', true),
-		validationTimeout: config.get<number>('validation.timeout', 5000),
-		validationFollowRedirects: config.get<boolean>('validation.followRedirects', true),
-		performanceEnabled: config.get<boolean>('performance.enabled', true),
-		performanceMaxDuration: config.get<number>('performance.maxDuration', 5000),
-		performanceMaxMemoryUsage: config.get<number>('performance.maxMemoryUsage', 104857600),
-		performanceMaxCpuUsage: config.get<number>('performance.maxCpuUsage', 1000000),
-		performanceMinThroughput: config.get<number>('performance.minThroughput', 1000),
-		performanceMaxCacheSize: config.get<number>('performance.maxCacheSize', 1000),
+		copyToClipboardEnabled: Boolean(config.get('copyToClipboardEnabled', false)),
+		dedupeEnabled: Boolean(config.get('dedupeEnabled', false)),
+		notificationsLevel,
+		postProcessOpenInNewFile: Boolean(config.get('postProcess.openInNewFile', false)),
+		openResultsSideBySide: Boolean(config.get('openResultsSideBySide', false)),
+		safetyEnabled: Boolean(config.get('safety.enabled', true)),
+		safetyFileSizeWarnBytes: Math.max(1000, Number(config.get('safety.fileSizeWarnBytes', 1000000))),
+		safetyLargeOutputLinesThreshold: Math.max(100, Number(config.get('safety.largeOutputLinesThreshold', 50000))),
+		safetyManyDocumentsThreshold: Math.max(1, Number(config.get('safety.manyDocumentsThreshold', 8))),
+		showParseErrors: Boolean(config.get('showParseErrors', false)),
+		statusBarEnabled: Boolean(config.get('statusBar.enabled', true)),
+		telemetryEnabled: Boolean(config.get('telemetryEnabled', false)),
+		analysisEnabled: Boolean(config.get('analysis.enabled', true)),
+		analysisIncludeSecurity: Boolean(config.get('analysis.includeSecurity', true)),
+		analysisIncludeAccessibility: Boolean(config.get('analysis.includeAccessibility', true)),
+		validationEnabled: Boolean(config.get('validation.enabled', true)),
+		validationTimeout: Math.max(1000, Number(config.get('validation.timeout', 5000))),
+		validationFollowRedirects: Boolean(config.get('validation.followRedirects', true)),
+		performanceEnabled: Boolean(config.get('performance.enabled', true)),
+		performanceMaxDuration: Math.max(1000, Number(config.get('performance.maxDuration', 5000))),
+		performanceMaxMemoryUsage: Math.max(1048576, Number(config.get('performance.maxMemoryUsage', 104857600))),
+		performanceMaxCpuUsage: Math.max(100000, Number(config.get('performance.maxCpuUsage', 1000000))),
+		performanceMinThroughput: Math.max(100, Number(config.get('performance.minThroughput', 1000))),
+		performanceMaxCacheSize: Math.max(100, Number(config.get('performance.maxCacheSize', 1000))),
 	})
+}
+
+export type NotificationLevel = 'all' | 'important' | 'silent'
+
+export function isValidNotificationLevel(v: unknown): v is NotificationLevel {
+	return v === 'all' || v === 'important' || v === 'silent'
 }
