@@ -1,0 +1,284 @@
+{
+  "name": "urls-le",
+  "publisher": "nolindnaidoo",
+  "displayName": "URLs-LE",
+  "description": "Zero Hassle URL Extraction and Validation from Documentation, Configs, and Code",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "Nolin D Naidoo",
+    "url": "https://github.com/nolindnaidoo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nolindnaidoo/urls-le.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nolindnaidoo/urls-le/issues"
+  },
+  "homepage": "https://github.com/nolindnaidoo/urls-le#readme",
+  "engines": {
+    "vscode": "^1.105.0",
+    "node": ">=20.0.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "urls",
+    "url",
+    "extract",
+    "extractor",
+    "extraction",
+    "validation",
+    "links",
+    "http",
+    "https",
+    "broken-links",
+    "accessibility",
+    "security",
+    "redirects",
+    "domains",
+    "analysis"
+  ],
+  "icon": "src/assets/images/icon.png",
+  "main": "./dist/extension.js",
+  "l10n": "./package.nls.json",
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onLanguage:html",
+    "onLanguage:css",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:json",
+    "onLanguage:yaml",
+    "onLanguage:yml",
+    "onCommand:urls-le.extractUrls",
+    "onCommand:urls-le.postProcess.validate",
+    "onCommand:urls-le.postProcess.checkAccessibility",
+    "onCommand:urls-le.postProcess.analyze",
+    "onCommand:urls-le.openSettings",
+    "onCommand:urls-le.help"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": {
+      "supported": "limited",
+      "description": "%manifest.capability.untrusted-workspaces.desc%"
+    },
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "%manifest.capability.untrusted-workspaces.desc%"
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "urls-le.extractUrls",
+        "title": "%manifest.command.extract.title%",
+        "category": "%manifest.command.category%"
+      },
+      {
+        "command": "urls-le.postProcess.validate",
+        "title": "%manifest.command.validate.title%",
+        "category": "%manifest.command.category%"
+      },
+      {
+        "command": "urls-le.postProcess.checkAccessibility",
+        "title": "%manifest.command.check-accessibility.title%",
+        "category": "%manifest.command.category%"
+      },
+      {
+        "command": "urls-le.postProcess.analyze",
+        "title": "%manifest.command.analyze.title%",
+        "category": "%manifest.command.category%"
+      },
+      {
+        "command": "urls-le.openSettings",
+        "title": "%manifest.command.settings.title%",
+        "category": "%manifest.command.category%"
+      },
+      {
+        "command": "urls-le.help",
+        "title": "%manifest.command.help.title%",
+        "category": "%manifest.command.category%"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "urls-le.extractUrls",
+        "key": "ctrl+alt+u",
+        "mac": "cmd+alt+u",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "urls-le.extractUrls",
+          "when": "resourceExtname in .md || resourceExtname in .html || resourceExtname in .css || resourceExtname in .js || resourceExtname in .ts || resourceExtname in .json || resourceExtname in .yaml || resourceExtname in .yml",
+          "group": "1_modification@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "urls-le.extractUrls"
+        },
+        {
+          "command": "urls-le.postProcess.validate"
+        },
+        {
+          "command": "urls-le.postProcess.checkAccessibility"
+        },
+        {
+          "command": "urls-le.postProcess.analyze"
+        },
+        {
+          "command": "urls-le.openSettings"
+        },
+        {
+          "command": "urls-le.help"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "%manifest.settings.title%",
+      "properties": {
+        "urls-le.copyToClipboardEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "%manifest.settings.copy.clipboard.desc%"
+        },
+        "urls-le.dedupeEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "%manifest.settings.dedupe.desc%"
+        },
+        "urls-le.notificationsLevel": {
+          "type": "string",
+          "default": "silent",
+          "enum": [
+            "all",
+            "important",
+            "silent"
+          ],
+          "enumDescriptions": [
+            "%manifest.settings.notifications.level.option.all%",
+            "%manifest.settings.notifications.level.option.important%",
+            "%manifest.settings.notifications.level.option.silent%"
+          ],
+          "description": "%manifest.settings.notifications.level.desc%"
+        },
+        "urls-le.postProcess.openInNewFile": {
+          "type": "boolean",
+          "default": false,
+          "description": "%manifest.settings.open.new-file.desc%"
+        },
+        "urls-le.openResultsSideBySide": {
+          "type": "boolean",
+          "default": false,
+          "description": "%manifest.settings.open.side-by-side.desc%"
+        },
+        "urls-le.safety.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "%manifest.settings.safety.enabled.desc%"
+        },
+        "urls-le.safety.fileSizeWarnBytes": {
+          "type": "number",
+          "default": 1000000,
+          "minimum": 1000,
+          "description": "%manifest.settings.safety.warn.file-size.desc%"
+        },
+        "urls-le.safety.largeOutputLinesThreshold": {
+          "type": "number",
+          "default": 50000,
+          "minimum": 100,
+          "description": "%manifest.settings.safety.warn.large-output.desc%"
+        },
+        "urls-le.safety.manyDocumentsThreshold": {
+          "type": "number",
+          "default": 8,
+          "minimum": 1,
+          "description": "%manifest.settings.safety.warn.many-documents.desc%"
+        },
+        "urls-le.showParseErrors": {
+          "type": "boolean",
+          "default": false,
+          "description": "%manifest.settings.parse-errors.desc%"
+        },
+        "urls-le.statusBar.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "%manifest.settings.statusbar.enabled.desc%"
+        },
+        "urls-le.telemetryEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "%manifest.settings.telemetry.desc%"
+        },
+        "urls-le.analysis.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "%manifest.settings.analysis.enabled.desc%"
+        },
+        "urls-le.analysis.includeSecurity": {
+          "type": "boolean",
+          "default": true,
+          "description": "%manifest.settings.analysis.security.desc%"
+        },
+        "urls-le.analysis.includeAccessibility": {
+          "type": "boolean",
+          "default": true,
+          "description": "%manifest.settings.analysis.accessibility.desc%"
+        },
+        "urls-le.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "%manifest.settings.validation.enabled.desc%"
+        },
+        "urls-le.validation.timeout": {
+          "type": "number",
+          "default": 5000,
+          "minimum": 1000,
+          "description": "%manifest.settings.validation.timeout.desc%"
+        },
+        "urls-le.validation.followRedirects": {
+          "type": "boolean",
+          "default": true,
+          "description": "%manifest.settings.validation.follow-redirects.desc%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "clean": "rm -rf dist coverage release/*.vsix",
+    "clean:i18n": "rm -rf package.nls.*.json vsix/",
+    "copy:i18n": "cp src/i18n/package.nls.json .",
+    "watch": "tsc -watch -p ./",
+    "test": "node --import tsx --test $(find src -name '*.test.ts' -not -path '*/__performance__/*' | sort)",
+    "test:coverage": "npm run clean && c8 --reporter=text --reporter=html --exclude='**/__performance__/**' npm test",
+    "test:performance": "node --import tsx --test src/extraction/performance.test.ts",
+    "performance:report": "npm run test:performance 2>&1 | tee performance-report.txt",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "vscode:prepublish": "npm run build && npm run copy:i18n",
+    "package": "npm run clean:i18n && mkdir -p release && npx vsce package --out release/${npm_package_name}-${npm_package_version}.vsix && npm run clean:i18n",
+    "package:ls": "vsce ls release/${npm_package_name}-${npm_package_version}.vsix --tree | cat",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.5",
+    "@types/node": "^24.7.1",
+    "@types/vscode": "^1.105.0",
+    "@vscode/vsce": "^3.6.2",
+    "c8": "^10.1.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "vscode-nls": "^5.2.0"
+  }
+}
