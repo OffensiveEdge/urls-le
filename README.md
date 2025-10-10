@@ -20,11 +20,11 @@
   </a>
   <!-- Build -->
   <a href="https://github.com/nolindnaidoo/urls-le/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/nolindnaidoo/urls-le/ci.yml?branch=main" alt="Build Status" />
+    <img src="https://img.shields.io/github/actions/workflow/status/nolindnaidoo/urls-le/.github/workflows/ci.yml?branch=main" alt="Build Status" />
   </a>
   <!-- License -->
   <a href="https://github.com/nolindnaidoo/urls-le/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/nolindnaidoo/urls-le" alt="MIT License" />
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" />
   </a>
 </p>
 
@@ -49,8 +49,8 @@ Thank you for your interest in URLs-LE! If this extension has been helpful in ma
 
 - **[String-LE](https://open-vsx.org/extension/nolindnaidoo/string-le)** - Extract every user-visible string from JSON, YAML, CSV, TOML, INI, and .env files with zero hassle
 - **[EnvSync-LE](https://open-vsx.org/extension/nolindnaidoo/envsync-le)** - Effortlessly detect, compare, and synchronize .env files across your workspace with visual diffs
-- **Colors-LE** _(Coming Soon)_ - Extract and analyze colors from CSS, HTML, JavaScript, and more
-- **Dates-LE** _(Coming Soon)_ - Extract and analyze dates from logs, APIs, and temporal data
+- **[Colors-LE](https://open-vsx.org/extension/nolindnaidoo.colors-le)** - Extract and analyze colors from CSS, HTML, JavaScript, and more
+- **[Dates-LE](https://open-vsx.org/extension/nolindnaidoo.dates-le)** - Extract and analyze dates from logs, APIs, and temporal data
 - **Paths-LE** _(Coming Soon)_ - Extract and analyze file paths from imports, configs, and dependencies
 - **Numbers-LE** _(Coming Soon)_ - Extract and analyze numeric data from structured files
 

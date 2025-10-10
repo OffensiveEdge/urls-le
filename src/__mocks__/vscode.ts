@@ -1,38 +1,89 @@
-// Mock VS Code API for testing
+import { vi } from 'vitest'
+
+export const Uri = {
+	file: vi.fn((path: string) => ({
+		fsPath: path,
+		path,
+		scheme: 'file',
+		toString: () => `file://${path}`,
+	})),
+	parse: vi.fn((str: string) => ({
+		fsPath: str.replace('file://', ''),
+		path: str.replace('file://', ''),
+		scheme: 'file',
+		toString: () => str,
+	})),
+}
+
 export const window = {
 	activeTextEditor: undefined,
-	showInformationMessage: jest.fn(),
-	showWarningMessage: jest.fn(),
-	showErrorMessage: jest.fn(),
-	createStatusBarItem: jest.fn(() => ({
+	showInformationMessage: vi.fn(),
+	showWarningMessage: vi.fn(),
+	showErrorMessage: vi.fn(),
+	showQuickPick: vi.fn(),
+	withProgress: vi.fn((options, task) => task()),
+	setStatusBarMessage: vi.fn(),
+	createStatusBarItem: vi.fn(() => ({
 		text: '',
 		tooltip: '',
 		command: '',
-		show: jest.fn(),
-		hide: jest.fn(),
-		dispose: jest.fn(),
+		show: vi.fn(),
+		hide: vi.fn(),
+		dispose: vi.fn(),
 	})),
-	createOutputChannel: jest.fn(() => ({
-		appendLine: jest.fn(),
-		dispose: jest.fn(),
+	createOutputChannel: vi.fn(() => ({
+		appendLine: vi.fn(),
+		show: vi.fn(),
+		dispose: vi.fn(),
 	})),
-	withProgress: jest.fn(),
 }
 
 export const workspace = {
-	openTextDocument: jest.fn(),
-	applyEdit: jest.fn(),
-	getConfiguration: jest.fn(),
+	openTextDocument: vi.fn(),
+	applyEdit: vi.fn(),
+	getConfiguration: vi.fn(() => ({
+		get: vi.fn(),
+		update: vi.fn(),
+		has: vi.fn(),
+	})),
+	findFiles: vi.fn(),
+	fs: {
+		readFile: vi.fn(),
+		stat: vi.fn(),
+		writeFile: vi.fn(),
+	},
+	asRelativePath: vi.fn((pathOrUri) => {
+		const p = typeof pathOrUri === 'string' ? pathOrUri : pathOrUri.fsPath
+		const root = workspace.workspaceFolders?.[0]?.uri.fsPath
+		if (root && p.startsWith(root)) {
+			const rel = p.slice(root.length)
+			return rel.startsWith('/') ? rel.slice(1) : rel
+		}
+		return p
+	}),
+	createFileSystemWatcher: vi.fn(() => ({
+		onDidCreate: vi.fn(),
+		onDidDelete: vi.fn(),
+		onDidChange: vi.fn(),
+		dispose: vi.fn(),
+	})),
+	workspaceFolders: [
+		{
+			uri: Uri.file('/root/folder'),
+			name: 'test-workspace',
+			index: 0,
+		},
+	],
 }
 
 export const commands = {
-	registerCommand: jest.fn(),
-	executeCommand: jest.fn(),
+	registerCommand: vi.fn(),
+	executeCommand: vi.fn(),
 }
 
 export const env = {
 	clipboard: {
-		writeText: jest.fn(),
+		writeText: vi.fn(),
 	},
 }
 
@@ -45,5 +96,35 @@ export const StatusBarAlignment = {
 	Right: 2,
 }
 
-export const Range = jest.fn()
-export const WorkspaceEdit = jest.fn()
+export const ConfigurationTarget = {
+	Global: 1,
+	Workspace: 2,
+	WorkspaceFolder: 3,
+}
+
+export class ThemeColor {
+	constructor(public id: string) {}
+}
+
+export const Range = vi.fn()
+export const WorkspaceEdit = vi.fn()
+
+export const mockExtensionContext = {
+	subscriptions: {
+		push: vi.fn(),
+	},
+	extensionPath: '/test/extension/path',
+	globalState: {
+		get: vi.fn(),
+		update: vi.fn(),
+	},
+	workspaceState: {
+		get: vi.fn(),
+		update: vi.fn(),
+	},
+	secrets: {
+		get: vi.fn(),
+		store: vi.fn(),
+		delete: vi.fn(),
+	},
+}
