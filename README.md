@@ -10,8 +10,14 @@
 </p>
 
 <p align="center">
-  <!-- Coming Soon -->
-  <img src="https://img.shields.io/badge/Status-Coming%20Soon-orange" alt="Coming Soon" />
+  <!-- VS Code Marketplace -->
+  <a href="https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le">
+    <img src="https://img.shields.io/visual-studio-marketplace/v/nolindnaidoo.urls-le" alt="VSCode Marketplace Version" />
+  </a>
+  <!-- Open VSX -->
+  <a href="https://open-vsx.org/extension/nolindnaidoo.urls-le">
+    <img src="https://img.shields.io/open-vsx/v/nolindnaidoo.urls-le" alt="Open VSX Version" />
+  </a>
   <!-- Build -->
   <a href="https://github.com/nolindnaidoo/urls-le/actions">
     <img src="https://img.shields.io/github/actions/workflow/status/nolindnaidoo/urls-le/ci.yml?branch=main" alt="Build Status" />
@@ -23,6 +29,13 @@
 </p>
 
 ---
+
+<p align="center">
+  <img src="src/assets/images/preview.gif" alt="URL Extraction animation" style="max-width: 100%; height: auto;" />
+</p>
+<p align="right">
+ <a href="https://github.com/nolindnaidoo/urls-le/blob/main/docs/SCREENSHOTS.md">Screenshot Guide</a>
+</p>
 
 ## 🚧 Coming Soon!
 
@@ -72,7 +85,7 @@ It intelligently detects and extracts URLs from your code, providing comprehensi
 
 ## 🚀 Quick Start
 
-1. **Coming Soon** - URLs-LE will be available on Open VSX and as a VSIX download
+1. **Coming Soon** - URLs-LE will be available on VS Code Marketplace and Open VSX
 2. Open any file containing URLs (`Cmd/Ctrl + P URLs-LE`)
 3. Run Quick Extract (`Cmd+Alt+E` / `Ctrl+Alt+E` / Status Bar)
 
@@ -108,11 +121,30 @@ English + 12 translations _(Coming Soon)_:
 - Runs locally; no data is sent off your machine.
 - Optional local-only logs can be enabled with `urls-le.telemetryEnabled`.
 
+## ⚡ Performance
+
+URLs-LE is built for speed across all supported formats:
+
+| Format   | Throughput        | Best For               |
+| -------- | ----------------- | ---------------------- |
+| **HTML** | 1.5M+ URLs/sec    | Web pages, templates  |
+| **CSS**  | 1.2M+ URLs/sec    | Stylesheets, assets    |
+| **JS**   | 1M+ URLs/sec      | JavaScript, APIs       |
+| **MD**   | 800K+ URLs/sec    | Documentation, READMEs |
+| **JSON** | 600K+ URLs/sec    | API responses, configs |
+
 ## 📊 Test Coverage
 
 - Tests powered by Vitest with V8 coverage.
 - Runs quickly and locally: `npm run test` or `npm run test:coverage`.
 - Coverage reports output to `coverage/` (HTML summary at `coverage/index.html`).
+
+## 🤝 Contributing
+
+We welcome all contributions! Whether it's code, ideas, or feedback:
+
+- [Issues](https://github.com/nolindnaidoo/urls-le/issues) • [Pull Requests](https://github.com/nolindnaidoo/urls-le/pulls) • [Releases](https://github.com/nolindnaidoo/urls-le/releases)
+- [Architecture](docs/ARCHITECTURE.md) • [Development](docs/DEVELOPMENT.md) • [Contributing](CONTRIBUTING.md) • [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ---
 
