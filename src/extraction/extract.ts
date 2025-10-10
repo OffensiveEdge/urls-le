@@ -7,6 +7,21 @@ import { extractFromMarkdown } from './formats/markdown'
 import { extractFromYaml } from './formats/yaml'
 
 export async function extractUrls(content: string, languageId: string): Promise<ExtractionResult> {
+	// Validate input length to prevent memory issues
+	if (content.length > 10000000) {
+		// 10MB limit
+		return {
+			success: false,
+			urls: [],
+			errors: [
+				{
+					type: 'validation-error',
+					message: `Content too large (${content.length} characters), maximum size is 10MB`,
+				},
+			],
+		}
+	}
+
 	const fileType = determineFileType(languageId)
 	const urls: Url[] = []
 	const errors: ParseError[] = []
@@ -46,6 +61,26 @@ export async function extractUrls(content: string, languageId: string): Promise<
 			recoverable: true,
 			recoveryAction: 'skip' as const,
 			timestamp: Date.now(),
+		})
+	}
+
+	// Check for URL count limits to prevent memory issues
+	if (urls.length > 50000) {
+		// 50K URL limit
+		const truncatedUrls = urls.slice(0, 50000)
+		return Object.freeze({
+			success: true,
+			urls: Object.freeze(truncatedUrls),
+			errors: Object.freeze([
+				{
+					category: 'validation' as const,
+					severity: 'warning' as const,
+					message: `URL count (${urls.length}) exceeds limit (50000), truncated results`,
+					recoverable: true,
+					recoveryAction: 'truncate' as const,
+					timestamp: Date.now(),
+				},
+			]),
 		})
 	}
 

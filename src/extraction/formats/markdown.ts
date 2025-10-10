@@ -16,82 +16,93 @@ export function extractFromMarkdown(content: string): Url[] {
 	const lines = content.split('\n')
 
 	lines.forEach((line, lineIndex) => {
-		// Extract HTTP/HTTPS URLs
-		let match
-		while ((match = URL_PATTERN.exec(line)) !== null) {
-			const urlValue = match[0]
-			const components = extractUrlComponents(urlValue)
-			urls.push({
-				value: urlValue,
-				protocol: detectUrlProtocol(urlValue),
-				domain: components?.domain,
-				path: components?.path,
-				position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-				context: line.trim(),
-			})
-		}
-
-		// Extract FTP URLs
-		while ((match = FTP_PATTERN.exec(line)) !== null) {
-			const urlValue = match[0]
-			const components = extractUrlComponents(urlValue)
-			urls.push({
-				value: urlValue,
-				protocol: detectUrlProtocol(urlValue),
-				domain: components?.domain,
-				path: components?.path,
-				position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-				context: line.trim(),
-			})
-		}
-
-		// Extract mailto URLs
-		while ((match = MAILTO_PATTERN.exec(line)) !== null) {
-			const urlValue = match[0]
-			urls.push({
-				value: urlValue,
-				protocol: detectUrlProtocol(urlValue),
-				position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-				context: line.trim(),
-			})
-		}
-
-		// Extract tel URLs
-		while ((match = TEL_PATTERN.exec(line)) !== null) {
-			const urlValue = match[0]
-			urls.push({
-				value: urlValue,
-				protocol: detectUrlProtocol(urlValue),
-				position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-				context: line.trim(),
-			})
-		}
-
-		// Extract file URLs
-		while ((match = FILE_PATTERN.exec(line)) !== null) {
-			const urlValue = match[0]
-			urls.push({
-				value: urlValue,
-				protocol: detectUrlProtocol(urlValue),
-				position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-				context: line.trim(),
-			})
-		}
-
-		// Extract URLs from Markdown links
-		while ((match = MARKDOWN_LINK_PATTERN.exec(line)) !== null) {
-			const url = match[2]
-			if (url && isValidUrl(url)) {
-				const components = extractUrlComponents(url)
+		try {
+			// Extract HTTP/HTTPS URLs - reset regex lastIndex to prevent race conditions
+			URL_PATTERN.lastIndex = 0
+			let match
+			while ((match = URL_PATTERN.exec(line)) !== null) {
+				const urlValue = match[0]
+				const components = extractUrlComponents(urlValue)
 				urls.push({
-					value: url,
-					protocol: detectUrlProtocol(url),
+					value: urlValue,
+					protocol: detectUrlProtocol(urlValue),
 					domain: components?.domain,
 					path: components?.path,
 					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
 					context: line.trim(),
 				})
 			}
+
+			// Extract FTP URLs - reset regex lastIndex
+			FTP_PATTERN.lastIndex = 0
+			while ((match = FTP_PATTERN.exec(line)) !== null) {
+				const urlValue = match[0]
+				const components = extractUrlComponents(urlValue)
+				urls.push({
+					value: urlValue,
+					protocol: detectUrlProtocol(urlValue),
+					domain: components?.domain,
+					path: components?.path,
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				})
+			}
+
+			// Extract mailto URLs - reset regex lastIndex
+			MAILTO_PATTERN.lastIndex = 0
+			while ((match = MAILTO_PATTERN.exec(line)) !== null) {
+				const urlValue = match[0]
+				urls.push({
+					value: urlValue,
+					protocol: detectUrlProtocol(urlValue),
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				})
+			}
+
+			// Extract tel URLs - reset regex lastIndex
+			TEL_PATTERN.lastIndex = 0
+			while ((match = TEL_PATTERN.exec(line)) !== null) {
+				const urlValue = match[0]
+				urls.push({
+					value: urlValue,
+					protocol: detectUrlProtocol(urlValue),
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				})
+			}
+
+			// Extract file URLs - reset regex lastIndex
+			FILE_PATTERN.lastIndex = 0
+			while ((match = FILE_PATTERN.exec(line)) !== null) {
+				const urlValue = match[0]
+				urls.push({
+					value: urlValue,
+					protocol: detectUrlProtocol(urlValue),
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				})
+			}
+
+			// Extract URLs from Markdown links - reset regex lastIndex
+			MARKDOWN_LINK_PATTERN.lastIndex = 0
+			while ((match = MARKDOWN_LINK_PATTERN.exec(line)) !== null) {
+				const url = match[2]
+				if (url && isValidUrl(url)) {
+					const components = extractUrlComponents(url)
+					urls.push({
+						value: url,
+						protocol: detectUrlProtocol(url),
+						domain: components?.domain,
+						path: components?.path,
+						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+						context: line.trim(),
+					})
+				}
+			}
+		} catch (error) {
+			// Skip lines that cause regex errors to prevent crashes
+			console.warn(`[URLs-LE] Regex error on line ${lineIndex + 1}:`, error)
 		}
 	})
 

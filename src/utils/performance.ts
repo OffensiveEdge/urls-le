@@ -190,24 +190,45 @@ export function createPerformanceMonitor(): PerformanceMonitor {
 
 export function createPerformanceCache<K, V>(maxSize: number = 1000): PerformanceCache<K, V> {
 	const cache = new Map<K, V>()
+	const accessOrder = new Map<K, number>()
+	let accessCounter = 0
 
 	return Object.freeze({
 		get(key: K): V | undefined {
-			return cache.get(key)
+			const value = cache.get(key)
+			if (value !== undefined) {
+				accessOrder.set(key, ++accessCounter)
+			}
+			return value
 		},
 
 		set(key: K, value: V): void {
 			if (cache.size >= maxSize) {
-				const firstKey = cache.keys().next().value
-				if (firstKey !== undefined) {
-					cache.delete(firstKey)
+				// Remove least recently used entry
+				let oldestKey: K | undefined
+				let oldestAccess = Infinity
+
+				for (const [k, access] of accessOrder.entries()) {
+					if (access < oldestAccess) {
+						oldestAccess = access
+						oldestKey = k
+					}
+				}
+
+				if (oldestKey !== undefined) {
+					cache.delete(oldestKey)
+					accessOrder.delete(oldestKey)
 				}
 			}
+
 			cache.set(key, value)
+			accessOrder.set(key, ++accessCounter)
 		},
 
 		clear(): void {
 			cache.clear()
+			accessOrder.clear()
+			accessCounter = 0
 		},
 
 		size(): number {
@@ -219,7 +240,11 @@ export function createPerformanceCache<K, V>(maxSize: number = 1000): Performanc
 		},
 
 		delete(key: K): boolean {
-			return cache.delete(key)
+			const deleted = cache.delete(key)
+			if (deleted) {
+				accessOrder.delete(key)
+			}
+			return deleted
 		},
 	})
 }

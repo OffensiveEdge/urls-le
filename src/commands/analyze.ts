@@ -57,7 +57,7 @@ export function registerAnalyzeCommand(
 	context.subscriptions.push(command)
 }
 
-function generateAnalysisReport(analysis: any): string {
+function generateAnalysisReport(analysis: Record<string, unknown>): string {
 	const lines: string[] = []
 
 	lines.push('# URL Analysis Report')

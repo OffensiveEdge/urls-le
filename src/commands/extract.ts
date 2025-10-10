@@ -73,8 +73,24 @@ export function registerExtractCommand(
 
 			// Copy to clipboard if enabled
 			if (config.copyToClipboardEnabled) {
-				await vscode.env.clipboard.writeText(formattedUrls.join('\n'))
-				deps.notifier.showInfo(`Extracted ${result.urls.length} URLs and copied to clipboard`)
+				try {
+					const clipboardText = formattedUrls.join('\n')
+					// Check clipboard text length to prevent memory issues
+					if (clipboardText.length > 1000000) {
+						// 1MB limit
+						deps.notifier.showWarning(
+							`Results too large for clipboard (${clipboardText.length} characters), skipping clipboard copy`,
+						)
+					} else {
+						await vscode.env.clipboard.writeText(clipboardText)
+						deps.notifier.showInfo(`Extracted ${result.urls.length} URLs and copied to clipboard`)
+					}
+				} catch (error) {
+					deps.notifier.showWarning(
+						`Failed to copy to clipboard: ${error instanceof Error ? error.message : 'Unknown error'}`,
+					)
+					deps.notifier.showInfo(`Extracted ${result.urls.length} URLs`)
+				}
 			} else {
 				deps.notifier.showInfo(`Extracted ${result.urls.length} URLs`)
 			}

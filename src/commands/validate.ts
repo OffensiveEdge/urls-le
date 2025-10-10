@@ -66,7 +66,7 @@ export function registerValidateCommand(
 	context.subscriptions.push(command)
 }
 
-function generateValidationReport(results: any[]): string {
+function generateValidationReport(results: Record<string, unknown>[]): string {
 	const lines: string[] = []
 
 	lines.push('# URL Validation Report')

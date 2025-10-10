@@ -29,12 +29,8 @@ export interface ErrorRecoveryOptions {
 /**
  * Create an enhanced error with categorization and user-friendly messaging
  */
-export function createEnhancedError(
-	error: Error,
-	category: ErrorCategory,
-	context?: string
-): EnhancedError {
-	const errorType = getErrorType(error, category)
+export function createEnhancedError(error: Error, category: ErrorCategory, context?: string): EnhancedError {
+	const _errorType = getErrorType(error, category)
 	const userFriendlyMessage = getUserFriendlyMessage(error, category, context)
 	const suggestion = getErrorSuggestion(error, category)
 	const recoverable = isRecoverableError(error, category)
@@ -53,7 +49,7 @@ export function createEnhancedError(
 /**
  * Get error type for categorization
  */
-function getErrorType(error: Error, category: ErrorCategory): string {
+function getErrorType(_error: Error, category: ErrorCategory): string {
 	switch (category) {
 		case 'parse':
 			return 'url-parse-error'
@@ -124,22 +120,31 @@ function getUserFriendlyMessage(error: Error, category: ErrorCategory, context?:
 /**
  * Get error recovery suggestion
  */
-function getErrorSuggestion(error: Error, category: ErrorCategory): string {
+function getErrorSuggestion(_error: Error, category: ErrorCategory): string {
 	switch (category) {
 		case 'parse':
 			return localize('runtime.error.parse.suggestion', 'Check the URL format and ensure values are valid')
 		case 'file-system':
 			return localize('runtime.error.file-system.suggestion', 'Check file permissions and ensure the file exists')
 		case 'configuration':
-			return localize('runtime.error.configuration.suggestion', 'Reset to default settings or check configuration syntax')
+			return localize(
+				'runtime.error.configuration.suggestion',
+				'Reset to default settings or check configuration syntax',
+			)
 		case 'validation':
-			return localize('runtime.error.validation.suggestion', 'Review URL values and ensure they meet validation criteria')
+			return localize(
+				'runtime.error.validation.suggestion',
+				'Review URL values and ensure they meet validation criteria',
+			)
 		case 'safety':
 			return localize('runtime.error.safety.suggestion', 'Reduce file size or adjust safety thresholds')
 		case 'operational':
 			return localize('runtime.error.operational.suggestion', 'Try again or check system resources')
 		default:
-			return localize('runtime.error.unknown.suggestion', 'Check the logs for more details and consider reporting this issue')
+			return localize(
+				'runtime.error.unknown.suggestion',
+				'Check the logs for more details and consider reporting this issue',
+			)
 	}
 }
 
@@ -202,8 +207,8 @@ export function getErrorRecoveryOptions(error: EnhancedError): ErrorRecoveryOpti
 export function sanitizeErrorMessage(message: string): string {
 	// Remove sensitive information
 	return message
-		.replace(/\/Users\/[^\/]+\//g, '/Users/***/')
-		.replace(/\/home\/[^\/]+\//g, '/home/***/')
+		.replace(/\/Users\/[^/]+\//g, '/Users/***/')
+		.replace(/\/home\/[^/]+\//g, '/home/***/')
 		.replace(/C:\\Users\\[^\\]+\\/g, 'C:\\Users\\***\\')
 		.replace(/password[=:]\s*[^\s]+/gi, 'password=***')
 		.replace(/token[=:]\s*[^\s]+/gi, 'token=***')
@@ -215,7 +220,7 @@ export function sanitizeErrorMessage(message: string): string {
  */
 export function handleError(error: EnhancedError): void {
 	const sanitizedMessage = sanitizeErrorMessage(error.userFriendlyMessage)
-	
+
 	if (error.recoverable) {
 		// Show warning for recoverable errors
 		console.warn(`[URLs-LE] ${sanitizedMessage}`)

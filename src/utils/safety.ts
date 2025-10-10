@@ -1,3 +1,4 @@
+import type * as vscode from 'vscode'
 import type { Configuration } from '../types'
 
 export interface SafetyResult {
@@ -5,7 +6,7 @@ export interface SafetyResult {
 	message: string
 }
 
-export function handleSafetyChecks(document: any, config: Configuration): SafetyResult {
+export function handleSafetyChecks(document: vscode.TextDocument, config: Configuration): SafetyResult {
 	if (!config.safetyEnabled) {
 		return { proceed: true, message: '' }
 	}

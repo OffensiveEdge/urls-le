@@ -66,7 +66,7 @@ export function registerCheckAccessibilityCommand(
 	context.subscriptions.push(command)
 }
 
-function generateAccessibilityReport(results: any[]): string {
+function generateAccessibilityReport(results: Record<string, unknown>[]): string {
 	const lines: string[] = []
 
 	lines.push('# URL Accessibility Report')
