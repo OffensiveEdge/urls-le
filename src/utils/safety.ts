@@ -1,16 +1,13 @@
-import type { Configuration } from '../types';
+import type { Configuration } from '../types'
 
 export interface SafetyResult {
-	proceed: boolean;
-	message: string;
+	proceed: boolean
+	message: string
 }
 
-export function handleSafetyChecks(
-	document: any,
-	config: Configuration,
-): SafetyResult {
+export function handleSafetyChecks(document: any, config: Configuration): SafetyResult {
 	if (!config.safetyEnabled) {
-		return { proceed: true, message: '' };
+		return { proceed: true, message: '' }
 	}
 
 	// Check file size
@@ -20,8 +17,8 @@ export function handleSafetyChecks(
 			message: `File size (${document.getText().length} bytes) exceeds safety threshold (${
 				config.safetyFileSizeWarnBytes
 			} bytes)`,
-		};
+		}
 	}
 
-	return { proceed: true, message: '' };
+	return { proceed: true, message: '' }
 }

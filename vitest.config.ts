@@ -9,11 +9,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    pool: 'threads',
     setupFiles: [],
     include: ['src/**/*.test.ts'],
     exclude: ['node_modules/**', 'dist/**'],
     coverage: {
-      reporter: ['text', 'lcov'],
+      provider: 'v8',
+      reporter: ['text', 'lcov', 'html', 'json'],
       include: [
         'src/extension.ts',
         'src/commands/**/*.ts',

@@ -17,33 +17,33 @@ export const window = {
 		dispose: jest.fn(),
 	})),
 	withProgress: jest.fn(),
-};
+}
 
 export const workspace = {
 	openTextDocument: jest.fn(),
 	applyEdit: jest.fn(),
 	getConfiguration: jest.fn(),
-};
+}
 
 export const commands = {
 	registerCommand: jest.fn(),
 	executeCommand: jest.fn(),
-};
+}
 
 export const env = {
 	clipboard: {
 		writeText: jest.fn(),
 	},
-};
+}
 
 export const ViewColumn = {
 	Beside: 2,
-};
+}
 
 export const StatusBarAlignment = {
 	Left: 1,
 	Right: 2,
-};
+}
 
-export const Range = jest.fn();
-export const WorkspaceEdit = jest.fn();
+export const Range = jest.fn()
+export const WorkspaceEdit = jest.fn()

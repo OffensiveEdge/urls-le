@@ -12,19 +12,19 @@ import { registerHelpCommand } from './help'
 import { registerValidateCommand } from './validate'
 
 export function registerCommands(
-  context: vscode.ExtensionContext,
-  deps: Readonly<{
-    telemetry: Telemetry
-    notifier: Notifier
-    statusBar: StatusBar
-    localizer: Localizer
-    performanceMonitor: PerformanceMonitor
-    errorHandler: ErrorHandler
-  }>,
+	context: vscode.ExtensionContext,
+	deps: Readonly<{
+		telemetry: Telemetry
+		notifier: Notifier
+		statusBar: StatusBar
+		localizer: Localizer
+		performanceMonitor: PerformanceMonitor
+		errorHandler: ErrorHandler
+	}>,
 ): void {
-  registerExtractCommand(context, deps)
-  registerValidateCommand(context, deps)
-  registerCheckAccessibilityCommand(context, deps)
-  registerAnalyzeCommand(context, deps)
-  registerHelpCommand(context, deps)
+	registerExtractCommand(context, deps)
+	registerValidateCommand(context, deps)
+	registerCheckAccessibilityCommand(context, deps)
+	registerAnalyzeCommand(context, deps)
+	registerHelpCommand(context, deps)
 }

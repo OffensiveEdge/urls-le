@@ -7,73 +7,73 @@ import { extractFromMarkdown } from './formats/markdown'
 import { extractFromYaml } from './formats/yaml'
 
 export async function extractUrls(content: string, languageId: string): Promise<ExtractionResult> {
-  const fileType = determineFileType(languageId)
-  const urls: Url[] = []
-  const errors: ParseError[] = []
+	const fileType = determineFileType(languageId)
+	const urls: Url[] = []
+	const errors: ParseError[] = []
 
-  try {
-    switch (fileType) {
-      case 'markdown':
-        urls.push(...extractFromMarkdown(content))
-        break
-      case 'html':
-        urls.push(...extractFromHtml(content))
-        break
-      case 'css':
-        urls.push(...extractFromCss(content))
-        break
-      case 'javascript':
-      case 'typescript':
-        urls.push(...extractFromJavaScript(content))
-        break
-      case 'json':
-        urls.push(...extractFromJson(content))
-        break
-      case 'yaml':
-      case 'yml':
-        urls.push(...extractFromYaml(content))
-        break
-      default:
-        // Try markdown extraction as fallback
-        urls.push(...extractFromMarkdown(content))
-        break
-    }
-  } catch (error) {
-    errors.push({
-      category: 'parsing' as const,
-      severity: 'warning' as const,
-      message: error instanceof Error ? error.message : 'Unknown parsing error',
-      recoverable: true,
-      recoveryAction: 'skip' as const,
-      timestamp: Date.now(),
-    })
-  }
+	try {
+		switch (fileType) {
+			case 'markdown':
+				urls.push(...extractFromMarkdown(content))
+				break
+			case 'html':
+				urls.push(...extractFromHtml(content))
+				break
+			case 'css':
+				urls.push(...extractFromCss(content))
+				break
+			case 'javascript':
+			case 'typescript':
+				urls.push(...extractFromJavaScript(content))
+				break
+			case 'json':
+				urls.push(...extractFromJson(content))
+				break
+			case 'yaml':
+			case 'yml':
+				urls.push(...extractFromYaml(content))
+				break
+			default:
+				// Try markdown extraction as fallback
+				urls.push(...extractFromMarkdown(content))
+				break
+		}
+	} catch (error) {
+		errors.push({
+			category: 'parsing' as const,
+			severity: 'warning' as const,
+			message: error instanceof Error ? error.message : 'Unknown parsing error',
+			recoverable: true,
+			recoveryAction: 'skip' as const,
+			timestamp: Date.now(),
+		})
+	}
 
-  return Object.freeze({
-    success: errors.length === 0,
-    urls: Object.freeze(urls),
-    errors: Object.freeze(errors),
-  })
+	return Object.freeze({
+		success: errors.length === 0,
+		urls: Object.freeze(urls),
+		errors: Object.freeze(errors),
+	})
 }
 
 function determineFileType(languageId: string): FileType {
-  switch (languageId) {
-    case 'markdown':
-      return 'markdown'
-    case 'html':
-      return 'html'
-    case 'css':
-      return 'css'
-    case 'javascript':
-      return 'javascript'
-    case 'typescript':
-      return 'typescript'
-    case 'json':
-      return 'json'
-    case 'yaml':
-    case 'yml':
-      return 'yaml'
-    default:
-      return 'unknown'
-  }
+	switch (languageId) {
+		case 'markdown':
+			return 'markdown'
+		case 'html':
+			return 'html'
+		case 'css':
+			return 'css'
+		case 'javascript':
+			return 'javascript'
+		case 'typescript':
+			return 'typescript'
+		case 'json':
+			return 'json'
+		case 'yaml':
+		case 'yml':
+			return 'yaml'
+		default:
+			return 'unknown'
+	}
 }
