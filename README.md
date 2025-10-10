@@ -125,13 +125,13 @@ English + 12 translations _(Coming Soon)_:
 
 URLs-LE is built for speed across all supported formats:
 
-| Format   | Throughput        | Best For               |
-| -------- | ----------------- | ---------------------- |
-| **HTML** | 1.5M+ URLs/sec    | Web pages, templates  |
-| **CSS**  | 1.2M+ URLs/sec    | Stylesheets, assets    |
-| **JS**   | 1M+ URLs/sec      | JavaScript, APIs       |
-| **MD**   | 800K+ URLs/sec    | Documentation, READMEs |
-| **JSON** | 600K+ URLs/sec    | API responses, configs |
+| Format   | Throughput     | Best For               |
+| -------- | -------------- | ---------------------- |
+| **HTML** | 1.5M+ URLs/sec | Web pages, templates   |
+| **CSS**  | 1.2M+ URLs/sec | Stylesheets, assets    |
+| **JS**   | 1M+ URLs/sec   | JavaScript, APIs       |
+| **MD**   | 800K+ URLs/sec | Documentation, READMEs |
+| **JSON** | 600K+ URLs/sec | API responses, configs |
 
 ## 📊 Test Coverage
 
@@ -139,12 +139,6 @@ URLs-LE is built for speed across all supported formats:
 - Runs quickly and locally: `npm run test` or `npm run test:coverage`.
 - Coverage reports output to `coverage/` (HTML summary at `coverage/index.html`).
 
-## 🤝 Contributing
-
-We welcome all contributions! Whether it's code, ideas, or feedback:
-
-- [Issues](https://github.com/nolindnaidoo/urls-le/issues) • [Pull Requests](https://github.com/nolindnaidoo/urls-le/pulls) • [Releases](https://github.com/nolindnaidoo/urls-le/releases)
-- [Architecture](docs/ARCHITECTURE.md) • [Development](docs/DEVELOPMENT.md) • [Contributing](CONTRIBUTING.md) • [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ---
 
