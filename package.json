@@ -103,6 +103,21 @@
 				"command": "urls-le.help",
 				"title": "%manifest.command.help.title%",
 				"category": "%manifest.command.category%"
+			},
+			{
+				"command": "urls-le.settings.export",
+				"title": "%manifest.command.settings.export.title%",
+				"category": "%manifest.command.category%"
+			},
+			{
+				"command": "urls-le.settings.import",
+				"title": "%manifest.command.settings.import.title%",
+				"category": "%manifest.command.category%"
+			},
+			{
+				"command": "urls-le.settings.reset",
+				"title": "%manifest.command.settings.reset.title%",
+				"category": "%manifest.command.category%"
 			}
 		],
 		"keybindings": [
@@ -139,6 +154,15 @@
 				},
 				{
 					"command": "urls-le.help"
+				},
+				{
+					"command": "urls-le.settings.export"
+				},
+				{
+					"command": "urls-le.settings.import"
+				},
+				{
+					"command": "urls-le.settings.reset"
 				}
 			]
 		},
@@ -283,6 +307,55 @@
 					"default": 1000,
 					"minimum": 100,
 					"description": "%manifest.settings.performance.max-cache.desc%"
+				},
+				"urls-le.keyboard.shortcuts.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "%manifest.settings.keyboard.shortcuts.enabled.desc%"
+				},
+				"urls-le.keyboard.extractShortcut": {
+					"type": "string",
+					"default": "ctrl+alt+u",
+					"description": "%manifest.settings.keyboard.extract.shortcut.desc%"
+				},
+				"urls-le.keyboard.validateShortcut": {
+					"type": "string",
+					"default": "ctrl+alt+v",
+					"description": "%manifest.settings.keyboard.validate.shortcut.desc%"
+				},
+				"urls-le.keyboard.checkAccessibilityShortcut": {
+					"type": "string",
+					"default": "ctrl+alt+a",
+					"description": "%manifest.settings.keyboard.check-accessibility.shortcut.desc%"
+				},
+				"urls-le.keyboard.analyzeShortcut": {
+					"type": "string",
+					"default": "ctrl+alt+n",
+					"description": "%manifest.settings.keyboard.analyze.shortcut.desc%"
+				},
+				"urls-le.presets.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "%manifest.settings.presets.enabled.desc%"
+				},
+				"urls-le.presets.defaultPreset": {
+					"type": "string",
+					"default": "balanced",
+					"enum": [
+						"minimal",
+						"balanced",
+						"comprehensive",
+						"performance",
+						"security"
+					],
+					"enumDescriptions": [
+						"%manifest.settings.presets.default.option.minimal%",
+						"%manifest.settings.presets.default.option.balanced%",
+						"%manifest.settings.presets.default.option.comprehensive%",
+						"%manifest.settings.presets.default.option.performance%",
+						"%manifest.settings.presets.default.option.security%"
+					],
+					"description": "%manifest.settings.presets.default.desc%"
 				}
 			}
 		}
