@@ -17,6 +17,9 @@
     "exclude": [
         "node_modules",
         ".vscode-test",
-        "src/__mocks__/**/*"
+        "src/__mocks__/**/*",
+        "test/**/*",
+        "vitest.config.ts",
+        "**/*.test.ts"
     ]
 }
