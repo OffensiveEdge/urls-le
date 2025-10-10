@@ -20,11 +20,11 @@
   </a>
   <!-- Build -->
   <a href="https://github.com/nolindnaidoo/urls-le/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/nolindnaidoo/urls-le/.github/workflows/ci.yml?branch=main" alt="Build Status" />
+    <img src="https://img.shields.io/github/actions/workflow/status/nolindnaidoo/urls-le/ci.yml?branch=main" alt="Build Status" />
   </a>
   <!-- License -->
   <a href="https://github.com/nolindnaidoo/urls-le/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" />
+    <img src="https://img.shields.io/github/license/nolindnaidoo/urls-le" alt="MIT License" />
   </a>
 </p>
 
