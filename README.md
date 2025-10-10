@@ -10,10 +10,8 @@
 </p>
 
 <p align="center">
-  <!-- Marketplace -->
-  <a href="https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le">
-    <img src="https://img.shields.io/visual-studio-marketplace/v/nolindnaidoo.urls-le" alt="VSCode Marketplace Version" />
-  </a>
+  <!-- Coming Soon -->
+  <img src="https://img.shields.io/badge/Status-Coming%20Soon-orange" alt="Coming Soon" />
   <!-- Build -->
   <a href="https://github.com/nolindnaidoo/urls-le/actions">
     <img src="https://img.shields.io/github/actions/workflow/status/nolindnaidoo/urls-le/ci.yml?branch=main" alt="Build Status" />
@@ -26,19 +24,22 @@
 
 ---
 
-## 🙏 Thank You!
+## 🚧 Coming Soon!
 
-Thank you for using URLs-LE! If this extension has been helpful in managing your URLs, please consider leaving a rating on the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le). Your feedback helps other developers discover this tool and motivates continued development.
+**URLs-LE** is currently in development and will be available soon! This extension will provide powerful URL extraction and analysis capabilities for your web content, APIs, and resources.
 
-⭐ **Enjoying URLs-LE?** [Leave a rating](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le) and help others find it too!
+⭐ **Interested in URLs-LE?** Star this repository to get notified when it's released!
 
 ## 🚀 More from the LE Family
 
 **URLs-LE** is part of a growing family of developer tools designed to make your workflow effortless:
 
-- **[String-LE](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.string-le)** - Extract every user-visible string from JSON, YAML, CSV, TOML, INI, and .env files with zero hassle
-- **[EnvSync-LE](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.envsync-le)** - Effortlessly detect, compare, and synchronize .env files across your workspace with visual diffs
-- **Numbers-LE** _(Coming Soon)_ - Extract and analyze numeric data from structured files - the perfect companion for data analysis and validation
+- **[String-LE](https://open-vsx.org/extension/nolindnaidoo/string-le)** - Extract every user-visible string from JSON, YAML, CSV, TOML, INI, and .env files with zero hassle
+- **[EnvSync-LE](https://open-vsx.org/extension/nolindnaidoo/envsync-le)** - Effortlessly detect, compare, and synchronize .env files across your workspace with visual diffs
+- **Colors-LE** _(Coming Soon)_ - Extract and analyze colors from CSS, HTML, JavaScript, and more
+- **Dates-LE** _(Coming Soon)_ - Extract and analyze dates from logs, APIs, and temporal data
+- **Paths-LE** _(Coming Soon)_ - Extract and analyze file paths from imports, configs, and dependencies
+- **Numbers-LE** _(Coming Soon)_ - Extract and analyze numeric data from structured files
 
 Each tool follows the same philosophy: **Zero Hassle, Maximum Productivity**.
 
@@ -71,9 +72,9 @@ It intelligently detects and extracts URLs from your code, providing comprehensi
 
 ## 🚀 Quick Start
 
-1. Install from the VS Code Marketplace.
-2. Open any file containing URLs (`Cmd/Ctrl + P URLs-LE`).
-3. Run Quick Extract (`Cmd+Alt+E` / `Ctrl+Alt+E` / Status Bar).
+1. **Coming Soon** - URLs-LE will be available on Open VSX and as a VSIX download
+2. Open any file containing URLs (`Cmd/Ctrl + P URLs-LE`)
+3. Run Quick Extract (`Cmd+Alt+E` / `Ctrl+Alt+E` / Status Bar)
 
 ## ⚙️ Configuration
 
