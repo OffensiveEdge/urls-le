@@ -1,78 +1,33 @@
 # URLs-LE Testing Guide
 
-## Overview
+## Framework
 
-URLs-LE uses Vitest as its testing framework, providing fast, reliable testing for all components. This guide covers testing philosophy, structure, commands, and best practices.
+Vitest with V8 coverage provider. Target 80% minimum coverage across all metrics.
 
-## Testing Philosophy
-
-### Test-Driven Development
-
-- Write tests before implementing features
-- Test edge cases and error conditions
-- Maintain high test coverage
-- Use tests as documentation
-
-### Quality Assurance
-
-- Comprehensive test coverage
-- Performance testing
-- Integration testing
-- User experience testing
-
-### Continuous Integration
-
-- Automated test execution
-- Coverage reporting
-- Performance monitoring
-- Quality gates
-
-## Testing Framework
-
-### Vitest Configuration
+### Configuration
 
 ```typescript
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
-import path from 'path'
-
 export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.test.ts'],
-    exclude: ['node_modules/**', 'dist/**'],
     coverage: {
-      reporter: ['text', 'lcov'],
-      include: [
-        'src/extension.ts',
-        'src/commands/**/*.ts',
-        'src/config/**/*.ts',
-        'src/extraction/**/*.ts',
-        'src/telemetry/**/*.ts',
-        'src/ui/**/*.ts',
-        'src/utils/**/*.ts',
-        'src/providers/**/*.ts',
-      ],
-      exclude: [
-        'src/**/*.test.ts',
-        'test/**',
-        'dist/**',
-        'src/__mocks__/**',
-        'src/types.ts',
-        'src/interfaces/**',
-      ],
-    },
+      provider: 'v8',
+      threshold: {
+        global: { branches: 80, functions: 80, lines: 80, statements: 80 }
+      }
+    }
   },
   resolve: {
     alias: {
-      vscode: path.resolve(__dirname, 'src/__mocks__/vscode.ts'),
-    },
-  },
+      vscode: path.resolve(__dirname, 'src/__mocks__/vscode.ts')
+    }
+  }
 })
 ```
 
-### Test Structure
+## Test Organization
 
 ```
 src/
@@ -80,9 +35,6 @@ src/
 │   ├── extract.test.ts
 │   ├── validate.test.ts
 │   └── analyze.test.ts
-├── config/
-│   ├── config.test.ts
-│   └── settings.test.ts
 ├── extraction/
 │   ├── extract.test.ts
 │   └── formats/
@@ -97,382 +49,238 @@ src/
     └── vscode.ts
 ```
 
-## Test Types
+## Test Categories
 
 ### Unit Tests
 
-Test individual functions and components in isolation.
+Pure function validation:
 
 ```typescript
-// src/utils/validation.test.ts
-import { describe, expect, it } from 'vitest'
-import { validateUrl } from './validation'
-
 describe('URL Validation', () => {
-  describe('validateUrl', () => {
-    it('should validate valid HTTPS URLs', () => {
-      const result = validateUrl('https://example.com')
-
-      expect(result.isValid).toBe(true)
-      expect(result.protocol).toBe('https:')
-      expect(result.hostname).toBe('example.com')
-    })
-
-    it('should reject invalid URLs', () => {
-      const result = validateUrl('not-a-url')
-
-      expect(result.isValid).toBe(false)
-      expect(result.error).toBe('Invalid URL format')
-    })
-
-    it('should handle edge cases', () => {
-      const result = validateUrl('')
-
-      expect(result.isValid).toBe(false)
-      expect(result.error).toBe('Invalid URL format')
-    })
+  it('validates HTTPS URLs', () => {
+    const result = validateUrl('https://example.com')
+    
+    expect(result.isValid).toBe(true)
+    expect(result.protocol).toBe('https:')
+    expect(result.hostname).toBe('example.com')
+  })
+  
+  it('validates HTTP URLs', () => {
+    const result = validateUrl('http://example.com/path')
+    
+    expect(result.isValid).toBe(true)
+    expect(result.pathname).toBe('/path')
+  })
+  
+  it('rejects invalid URLs', () => {
+    const result = validateUrl('not-a-url')
+    
+    expect(result.isValid).toBe(false)
+    expect(result.error).toBe('Invalid URL format')
+  })
+  
+  it('handles edge cases', () => {
+    expect(validateUrl('')).toHaveProperty('isValid', false)
+    expect(validateUrl(' ')).toHaveProperty('isValid', false)
   })
 })
 ```
 
 ### Integration Tests
 
-Test component interactions and workflows.
+Workflow validation:
 
 ```typescript
-// src/extraction/extract.test.ts
-import { describe, expect, it } from 'vitest'
-import { extractUrls } from './extract'
-import { createTestConfig } from '../test-utils'
-
 describe('URL Extraction Integration', () => {
-  it('should extract URLs from markdown content', async () => {
+  it('extracts URLs from markdown', async () => {
     const content = `
-      # Test Document
+      # Document
       [Link 1](https://example.com)
       ![Image](https://example.com/image.png)
       <https://example.com/direct>
     `
-
+    
     const result = await extractUrls(content, 'markdown', createTestConfig())
-
+    
     expect(result.urls).toHaveLength(3)
     expect(result.urls[0].value).toBe('https://example.com')
     expect(result.urls[1].value).toBe('https://example.com/image.png')
     expect(result.urls[2].value).toBe('https://example.com/direct')
   })
-
-  it('should handle extraction errors gracefully', async () => {
-    const content = 'Invalid content with malformed URLs'
-
+  
+  it('handles extraction errors gracefully', async () => {
+    const content = 'Invalid markdown with malformed [link'
+    
     const result = await extractUrls(content, 'markdown', createTestConfig())
-
+    
     expect(result.urls).toHaveLength(0)
     expect(result.errors).toBeDefined()
-    expect(result.errors).toHaveLength(1)
   })
 })
 ```
 
 ### Performance Tests
 
-Test performance characteristics and limits.
+Resource usage validation:
 
 ```typescript
-// src/extraction/performance.test.ts
-import { describe, expect, it } from 'vitest'
-import { extractUrls } from './extract'
-import { generateLargeContent } from '../test-utils'
-
-describe('Performance Tests', () => {
-  it('should extract URLs from large content efficiently', async () => {
+describe('Performance', () => {
+  it('extracts 10k URLs within 2 seconds', async () => {
     const content = generateLargeContent(10000) // 10k lines
-    const startTime = Date.now()
-
+    const start = Date.now()
+    
     const result = await extractUrls(content, 'markdown', createTestConfig())
-
-    const duration = Date.now() - startTime
-
-    expect(duration).toBeLessThan(2000) // Should complete in under 2 seconds
+    
+    expect(Date.now() - start).toBeLessThan(2000)
     expect(result.urls.length).toBeGreaterThan(0)
   })
-
-  it('should handle memory efficiently', async () => {
-    const initialMemory = process.memoryUsage().heapUsed
-
+  
+  it('handles memory efficiently', async () => {
+    const initial = process.memoryUsage().heapUsed
+    
     for (let i = 0; i < 100; i++) {
-      const content = generateTestContent(1000)
-      await extractUrls(content, 'markdown', createTestConfig())
+      await extractUrls(generateTestContent(1000), 'markdown', createTestConfig())
     }
-
-    const finalMemory = process.memoryUsage().heapUsed
-    const memoryIncrease = finalMemory - initialMemory
-
-    expect(memoryIncrease).toBeLessThan(50 * 1024 * 1024) // Less than 50MB
+    
+    const used = process.memoryUsage().heapUsed - initial
+    expect(used).toBeLessThan(50 * 1024 * 1024) // Less than 50MB
   })
 })
 ```
 
 ## Test Utilities
 
-### Mock VS Code API
+### Mock VS Code
 
 ```typescript
-// src/__mocks__/vscode.ts
+// __mocks__/vscode.ts
 export const window = {
   activeTextEditor: undefined,
-  showInformationMessage: () => Promise.resolve(''),
-  showWarningMessage: () => Promise.resolve(''),
-  showErrorMessage: () => Promise.resolve(''),
-  withProgress: (options: any, task: any) => task({}, {}),
-  createStatusBarItem: () => ({
+  showInformationMessage: vi.fn(() => Promise.resolve('')),
+  showWarningMessage: vi.fn(() => Promise.resolve('')),
+  createStatusBarItem: vi.fn(() => ({
     text: '',
-    show: () => {},
-    hide: () => {},
-    dispose: () => {},
-  }),
+    show: vi.fn(),
+    hide: vi.fn(),
+    dispose: vi.fn()
+  })),
+  withProgress: vi.fn((opts, task) => task({}, {}))
 }
 
 export const workspace = {
-  getConfiguration: () => ({
-    get: (key: string, defaultValue: any) => defaultValue,
-  }),
-  openTextDocument: () => Promise.resolve({}),
-  applyEdit: () => Promise.resolve(true),
-}
-
-export const commands = {
-  registerCommand: () => ({ dispose: () => {} }),
+  getConfiguration: vi.fn(() => ({
+    get: vi.fn((key, defaultValue) => defaultValue)
+  }))
 }
 
 export const env = {
   clipboard: {
-    writeText: () => Promise.resolve(),
-  },
+    writeText: vi.fn(() => Promise.resolve())
+  }
 }
 ```
 
 ### Test Helpers
 
 ```typescript
-// src/test-utils.ts
 export function createTestConfig(): Configuration {
   return Object.freeze({
     copyToClipboardEnabled: false,
     dedupeEnabled: true,
     notificationsLevel: 'silent',
-    postProcessOpenInNewFile: false,
-    openResultsSideBySide: false,
     safetyEnabled: true,
     safetyFileSizeWarnBytes: 1000000,
-    safetyLargeOutputLinesThreshold: 50000,
-    safetyManyDocumentsThreshold: 8,
     analysisEnabled: true,
-    analysisIncludeSecurity: true,
-    analysisIncludeAccessibility: true,
-    validationEnabled: true,
-    validationTimeout: 5000,
-    validationFollowRedirects: true,
+    validationEnabled: true
   })
 }
 
 export function generateTestContent(lines: number): string {
-  const content: string[] = []
-
+  const urls: string[] = []
+  
   for (let i = 0; i < lines; i++) {
-    content.push(`[Link ${i}](https://example.com/page${i})`)
+    urls.push(`[Link ${i}](https://example.com/page${i})`)
   }
-
-  return content.join('\n')
+  
+  return urls.join('\n')
 }
 
 export function generateLargeContent(lines: number): string {
   const content: string[] = []
-
+  
   for (let i = 0; i < lines; i++) {
     content.push(`# Section ${i}`)
-    content.push(`[Link ${i}](https://example.com/page${i})`)
-    content.push(`![Image ${i}](https://example.com/image${i}.png)`)
-    content.push(`<https://example.com/direct${i}>`)
+    content.push(`[Link](https://example.com/page${i})`)
+    content.push(`![Image](https://example.com/image${i}.png)`)
   }
-
+  
   return content.join('\n')
 }
 ```
 
-## Test Commands
-
-### Running Tests
+## Running Tests
 
 ```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run specific test file
-npx vitest src/utils/validation.test.ts
-
-# Run tests matching pattern
-npx vitest --run validation
-
-# Run tests in specific directory
-npx vitest src/commands/
+npm test                       # Run all tests
+npm run test:watch             # Watch mode
+npm run test:coverage          # Generate coverage report
+npx vitest src/utils/validation.test.ts  # Specific file
+npx vitest --run validation    # Pattern match
+npx vitest --ui                # Visual test UI
 ```
 
-### Coverage Commands
+## Coverage Requirements
 
-```bash
-# Generate coverage report
-npm run test:coverage
+- **Minimum**: 80% across all metrics
+- **Critical Paths**: 95% for extraction and validation functions
+- **New Features**: 100% coverage required
+- **Reports**: HTML reports in `coverage/` directory
 
-# View coverage in browser
-npx vitest --coverage --ui
+## Performance Benchmarks
 
-# Generate LCOV report
-npx vitest --coverage --reporter=lcov
-```
+| Input | URLs | Max Duration | Max Memory | Throughput |
+|-------|------|--------------|------------|------------|
+| 1KB   | ~10  | 10ms         | 1MB        | 1,000 URLs/s |
+| 100KB | ~1K  | 100ms        | 10MB       | 10,000 URLs/s |
+| 1MB   | ~10K | 1s           | 50MB       | 10,000 URLs/s |
 
-### Performance Commands
+## Quality Assurance
 
-```bash
-# Run performance tests
-npm run test:performance
+### Test Writing Principles
 
-# Generate performance report
-npm run performance:report
+1. **Arrange-Act-Assert**: Clear three-phase structure
+2. **Single Responsibility**: One behavior per test
+3. **Independence**: Tests run in any order
+4. **Speed**: Under 100ms per test
+5. **Descriptive**: Meaningful test names
 
-# Benchmark specific functions
-npx vitest --run performance
-```
-
-## Test Coverage
-
-### Coverage Requirements
-
-- **Minimum**: 80% overall coverage
-- **Critical**: 95% coverage for core functions
-- **New Code**: 100% coverage for new features
-- **Branches**: 90% branch coverage
-
-### Coverage Reports
-
-```bash
-# Generate text coverage report
-npm run test:coverage
-
-# Generate HTML coverage report
-npx vitest --coverage --reporter=html
-
-# Generate LCOV report for CI
-npx vitest --coverage --reporter=lcov
-```
-
-### Coverage Exclusions
-
-```typescript
-// Files excluded from coverage
-exclude: [
-  'src/**/*.test.ts',
-  'test/**',
-  'dist/**',
-  'src/__mocks__/**',
-  'src/types.ts',
-  'src/interfaces/**',
-]
-```
-
-## Test Data
-
-### Test Fixtures
-
-```typescript
-// test/fixtures/markdown/basic.md
-# Test Document
-[Link 1](https://example.com)
-![Image](https://example.com/image.png)
-<https://example.com/direct>
-
-// test/fixtures/html/basic.html
-<!DOCTYPE html>
-<html>
-<head>
-  <link href="https://example.com/style.css" rel="stylesheet">
-</head>
-<body>
-  <a href="https://example.com">Link</a>
-  <img src="https://example.com/image.png" alt="Image">
-</body>
-</html>
-```
-
-### Test Data Generation
-
-```typescript
-export function generateTestUrls(count: number): ReadonlyArray<Url> {
-  const urls: Url[] = []
-
-  for (let i = 0; i < count; i++) {
-    urls.push(
-      Object.freeze({
-        value: `https://example.com/page${i}`,
-        line: i + 1,
-        column: 1,
-        format: 'markdown',
-      }),
-    )
-  }
-
-  return Object.freeze(urls)
-}
-
-export function generateInvalidUrls(count: number): ReadonlyArray<string> {
-  const urls: string[] = []
-
-  for (let i = 0; i < count; i++) {
-    urls.push(`invalid-url-${i}`)
-  }
-
-  return Object.freeze(urls)
-}
-```
-
-## Error Testing
-
-### Error Scenarios
+### Error Testing
 
 ```typescript
 describe('Error Handling', () => {
-  it('should handle parse errors gracefully', async () => {
-    const content = 'Malformed content with invalid syntax'
-
+  it('handles parse errors gracefully', async () => {
+    const content = 'Malformed markdown [link'
+    
     const result = await extractUrls(content, 'markdown', createTestConfig())
-
+    
     expect(result.errors).toBeDefined()
-    expect(result.errors).toHaveLength(1)
     expect(result.errors[0].category).toBe('parse')
   })
-
-  it('should handle validation errors', async () => {
-    const content = '[Link](invalid-url)'
-
+  
+  it('handles validation errors', async () => {
+    const content = '[Bad Link](invalid-url)'
+    
     const result = await extractUrls(content, 'markdown', createTestConfig())
-
-    expect(result.urls).toHaveLength(1)
+    
     expect(result.urls[0].value).toBe('invalid-url')
   })
-
-  it('should handle safety errors', async () => {
-    const content = generateLargeContent(100000) // Very large content
-
+  
+  it('handles safety errors', async () => {
+    const content = generateLargeContent(100000)
+    
     const result = await extractUrls(content, 'markdown', createTestConfig())
-
-    expect(result.errors).toBeDefined()
-    expect(result.errors.some((e) => e.category === 'safety')).toBe(true)
+    
+    expect(result.errors.some(e => e.category === 'safety')).toBe(true)
   })
 })
 ```
@@ -481,92 +289,78 @@ describe('Error Handling', () => {
 
 ```typescript
 describe('Recovery Mechanisms', () => {
-  it('should recover from transient errors', async () => {
-    const content = 'Content with temporary issues'
-
+  it('recovers from transient errors', async () => {
+    const content = 'Content with [valid](https://example.com) and [invalid](bad) links'
+    
     const result = await extractUrls(content, 'markdown', createTestConfig())
-
-    expect(result.urls).toBeDefined()
-    expect(result.errors).toBeDefined()
+    
+    expect(result.urls).toHaveLength(2)
+    expect(result.errors).toHaveLength(0)
   })
+})
+```
 
-  it('should provide fallback options', async () => {
-    const content = 'Content requiring fallback processing'
+## Format-Specific Tests
 
-    const result = await extractUrls(content, 'markdown', createTestConfig())
+### Markdown Tests
 
-    expect(result.urls).toBeDefined()
-    expect(result.errors).toBeDefined()
+```typescript
+describe('Markdown Extraction', () => {
+  it('extracts inline links', () => {
+    const content = '[text](https://example.com)'
+    expect(extractUrls(content, 'markdown').urls).toHaveLength(1)
+  })
+  
+  it('extracts image URLs', () => {
+    const content = '![alt](https://example.com/img.png)'
+    expect(extractUrls(content, 'markdown').urls[0].type).toBe('image')
+  })
+  
+  it('extracts autolinks', () => {
+    const content = '<https://example.com>'
+    expect(extractUrls(content, 'markdown').urls).toHaveLength(1)
+  })
+})
+```
+
+### HTML Tests
+
+```typescript
+describe('HTML Extraction', () => {
+  it('extracts anchor hrefs', () => {
+    const content = '<a href="https://example.com">Link</a>'
+    expect(extractUrls(content, 'html').urls).toHaveLength(1)
+  })
+  
+  it('extracts image sources', () => {
+    const content = '<img src="https://example.com/img.png">'
+    expect(extractUrls(content, 'html').urls[0].type).toBe('image')
   })
 })
 ```
 
 ## Continuous Integration
 
-### GitHub Actions
+GitHub Actions runs tests on every push:
 
 ```yaml
-# .github/workflows/test.yml
 name: Tests
-
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
-
-      - name: Generate coverage
-        run: npm run test:coverage
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:coverage
+      - uses: codecov/codecov-action@v3
 ```
 
-### Quality Gates
+---
 
-- **Tests**: All tests must pass
-- **Coverage**: Minimum 80% coverage
-- **Performance**: Performance tests must pass
-- **Linting**: No linting errors
-
-## Best Practices
-
-### Test Writing
-
-1. **Arrange-Act-Assert**: Structure tests clearly
-2. **Descriptive Names**: Use descriptive test names
-3. **Single Responsibility**: Test one thing per test
-4. **Edge Cases**: Test edge cases and error conditions
-5. **Mocking**: Mock external dependencies
-
-### Test Organization
-
-1. **Group Related Tests**: Use describe blocks
-2. **Logical Order**: Order tests logically
-3. **Setup/Teardown**: Use beforeEach/afterEach
-4. **Test Data**: Use consistent test data
-5. **Documentation**: Comment complex tests
-
-### Performance Testing
-
-1. **Benchmarks**: Establish performance benchmarks
-2. **Memory Testing**: Test memory usage
-3. **Load Testing**: Test under load
-4. **Regression Testing**: Prevent performance regressions
-5. **Monitoring**: Monitor performance metrics
-
-This testing guide ensures URLs-LE maintains high quality and reliability through comprehensive testing practices.
+**Related:** [Architecture](ARCHITECTURE.md) | [Performance](PERFORMANCE.md) | [Development](DEVELOPMENT.md)

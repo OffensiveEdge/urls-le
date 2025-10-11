@@ -1,478 +1,345 @@
 # URLs-LE Architecture
 
-## Overview
+## Design Principles
 
-URLs-LE is a VS Code extension designed for lightweight, unobtrusive URL extraction and validation from documentation, configuration files, and code. Built with functional programming principles and TypeScript best practices, it provides developers with fast, reliable tools for URL discovery and analysis.
+**Functional First**: Pure functions with explicit return types, `readonly` types throughout, `Object.freeze()` for immutability, factory functions over classes.
 
-## Core Principles
+**Performance & Safety**: Lightweight resource usage, built-in safety checks for large files, cancellation support, memory-efficient streaming.
 
-### Functional Programming
+**Developer Experience**: Unobtrusive defaults (silent by default), cross-platform compatibility, keyboard and screen reader support, full internationalization.
 
-- **Immutability**: All data structures use `readonly` types and `Object.freeze()`
-- **Pure Functions**: Functions have no side effects and explicit return types
-- **Factory Functions**: Component creation through factory functions instead of classes
-- **Dependency Injection**: Components receive dependencies via parameter objects
+## System Architecture
 
-### Performance & Safety
+```mermaid
+graph TB
+    A[extension.ts] --> B[Commands]
+    A --> C[Services]
+    
+    B --> D[Extract]
+    B --> E[Validate]
+    B --> F[Check Accessibility]
+    B --> G[Analyze]
+    
+    C --> H[Telemetry]
+    C --> I[Notifier]
+    C --> J[StatusBar]
+    C --> K[Config]
+    
+    D --> L[Extraction Engine]
+    L --> M[Markdown]
+    L --> N[HTML]
+    L --> O[CSS]
+    L --> P[JavaScript]
+    
+    E --> Q[Validation]
+    Q --> R[Format Check]
+    Q --> S[Network Check]
+    
+    style A fill:#e1f5ff,stroke:#01579b
+    style L fill:#fff3e0,stroke:#e65100
+    style Q fill:#e8f5e9,stroke:#1b5e20
+```
 
-- **Lightweight**: Minimal resource usage and fast execution
-- **Safety Checks**: Built-in protection against large files and resource exhaustion
-- **Cancellation Support**: Operations can be cancelled for responsiveness
-- **Memory Efficiency**: Streaming and chunked processing for large datasets
+## Component Responsibilities
 
-### Developer Experience
+### 1. Extension Entry (`src/extension.ts`)
 
-- **Unobtrusive**: Silent by default, configurable notifications
-- **Cross-Platform**: Works on Windows, macOS, and Linux
-- **Accessible**: Keyboard navigation and screen reader support
-- **Localized**: Full internationalization support
-
-## Architecture Components
-
-### 1. Extension Activation (`src/extension.ts`)
+Minimal activation with dependency injection:
 
 ```typescript
 export function activate(context: vscode.ExtensionContext): void {
   const telemetry = createTelemetry()
   const notifier = createNotifier()
   const statusBar = createStatusBar(context)
-
+  
   registerCommands(context, { telemetry, notifier, statusBar })
-  registerOpenSettingsCommand(context, telemetry)
   registerCodeActions(context)
-
+  
   telemetry.event('extension-activated')
 }
 ```
 
-**Responsibilities:**
-
-- Minimal activation logic
-- Dependency injection setup
-- Component registration
-- Telemetry initialization
+**Role**: Service wiring, command registration, code actions, disposable management.
 
 ### 2. Command System (`src/commands/`)
 
+Factory pattern with progress and cancellation:
+
 ```typescript
-export function registerCommands(
+export function registerExtractCommand(
   context: vscode.ExtensionContext,
-  deps: Readonly<CommandDependencies>,
+  deps: Readonly<CommandDependencies>
 ): void {
-  context.subscriptions.push(
-    vscode.commands.registerCommand('urls-le.extractUrls', createExtractCommand(deps)),
+  const disposable = vscode.commands.registerCommand(
+    'urls-le.extractUrls',
+    async () => {
+      await vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: 'Extracting URLs...',
+        cancellable: true
+      }, async (progress, token) => {
+        const config = createConfiguration()
+        const content = getActiveEditorContent()
+        
+        const result = await extractUrls(content, config, token)
+        deps.notifier.show(result.summary)
+      })
+    }
   )
+  
+  context.subscriptions.push(disposable)
 }
 ```
 
-**Commands:**
+**Commands**: `extractUrls`, `validate`, `checkAccessibility`, `analyze`, `help`, `openSettings`
 
-- `extractUrls`: Main extraction command
-- `validate`: URL validation and accessibility checks
-- `checkAccessibility`: Accessibility analysis
-- `analyze`: Pattern and security analysis
-- `help`: Documentation and usage help
+### 3. Configuration (`src/config/`)
 
-**Pattern:**
-
-- Factory functions for command creation
-- Progress indicators for long operations
-- Error handling with user feedback
-- Cancellation token support
-
-### 3. Configuration Management (`src/config/`)
+Type-safe, frozen configuration:
 
 ```typescript
 export function createConfiguration(): Readonly<Configuration> {
   const config = vscode.workspace.getConfiguration('urls-le')
-
+  
   return Object.freeze({
     copyToClipboardEnabled: config.get('copyToClipboardEnabled', false),
     dedupeEnabled: config.get('dedupeEnabled', false),
-    // ... other settings
+    notificationsLevel: config.get('notificationsLevel', 'silent'),
+    safetyEnabled: config.get('safety.enabled', true),
+    safetyFileSizeWarnBytes: config.get('safety.fileSizeWarnBytes', 1000000),
+    analysisEnabled: config.get('analysis.enabled', true),
+    validationEnabled: config.get('validation.enabled', true),
+    validationTimeout: config.get('validation.timeout', 5000)
   })
 }
 ```
 
-**Features:**
+**Features**: Immutable objects, real-time updates via `onDidChangeConfiguration`, default values, type safety.
 
-- Frozen configuration objects
-- Real-time configuration changes
-- Type-safe settings access
-- Default value handling
+### 4. Extraction Engine (`src/extraction/`)
 
-### 4. URL Extraction (`src/extraction/`)
+Format-specific extractors with pure functions:
 
 ```typescript
 export function extractUrls(
   content: string,
   format: string,
-  config: Readonly<Configuration>,
+  config: Readonly<Configuration>
 ): Readonly<UrlExtractionResult> {
   const extractor = getExtractor(format)
   const urls = extractor.extract(content)
-
+  
   return Object.freeze({
-    urls: urls.map((url) => Object.freeze(url)),
+    urls: Object.freeze(urls.map(u => Object.freeze(u))),
     totalCount: urls.length,
     format,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   })
 }
 ```
 
-**Supported Formats:**
+**Supported Formats**: Markdown, HTML, CSS, JavaScript/TypeScript, JSON, YAML
 
-- **Markdown**: `[text](url)`, `![alt](url)`, `<url>`
-- **HTML**: `<a href="">`, `<img src="">`, `<link href="">`
-- **CSS**: `url()`, `@import`, `background-image`
-- **JavaScript/TypeScript**: String literals, template literals
-- **JSON**: String values matching URL patterns
-- **YAML**: String values and URL-specific keys
-
-**Extraction Process:**
-
+**Extraction Process**:
 1. Format detection and validation
-2. Pattern matching with regex
+2. Pattern matching with pre-compiled regex
 3. URL validation and normalization
-4. Deduplication and sorting
-5. Result formatting and analysis
+4. Deduplication (optional)
+5. Result formatting
 
-### 5. URL Validation (`src/utils/validation.ts`)
+### 5. Validation Engine (`src/utils/validation.ts`)
+
+URL format and network validation:
 
 ```typescript
 export function validateUrl(url: string): Readonly<ValidationResult> {
   try {
-    const urlObj = new URL(url)
+    const parsed = new URL(url)
     return Object.freeze({
       isValid: true,
-      protocol: urlObj.protocol,
-      hostname: urlObj.hostname,
-      pathname: urlObj.pathname,
-      // ... other components
+      protocol: parsed.protocol,
+      hostname: parsed.hostname,
+      pathname: parsed.pathname
     })
   } catch {
     return Object.freeze({
       isValid: false,
-      error: 'Invalid URL format',
+      error: 'Invalid URL format'
     })
   }
 }
 ```
 
-**Validation Features:**
+**Validation Types**: Format (using `URL` constructor), protocol whitelist, domain validation, path sanitization.
 
-- Format validation using `URL` constructor
-- Protocol validation (http, https, ftp, etc.)
-- Domain validation and normalization
-- Path validation and sanitization
-- Query parameter analysis
-- Fragment handling
+### 6. Analysis Engine (`src/utils/analysis.ts`)
 
-### 6. URL Analysis (`src/utils/analysis.ts`)
+URL pattern and security analysis:
 
 ```typescript
 export function analyzeUrls(urls: ReadonlyArray<Url>): Readonly<AnalysisResult> {
-  const domains = extractDomains(urls)
-  const patterns = analyzePatterns(urls)
-  const security = analyzeSecurity(urls)
-
   return Object.freeze({
-    domainAnalysis: Object.freeze(domains),
-    patternAnalysis: Object.freeze(patterns),
-    securityAnalysis: Object.freeze(security),
-    summary: Object.freeze(createSummary(urls)),
+    domainAnalysis: Object.freeze(extractDomains(urls)),
+    patternAnalysis: Object.freeze(analyzePatterns(urls)),
+    securityAnalysis: Object.freeze(analyzeSecurity(urls)),
+    summary: Object.freeze(createSummary(urls))
   })
 }
 ```
 
-**Analysis Types:**
-
-- **Domain Analysis**: Domain distribution, subdomains, TLDs
-- **Pattern Analysis**: URL structure patterns, parameter usage
-- **Security Analysis**: Suspicious patterns, mixed content, redirects
-- **Accessibility Analysis**: Alt text, descriptive links, contrast
+**Analysis Types**: Domain distribution, pattern detection, security issues (mixed content, suspicious patterns), accessibility checks.
 
 ### 7. Safety System (`src/utils/safety.ts`)
+
+Resource exhaustion prevention:
 
 ```typescript
 export function shouldCancelOperation(
   processedItems: number,
   threshold: number,
   startTime: number,
-  maxTimeMs: number,
+  maxTimeMs: number
 ): boolean {
-  const elapsed = Date.now() - startTime
-  return processedItems > threshold || elapsed > maxTimeMs
+  return processedItems > threshold || (Date.now() - startTime) > maxTimeMs
 }
 ```
 
-**Safety Features:**
-
-- File size warnings and limits
-- Processing time limits
-- Memory usage monitoring
-- URL count thresholds
-- Complex pattern detection
-- User confirmation for large operations
-
-### 8. Performance Monitoring (`src/utils/performance.ts`)
-
-```typescript
-export function createPerformanceMonitor(
-  config: Readonly<Configuration>,
-): Readonly<PerformanceMonitor> {
-  return Object.freeze({
-    start: (operation: string, inputSize: number) => {
-      /* ... */
-    },
-    end: () => {
-      /* ... */
-    },
-    getMetrics: () => {
-      /* ... */
-    },
-    shouldCancel: () => {
-      /* ... */
-    },
-  })
-}
-```
-
-**Metrics Tracked:**
-
-- Operation duration and throughput
-- Memory usage and efficiency
-- CPU usage patterns
-- Cache hit rates
-- Error rates and recovery
-
-### 9. Error Handling (`src/utils/errorHandling.ts`)
-
-```typescript
-export function createErrorHandler(): Readonly<ErrorHandler> {
-  return Object.freeze({
-    handle: (error: Error, context: string) => {
-      const categorized = categorizeError(error)
-      const recovery = getRecoveryOptions(categorized)
-      return Object.freeze({ categorized, recovery })
-    },
-  })
-}
-```
-
-**Error Categories:**
-
-- **Parse Errors**: Invalid format, syntax errors
-- **Validation Errors**: Invalid URLs, malformed data
-- **Safety Errors**: Resource limits exceeded
-- **Network Errors**: Connection failures, timeouts
-- **File System Errors**: Permission issues, missing files
-
-### 10. User Interface (`src/ui/`)
-
-```typescript
-export function createNotifier(): Readonly<Notifier> {
-  return Object.freeze({
-    info: (message: string) => vscode.window.showInformationMessage(message),
-    warning: (message: string) => vscode.window.showWarningMessage(message),
-    error: (message: string) => vscode.window.showErrorMessage(message),
-  })
-}
-```
-
-**UI Components:**
-
-- **Notifier**: User notifications and feedback
-- **Status Bar**: Progress indicators and status
-- **Output Channel**: Detailed logging and results
-- **Progress Indicators**: Long-running operation feedback
-
-### 11. Telemetry (`src/telemetry/`)
-
-```typescript
-export function createTelemetry(): Readonly<Telemetry> {
-  return Object.freeze({
-    event: (name: string, properties?: Record<string, unknown>) => {
-      // Local-only logging, no external transmission
-    },
-  })
-}
-```
-
-**Telemetry Features:**
-
-- Local-only logging (no external transmission)
-- Performance metrics collection
-- Error tracking and analysis
-- Usage pattern insights
-- Privacy-first approach
-
-### 12. Localization (`src/i18n/`)
-
-```typescript
-const localize = nls.config({ messageFormat: nls.MessageFormat.file })()
-
-export function getLocalizedMessage(key: string, ...args: unknown[]): string {
-  return localize(key, ...args)
-}
-```
-
-**Localization Support:**
-
-- Manifest localization (`package.nls.json`)
-- Runtime localization (`runtime.json`)
-- Message formatting with parameters
-- Pluralization support
-- Date and number formatting
+**Safety Features**: File size warnings, processing time limits, memory monitoring, URL count thresholds, user confirmation for large operations.
 
 ## Data Flow
 
-### 1. URL Extraction Flow
+### URL Extraction Pipeline
 
-```
-User Command → Command Handler → Format Detection → Pattern Matching →
-URL Validation → Deduplication → Analysis → Result Formatting → User Feedback
-```
-
-### 2. Error Handling Flow
-
-```
-Error Occurrence → Error Categorization → Recovery Options →
-User Notification → Logging → Telemetry
-```
-
-### 3. Performance Monitoring Flow
-
-```
-Operation Start → Metrics Collection → Threshold Checking →
-Cancellation Decision → Operation End → Report Generation
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant C as Command
+    participant E as Extractor
+    participant V as Validator
+    participant N as Notifier
+    
+    U->>C: Trigger extract command
+    C->>E: Extract URLs from content
+    E->>V: Validate found URLs (optional)
+    V->>E: Return validation results
+    E->>C: Return extraction result
+    C->>N: Show result notification
+    N->>U: Display success message
 ```
 
-## Dependencies
+### Error Handling Flow
 
-### External Dependencies
+1. Error occurs during processing
+2. Categorize by type (parse, validation, safety, network, file-system)
+3. Determine severity (info, warning, error, critical)
+4. Select recovery action (retry, skip, abort, user-input)
+5. Notify user with context
+6. Log to telemetry (local only)
 
-- **vscode-nls**: Internationalization support
-- **@types/vscode**: VS Code API type definitions
-- **@types/node**: Node.js type definitions
+## Service Dependencies
 
-### Internal Dependencies
+### Dependency Injection Pattern
 
-- **types.ts**: Centralized type definitions
-- **interfaces/**: Interface definitions
-- **utils/**: Utility functions and helpers
-- \***\*mocks**/\*\*: VS Code API mocks for testing
+```typescript
+interface CommandDependencies {
+  readonly telemetry: Telemetry
+  readonly notifier: Notifier
+  readonly statusBar: StatusBar
+}
 
-## Testing Strategy
+export function registerCommands(
+  context: vscode.ExtensionContext,
+  deps: Readonly<CommandDependencies>
+): void {
+  registerExtractCommand(context, deps)
+  registerValidateCommand(context, deps)
+  registerAnalyzeCommand(context, deps)
+}
+```
 
-### Test Types
+**Why**: Testing with mocks, clear dependency graph, loose coupling, composition over inheritance.
 
-- **Unit Tests**: Individual function testing
-- **Integration Tests**: Component interaction testing
-- **Performance Tests**: Speed and memory testing
-- **Accessibility Tests**: Screen reader and keyboard testing
+## File Organization
 
-### Test Framework
+```
+src/
+├── extension.ts          # Activation entry point
+├── types.ts              # Centralized type definitions
+├── commands/             # Command implementations
+│   ├── extract.ts
+│   ├── validate.ts
+│   └── analyze.ts
+├── config/               # Configuration management
+│   └── config.ts
+├── extraction/           # URL extraction logic
+│   ├── extract.ts
+│   └── formats/
+│       ├── markdown.ts
+│       ├── html.ts
+│       ├── css.ts
+│       └── javascript.ts
+├── providers/            # VS Code providers
+│   └── codeActions.ts
+├── utils/                # Utility services
+│   ├── validation.ts
+│   ├── analysis.ts
+│   ├── safety.ts
+│   └── errorHandling.ts
+├── ui/                   # User interface
+│   ├── notifier.ts
+│   └── statusBar.ts
+└── telemetry/            # Local telemetry
+    └── telemetry.ts
+```
 
-- **Vitest**: Fast, modern testing framework
-- **Coverage**: Comprehensive code coverage reporting
-- **Mocking**: VS Code API mocking for isolated testing
-- **Fixtures**: Test data and expected outputs
+## Performance Strategy
 
-## Security Considerations
+**Memory**: Streaming for large files, efficient regex patterns, memory cleanup, configurable thresholds
+**CPU**: Pre-compiled patterns, caching validation results, parallel processing, cancellation support
+**Network**: Request batching, connection pooling, timeout handling, retry logic
 
-### Input Validation
+## Security & Privacy
 
-- All user inputs are validated and sanitized
-- URL validation prevents injection attacks
-- File path validation prevents directory traversal
-- Content size limits prevent resource exhaustion
+**Local-Only**: No external data transmission (validation is optional), local telemetry only, no data collection
+**Input Validation**: Safe URL parsing, injection prevention, XSS prevention, safe error handling
+**Privacy Protection**: User data stays in VS Code, configurable privacy settings, transparent telemetry
 
-### Privacy Protection
+## Testing Approach
 
-- No external data transmission
-- Local-only telemetry and logging
-- User data stays within VS Code
-- Configurable privacy settings
+**Coverage Target**: 80% minimum across branches, functions, lines, statements
+**Test Types**: Unit (pure functions), integration (workflows), performance (large files), accessibility, error handling
+**Framework**: Vitest with V8 coverage provider
 
-### Error Handling
+## Design Rationale
 
-- Sensitive information is not logged
-- Error messages are user-friendly
-- Stack traces are handled securely
-- Recovery options are provided
+### Why Separate Validation from Extraction?
 
-## Performance Characteristics
+- **Performance**: Network validation is slow
+- **Flexibility**: Users may want extraction without validation
+- **Optional**: Not all use cases need validation
+- **User Control**: Configurable via settings
 
-### Memory Usage
+### Why Domain Analysis?
 
-- Streaming processing for large files
-- Efficient data structures and algorithms
-- Garbage collection optimization
-- Memory leak prevention
+- **Insights**: Understand external dependencies
+- **Security**: Identify suspicious domains
+- **Documentation**: Auto-generate API documentation
+- **Refactoring**: Find hardcoded URLs for configuration
 
-### CPU Usage
+### Why Accessibility Checks?
 
-- Optimized regex patterns
-- Efficient string processing
-- Minimal computational overhead
-- Background processing support
+- **Compliance**: WCAG guidelines compliance
+- **User Experience**: Better link descriptions
+- **SEO**: Search engine optimization
+- **Best Practices**: Encourage accessible coding
 
-### Network Usage
+### Why Local-Only Processing?
 
-- Minimal network requests
-- Efficient URL validation
-- Caching for repeated operations
-- Timeout handling
+- **Privacy**: User data never leaves VS Code
+- **Trust**: No external dependencies
+- **Speed**: No network latency
+- **Reliability**: Works offline
 
-## Extension Lifecycle
+---
 
-### Activation
-
-1. Extension context initialization
-2. Dependency injection setup
-3. Component registration
-4. Configuration loading
-5. Telemetry initialization
-
-### Runtime
-
-1. Command execution
-2. URL extraction and analysis
-3. User feedback and notifications
-4. Performance monitoring
-5. Error handling and recovery
-
-### Deactivation
-
-1. Resource cleanup
-2. Telemetry finalization
-3. Configuration saving
-4. Component disposal
-5. Memory cleanup
-
-## Future Considerations
-
-### Scalability
-
-- Support for larger files and datasets
-- Improved performance monitoring
-- Enhanced caching strategies
-- Parallel processing support
-
-### Feature Extensions
-
-- Additional URL formats and patterns
-- Advanced security analysis
-- Integration with external services
-- Custom validation rules
-
-### User Experience
-
-- Enhanced accessibility features
-- Improved error messages
-- Better progress indicators
-- Customizable UI components
-
-This architecture ensures URLs-LE remains lightweight, performant, and maintainable while providing powerful URL extraction and validation capabilities for developers.
+**Related:** [Commands](COMMANDS.md) | [Configuration](CONFIGURATION.md) | [Testing](TESTING.md) | [Performance](PERFORMANCE.md)
