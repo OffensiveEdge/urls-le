@@ -63,9 +63,9 @@ Each tool follows the same philosophy: **Zero Hassle, Maximum Productivity**.
 **URLs-LE makes URL extraction effortless.**  
 It intelligently detects and extracts URLs from your code, providing comprehensive analysis and insights to help you manage web resources effectively.
 
-- **Complete URL detection**
+- **Reliable URL detection**
 
-  Automatically finds URLs in multiple formats: HTTP/HTTPS, FTP, mailto, tel, file, and relative URLs.
+  Automatically finds URLs in multiple formats: HTTP/HTTPS, FTP, mailto, tel, and file URLs with intelligent comment and code-block filtering.
 
 - **Smart analysis & insights**
 
@@ -255,10 +255,10 @@ URLs-LE is built for speed across all supported formats:
 ## ❓ FAQ
 
 **Q: What types of URLs are extracted?**
-A: URLs-LE extracts HTTP/HTTPS URLs (https://example.com), FTP URLs (ftp://files.example.com), mailto links (mailto:user@example.com), tel links (tel:+1234567890), file URLs (file:///path/to/file), and relative URLs (/path/to/resource).
+A: URLs-LE extracts HTTP/HTTPS URLs (https://example.com), FTP URLs (ftp://files.example.com), mailto links (mailto:user@example.com), tel links (tel:+1234567890), and file URLs (file:///path/to/file). Relative URLs are not supported for reliability.
 
 **Q: Can I extract URLs from comments?**
-A: Yes, enable `urls-le.includeComments: true` to include URLs found in comments and documentation.
+A: No, URLs-LE automatically filters out URLs found in HTML comments and Markdown code blocks to ensure reliable extraction of only user-visible URLs.
 
 **Q: How does URL validation work?**
 A: When `urls-le.validateUrls: true` is enabled, URLs-LE checks if the extracted URLs are properly formatted and accessible, reporting any broken or invalid links.
