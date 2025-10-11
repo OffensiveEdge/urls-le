@@ -47,12 +47,23 @@ Thank you for your interest in URLs-LE! If this extension has been helpful in ma
 
 **URLs-LE** is part of a growing family of developer tools designed to make your workflow effortless:
 
-- **[String-LE](https://open-vsx.org/extension/nolindnaidoo/string-le)** - Extract every user-visible string from JSON, YAML, CSV, TOML, INI, and .env files with zero hassle
-- **[EnvSync-LE](https://open-vsx.org/extension/nolindnaidoo/envsync-le)** - Effortlessly detect, compare, and synchronize .env files across your workspace with visual diffs
-- **[Colors-LE](https://open-vsx.org/extension/nolindnaidoo.colors-le)** - Extract and analyze colors from CSS, HTML, JavaScript, and more
-- **[Dates-LE](https://open-vsx.org/extension/nolindnaidoo.dates-le)** - Extract and analyze dates from logs, APIs, and temporal data
-- **Paths-LE** _(Coming Soon)_ - Extract and analyze file paths from imports, configs, and dependencies
-- **Numbers-LE** _(Coming Soon)_ - Extract and analyze numeric data from structured files
+- **Strings-LE** - Extract every user-visible string from JSON, YAML, CSV, TOML, INI, and .env files with zero hassle  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.string-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/string-le)]
+
+- **EnvSync-LE** - Effortlessly detect, compare, and synchronize .env files across your workspace with visual diffs  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.envsync-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/envsync-le)]
+
+- **Numbers-LE** - Extract and analyze numeric data from JSON, YAML, CSV, TOML, INI, and .env  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.numbers-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/numbers-le)]
+
+- **Colors-LE** - Extract and analyze colors from CSS, SCSS, JavaScript, HTML, and more  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.colors-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/colors-le)]
+
+- **Dates-LE** - Extract and analyze dates from logs, JSON, YAML, CSV, and temporal data  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.dates-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/dates-le)]
+
+- **Paths-LE** - Extract and analyze file paths from imports, configs, and code  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.paths-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/paths-le)]
 
 Each tool follows the same philosophy: **Zero Hassle, Maximum Productivity**.
 

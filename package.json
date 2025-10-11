@@ -45,7 +45,6 @@
 	],
 	"icon": "src/assets/images/icon.png",
 	"main": "./dist/extension.js",
-	"l10n": "./package.nls.json",
 	"activationEvents": [
 		"onLanguage:markdown",
 		"onLanguage:html",
