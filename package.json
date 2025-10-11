@@ -361,7 +361,7 @@
 	},
 	"scripts": {
 		"build": "tsc -p ./",
-		"clean": "rm -rf dist coverage release/*.vsix",
+		"clean": "rm -rf dist coverage",
 		"clean:i18n": "rm -rf package.nls.*.json vsix/",
 		"copy:i18n": "cp src/i18n/package.nls.json .",
 		"watch": "tsc -watch -p ./",
