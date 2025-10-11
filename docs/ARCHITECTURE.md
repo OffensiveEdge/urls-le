@@ -14,27 +14,27 @@
 graph TB
     A[extension.ts] --> B[Commands]
     A --> C[Services]
-    
+
     B --> D[Extract]
     B --> E[Validate]
     B --> F[Check Accessibility]
     B --> G[Analyze]
-    
+
     C --> H[Telemetry]
     C --> I[Notifier]
     C --> J[StatusBar]
     C --> K[Config]
-    
+
     D --> L[Extraction Engine]
     L --> M[Markdown]
     L --> N[HTML]
     L --> O[CSS]
     L --> P[JavaScript]
-    
+
     E --> Q[Validation]
     Q --> R[Format Check]
     Q --> S[Network Check]
-    
+
     style A fill:#e1f5ff,stroke:#01579b
     style L fill:#fff3e0,stroke:#e65100
     style Q fill:#e8f5e9,stroke:#1b5e20
@@ -51,10 +51,10 @@ export function activate(context: vscode.ExtensionContext): void {
   const telemetry = createTelemetry()
   const notifier = createNotifier()
   const statusBar = createStatusBar(context)
-  
+
   registerCommands(context, { telemetry, notifier, statusBar })
   registerCodeActions(context)
-  
+
   telemetry.event('extension-activated')
 }
 ```
@@ -68,25 +68,25 @@ Factory pattern with progress and cancellation:
 ```typescript
 export function registerExtractCommand(
   context: vscode.ExtensionContext,
-  deps: Readonly<CommandDependencies>
+  deps: Readonly<CommandDependencies>,
 ): void {
-  const disposable = vscode.commands.registerCommand(
-    'urls-le.extractUrls',
-    async () => {
-      await vscode.window.withProgress({
+  const disposable = vscode.commands.registerCommand('urls-le.extractUrls', async () => {
+    await vscode.window.withProgress(
+      {
         location: vscode.ProgressLocation.Notification,
         title: 'Extracting URLs...',
-        cancellable: true
-      }, async (progress, token) => {
+        cancellable: true,
+      },
+      async (progress, token) => {
         const config = createConfiguration()
         const content = getActiveEditorContent()
-        
+
         const result = await extractUrls(content, config, token)
         deps.notifier.show(result.summary)
-      })
-    }
-  )
-  
+      },
+    )
+  })
+
   context.subscriptions.push(disposable)
 }
 ```
@@ -100,7 +100,7 @@ Type-safe, frozen configuration:
 ```typescript
 export function createConfiguration(): Readonly<Configuration> {
   const config = vscode.workspace.getConfiguration('urls-le')
-  
+
   return Object.freeze({
     copyToClipboardEnabled: config.get('copyToClipboardEnabled', false),
     dedupeEnabled: config.get('dedupeEnabled', false),
@@ -109,7 +109,7 @@ export function createConfiguration(): Readonly<Configuration> {
     safetyFileSizeWarnBytes: config.get('safety.fileSizeWarnBytes', 1000000),
     analysisEnabled: config.get('analysis.enabled', true),
     validationEnabled: config.get('validation.enabled', true),
-    validationTimeout: config.get('validation.timeout', 5000)
+    validationTimeout: config.get('validation.timeout', 5000),
   })
 }
 ```
@@ -124,16 +124,16 @@ Format-specific extractors with pure functions:
 export function extractUrls(
   content: string,
   format: string,
-  config: Readonly<Configuration>
+  config: Readonly<Configuration>,
 ): Readonly<UrlExtractionResult> {
   const extractor = getExtractor(format)
   const urls = extractor.extract(content)
-  
+
   return Object.freeze({
-    urls: Object.freeze(urls.map(u => Object.freeze(u))),
+    urls: Object.freeze(urls.map((u) => Object.freeze(u))),
     totalCount: urls.length,
     format,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   })
 }
 ```
@@ -141,6 +141,7 @@ export function extractUrls(
 **Supported Formats**: Markdown, HTML, CSS, JavaScript/TypeScript, JSON, YAML
 
 **Extraction Process**:
+
 1. Format detection and validation
 2. Pattern matching with pre-compiled regex
 3. URL validation and normalization
@@ -159,12 +160,12 @@ export function validateUrl(url: string): Readonly<ValidationResult> {
       isValid: true,
       protocol: parsed.protocol,
       hostname: parsed.hostname,
-      pathname: parsed.pathname
+      pathname: parsed.pathname,
     })
   } catch {
     return Object.freeze({
       isValid: false,
-      error: 'Invalid URL format'
+      error: 'Invalid URL format',
     })
   }
 }
@@ -182,7 +183,7 @@ export function analyzeUrls(urls: ReadonlyArray<Url>): Readonly<AnalysisResult> 
     domainAnalysis: Object.freeze(extractDomains(urls)),
     patternAnalysis: Object.freeze(analyzePatterns(urls)),
     securityAnalysis: Object.freeze(analyzeSecurity(urls)),
-    summary: Object.freeze(createSummary(urls))
+    summary: Object.freeze(createSummary(urls)),
   })
 }
 ```
@@ -198,9 +199,9 @@ export function shouldCancelOperation(
   processedItems: number,
   threshold: number,
   startTime: number,
-  maxTimeMs: number
+  maxTimeMs: number,
 ): boolean {
-  return processedItems > threshold || (Date.now() - startTime) > maxTimeMs
+  return processedItems > threshold || Date.now() - startTime > maxTimeMs
 }
 ```
 
@@ -217,7 +218,7 @@ sequenceDiagram
     participant E as Extractor
     participant V as Validator
     participant N as Notifier
-    
+
     U->>C: Trigger extract command
     C->>E: Extract URLs from content
     E->>V: Validate found URLs (optional)
@@ -249,7 +250,7 @@ interface CommandDependencies {
 
 export function registerCommands(
   context: vscode.ExtensionContext,
-  deps: Readonly<CommandDependencies>
+  deps: Readonly<CommandDependencies>,
 ): void {
   registerExtractCommand(context, deps)
   registerValidateCommand(context, deps)

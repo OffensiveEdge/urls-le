@@ -15,15 +15,15 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       threshold: {
-        global: { branches: 80, functions: 80, lines: 80, statements: 80 }
-      }
-    }
+        global: { branches: 80, functions: 80, lines: 80, statements: 80 },
+      },
+    },
   },
   resolve: {
     alias: {
-      vscode: path.resolve(__dirname, 'src/__mocks__/vscode.ts')
-    }
-  }
+      vscode: path.resolve(__dirname, 'src/__mocks__/vscode.ts'),
+    },
+  },
 })
 ```
 
@@ -59,26 +59,26 @@ Pure function validation:
 describe('URL Validation', () => {
   it('validates HTTPS URLs', () => {
     const result = validateUrl('https://example.com')
-    
+
     expect(result.isValid).toBe(true)
     expect(result.protocol).toBe('https:')
     expect(result.hostname).toBe('example.com')
   })
-  
+
   it('validates HTTP URLs', () => {
     const result = validateUrl('http://example.com/path')
-    
+
     expect(result.isValid).toBe(true)
     expect(result.pathname).toBe('/path')
   })
-  
+
   it('rejects invalid URLs', () => {
     const result = validateUrl('not-a-url')
-    
+
     expect(result.isValid).toBe(false)
     expect(result.error).toBe('Invalid URL format')
   })
-  
+
   it('handles edge cases', () => {
     expect(validateUrl('')).toHaveProperty('isValid', false)
     expect(validateUrl(' ')).toHaveProperty('isValid', false)
@@ -99,20 +99,20 @@ describe('URL Extraction Integration', () => {
       ![Image](https://example.com/image.png)
       <https://example.com/direct>
     `
-    
+
     const result = await extractUrls(content, 'markdown', createTestConfig())
-    
+
     expect(result.urls).toHaveLength(3)
     expect(result.urls[0].value).toBe('https://example.com')
     expect(result.urls[1].value).toBe('https://example.com/image.png')
     expect(result.urls[2].value).toBe('https://example.com/direct')
   })
-  
+
   it('handles extraction errors gracefully', async () => {
     const content = 'Invalid markdown with malformed [link'
-    
+
     const result = await extractUrls(content, 'markdown', createTestConfig())
-    
+
     expect(result.urls).toHaveLength(0)
     expect(result.errors).toBeDefined()
   })
@@ -128,20 +128,20 @@ describe('Performance', () => {
   it('extracts 10k URLs within 2 seconds', async () => {
     const content = generateLargeContent(10000) // 10k lines
     const start = Date.now()
-    
+
     const result = await extractUrls(content, 'markdown', createTestConfig())
-    
+
     expect(Date.now() - start).toBeLessThan(2000)
     expect(result.urls.length).toBeGreaterThan(0)
   })
-  
+
   it('handles memory efficiently', async () => {
     const initial = process.memoryUsage().heapUsed
-    
+
     for (let i = 0; i < 100; i++) {
       await extractUrls(generateTestContent(1000), 'markdown', createTestConfig())
     }
-    
+
     const used = process.memoryUsage().heapUsed - initial
     expect(used).toBeLessThan(50 * 1024 * 1024) // Less than 50MB
   })
@@ -162,21 +162,21 @@ export const window = {
     text: '',
     show: vi.fn(),
     hide: vi.fn(),
-    dispose: vi.fn()
+    dispose: vi.fn(),
   })),
-  withProgress: vi.fn((opts, task) => task({}, {}))
+  withProgress: vi.fn((opts, task) => task({}, {})),
 }
 
 export const workspace = {
   getConfiguration: vi.fn(() => ({
-    get: vi.fn((key, defaultValue) => defaultValue)
-  }))
+    get: vi.fn((key, defaultValue) => defaultValue),
+  })),
 }
 
 export const env = {
   clipboard: {
-    writeText: vi.fn(() => Promise.resolve())
-  }
+    writeText: vi.fn(() => Promise.resolve()),
+  },
 }
 ```
 
@@ -191,29 +191,29 @@ export function createTestConfig(): Configuration {
     safetyEnabled: true,
     safetyFileSizeWarnBytes: 1000000,
     analysisEnabled: true,
-    validationEnabled: true
+    validationEnabled: true,
   })
 }
 
 export function generateTestContent(lines: number): string {
   const urls: string[] = []
-  
+
   for (let i = 0; i < lines; i++) {
     urls.push(`[Link ${i}](https://example.com/page${i})`)
   }
-  
+
   return urls.join('\n')
 }
 
 export function generateLargeContent(lines: number): string {
   const content: string[] = []
-  
+
   for (let i = 0; i < lines; i++) {
     content.push(`# Section ${i}`)
     content.push(`[Link](https://example.com/page${i})`)
     content.push(`![Image](https://example.com/image${i}.png)`)
   }
-  
+
   return content.join('\n')
 }
 ```
@@ -238,9 +238,9 @@ npx vitest --ui                # Visual test UI
 
 ## Performance Benchmarks
 
-| Input | URLs | Max Duration | Max Memory | Throughput |
-|-------|------|--------------|------------|------------|
-| 1KB   | ~10  | 10ms         | 1MB        | 1,000 URLs/s |
+| Input | URLs | Max Duration | Max Memory | Throughput    |
+| ----- | ---- | ------------ | ---------- | ------------- |
+| 1KB   | ~10  | 10ms         | 1MB        | 1,000 URLs/s  |
 | 100KB | ~1K  | 100ms        | 10MB       | 10,000 URLs/s |
 | 1MB   | ~10K | 1s           | 50MB       | 10,000 URLs/s |
 
@@ -260,27 +260,27 @@ npx vitest --ui                # Visual test UI
 describe('Error Handling', () => {
   it('handles parse errors gracefully', async () => {
     const content = 'Malformed markdown [link'
-    
+
     const result = await extractUrls(content, 'markdown', createTestConfig())
-    
+
     expect(result.errors).toBeDefined()
     expect(result.errors[0].category).toBe('parse')
   })
-  
+
   it('handles validation errors', async () => {
     const content = '[Bad Link](invalid-url)'
-    
+
     const result = await extractUrls(content, 'markdown', createTestConfig())
-    
+
     expect(result.urls[0].value).toBe('invalid-url')
   })
-  
+
   it('handles safety errors', async () => {
     const content = generateLargeContent(100000)
-    
+
     const result = await extractUrls(content, 'markdown', createTestConfig())
-    
-    expect(result.errors.some(e => e.category === 'safety')).toBe(true)
+
+    expect(result.errors.some((e) => e.category === 'safety')).toBe(true)
   })
 })
 ```
@@ -291,9 +291,9 @@ describe('Error Handling', () => {
 describe('Recovery Mechanisms', () => {
   it('recovers from transient errors', async () => {
     const content = 'Content with [valid](https://example.com) and [invalid](bad) links'
-    
+
     const result = await extractUrls(content, 'markdown', createTestConfig())
-    
+
     expect(result.urls).toHaveLength(2)
     expect(result.errors).toHaveLength(0)
   })
@@ -310,12 +310,12 @@ describe('Markdown Extraction', () => {
     const content = '[text](https://example.com)'
     expect(extractUrls(content, 'markdown').urls).toHaveLength(1)
   })
-  
+
   it('extracts image URLs', () => {
     const content = '![alt](https://example.com/img.png)'
     expect(extractUrls(content, 'markdown').urls[0].type).toBe('image')
   })
-  
+
   it('extracts autolinks', () => {
     const content = '<https://example.com>'
     expect(extractUrls(content, 'markdown').urls).toHaveLength(1)
@@ -331,7 +331,7 @@ describe('HTML Extraction', () => {
     const content = '<a href="https://example.com">Link</a>'
     expect(extractUrls(content, 'html').urls).toHaveLength(1)
   })
-  
+
   it('extracts image sources', () => {
     const content = '<img src="https://example.com/img.png">'
     expect(extractUrls(content, 'html').urls[0].type).toBe('image')
