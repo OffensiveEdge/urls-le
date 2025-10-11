@@ -59,97 +59,91 @@ function generateJavaScriptContent(size: number): string {
 // Benchmark tests
 bench('extractUrls: HTML - 1KB', async () => {
   const content = generateHtmlContent(50)
-  await extractUrls(content, 'html', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'html')
 })
 
 bench('extractUrls: HTML - 10KB', async () => {
   const content = generateHtmlContent(500)
-  await extractUrls(content, 'html', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'html')
 })
 
 bench('extractUrls: HTML - 100KB', async () => {
   const content = generateHtmlContent(5000)
-  await extractUrls(content, 'html', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'html')
 })
 
 bench('extractUrls: HTML - 1MB', async () => {
   const content = generateHtmlContent(50000)
-  await extractUrls(content, 'html', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'html')
 })
 
 bench('extractUrls: Markdown - 1KB', async () => {
   const content = generateMarkdownContent(50)
-  await extractUrls(content, 'markdown', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'markdown')
 })
 
 bench('extractUrls: Markdown - 10KB', async () => {
   const content = generateMarkdownContent(500)
-  await extractUrls(content, 'markdown', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'markdown')
 })
 
 bench('extractUrls: Markdown - 100KB', async () => {
   const content = generateMarkdownContent(5000)
-  await extractUrls(content, 'markdown', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'markdown')
 })
 
 bench('extractUrls: Markdown - 1MB', async () => {
   const content = generateMarkdownContent(50000)
-  await extractUrls(content, 'markdown', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'markdown')
 })
 
 bench('extractUrls: JavaScript - 1KB', async () => {
   const content = generateJavaScriptContent(50)
-  await extractUrls(content, 'javascript', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'javascript')
 })
 
 bench('extractUrls: JavaScript - 10KB', async () => {
   const content = generateJavaScriptContent(500)
-  await extractUrls(content, 'javascript', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'javascript')
 })
 
 bench('extractUrls: JavaScript - 100KB', async () => {
   const content = generateJavaScriptContent(5000)
-  await extractUrls(content, 'javascript', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'javascript')
 })
 
 bench('extractUrls: JavaScript - 1MB', async () => {
   const content = generateJavaScriptContent(50000)
-  await extractUrls(content, 'javascript', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'javascript')
 })
 
 // Memory usage tests
 bench('extractUrls: Memory usage - Large HTML', async () => {
   const content = generateHtmlContent(10000)
-  const result = await extractUrls(content, 'html', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'html')
 
   // Log memory usage if available
   if (typeof process !== 'undefined' && process.memoryUsage) {
     console.log('Memory usage:', process.memoryUsage())
   }
-
-  return result
 })
 
 bench('extractUrls: Memory usage - Large Markdown', async () => {
   const content = generateMarkdownContent(10000)
-  const result = await extractUrls(content, 'markdown', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'markdown')
 
   // Log memory usage if available
   if (typeof process !== 'undefined' && process.memoryUsage) {
     console.log('Memory usage:', process.memoryUsage())
   }
-
-  return result
 })
 
 bench('extractUrls: Memory usage - Large JavaScript', async () => {
   const content = generateJavaScriptContent(10000)
-  const result = await extractUrls(content, 'javascript', { enablePerformanceMonitoring: true })
+  await extractUrls(content, 'javascript')
 
   // Log memory usage if available
   if (typeof process !== 'undefined' && process.memoryUsage) {
     console.log('Memory usage:', process.memoryUsage())
   }
-
-  return result
 })
