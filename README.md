@@ -15,8 +15,8 @@
     <img src="https://img.shields.io/visual-studio-marketplace/v/nolindnaidoo.urls-le" alt="VSCode Marketplace Version" />
   </a>
   <!-- Open VSX -->
-  <a href="https://open-vsx.org/extension/nolindnaidoo.urls-le">
-    <img src="https://img.shields.io/open-vsx/v/nolindnaidoo.urls-le" alt="Open VSX Version" />
+  <a href="https://open-vsx.org/extension/nolindnaidoo/urls-le">
+    <img src="https://img.shields.io/open-vsx/v/nolindnaidoo/urls-le" alt="Open VSX Version" />
   </a>
   <!-- Build -->
   <a href="https://github.com/nolindnaidoo/urls-le/actions">
@@ -39,7 +39,7 @@
 
 ## 🙏 Thank You!
 
-Thank you for your interest in URLs-LE! If this extension has been helpful in managing your URL extraction needs, please consider leaving a rating on [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le) and [Open VSX](https://open-vsx.org/extension/nolindnaidoo.urls-le). Your feedback helps other developers discover this tool and motivates continued development.
+Thank you for your interest in URLs-LE! If this extension has been helpful in managing your URL extraction needs, please consider leaving a rating on [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le) and [Open VSX](https://open-vsx.org/extension/nolindnaidoo/urls-le). Your feedback helps other developers discover this tool and motivates continued development.
 
 ⭐ **Interested in URLs-LE?** Star this repository to get notified when it's released!
 
