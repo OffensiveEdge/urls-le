@@ -20,9 +20,13 @@ export function activate(context: vscode.ExtensionContext): void {
 	const localizer = createLocalizer()
 	const performanceMonitor = createPerformanceMonitor()
 
+	// Register disposables to prevent memory leaks
+	context.subscriptions.push(telemetry)
+	context.subscriptions.push(statusBar)
+
 	// Create error handling services
-	const _errorLogger = createErrorLogger()
-	const _errorNotifier = createErrorNotifier()
+	const errorLogger = createErrorLogger()
+	const errorNotifier = createErrorNotifier()
 	const errorHandler = createErrorHandler()
 
 	// Register all commands
