@@ -1,33 +1,27 @@
-import * as vscode from 'vscode'
-import { registerCommands } from './commands'
-import { registerOpenSettingsCommand } from './config/settings'
-import { createTelemetry } from './telemetry/telemetry'
-import { createNotifier } from './ui/notifier'
-import { createStatusBar } from './ui/statusBar'
-import { createErrorHandler, createErrorLogger, createErrorNotifier } from './utils/errorHandling'
-import { createLocalizer } from './utils/localization'
-import { createPerformanceMonitor } from './utils/performance'
+import type * as vscode from 'vscode';
+import { registerCommands } from './commands';
+import { registerOpenSettingsCommand } from './config/settings';
+import { createTelemetry } from './telemetry/telemetry';
+import { createNotifier } from './ui/notifier';
+import { createStatusBar } from './ui/statusBar';
+import { createErrorHandler } from './utils/errorHandling';
+import { createLocalizer } from './utils/localization';
+import { createPerformanceMonitor } from './utils/performance';
 
 export function activate(context: vscode.ExtensionContext): void {
-	// Create output channel for logging
-	const outputChannel = vscode.window.createOutputChannel('URLs-LE')
-	context.subscriptions.push(outputChannel)
-
 	// Create core services
-	const telemetry = createTelemetry()
-	const notifier = createNotifier()
-	const statusBar = createStatusBar(context)
-	const localizer = createLocalizer()
-	const performanceMonitor = createPerformanceMonitor()
+	const telemetry = createTelemetry();
+	const notifier = createNotifier();
+	const statusBar = createStatusBar(context);
+	const localizer = createLocalizer();
+	const performanceMonitor = createPerformanceMonitor();
 
 	// Register disposables to prevent memory leaks
-	context.subscriptions.push(telemetry)
-	context.subscriptions.push(statusBar)
+	context.subscriptions.push(telemetry);
+	context.subscriptions.push(statusBar);
 
-	// Create error handling services
-	const errorLogger = createErrorLogger()
-	const errorNotifier = createErrorNotifier()
-	const errorHandler = createErrorHandler()
+	// Create error handling service
+	const errorHandler = createErrorHandler();
 
 	// Register all commands
 	registerCommands(context, {
@@ -37,12 +31,12 @@ export function activate(context: vscode.ExtensionContext): void {
 		localizer,
 		performanceMonitor,
 		errorHandler,
-	})
+	});
 
 	// Register settings command
-	registerOpenSettingsCommand(context, telemetry)
+	registerOpenSettingsCommand(context, telemetry);
 
-	telemetry.event('extension-activated')
+	telemetry.event('extension-activated');
 }
 
 export function deactivate(): void {

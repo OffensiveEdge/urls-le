@@ -1,4 +1,4 @@
-import { vi } from 'vitest'
+import { vi } from 'vitest';
 
 export const Uri = {
 	file: vi.fn((path: string) => ({
@@ -13,7 +13,7 @@ export const Uri = {
 		scheme: 'file',
 		toString: () => str,
 	})),
-}
+};
 
 export const window = {
 	activeTextEditor: undefined,
@@ -36,7 +36,7 @@ export const window = {
 		show: vi.fn(),
 		dispose: vi.fn(),
 	})),
-}
+};
 
 export const workspace = {
 	openTextDocument: vi.fn(),
@@ -53,13 +53,13 @@ export const workspace = {
 		writeFile: vi.fn(),
 	},
 	asRelativePath: vi.fn((pathOrUri) => {
-		const p = typeof pathOrUri === 'string' ? pathOrUri : pathOrUri.fsPath
-		const root = workspace.workspaceFolders?.[0]?.uri.fsPath
+		const p = typeof pathOrUri === 'string' ? pathOrUri : pathOrUri.fsPath;
+		const root = workspace.workspaceFolders?.[0]?.uri.fsPath;
 		if (root && p.startsWith(root)) {
-			const rel = p.slice(root.length)
-			return rel.startsWith('/') ? rel.slice(1) : rel
+			const rel = p.slice(root.length);
+			return rel.startsWith('/') ? rel.slice(1) : rel;
 		}
-		return p
+		return p;
 	}),
 	createFileSystemWatcher: vi.fn(() => ({
 		onDidCreate: vi.fn(),
@@ -74,40 +74,40 @@ export const workspace = {
 			index: 0,
 		},
 	],
-}
+};
 
 export const commands = {
 	registerCommand: vi.fn(),
 	executeCommand: vi.fn(),
-}
+};
 
 export const env = {
 	clipboard: {
 		writeText: vi.fn(),
 	},
-}
+};
 
 export const ViewColumn = {
 	Beside: 2,
-}
+};
 
 export const StatusBarAlignment = {
 	Left: 1,
 	Right: 2,
-}
+};
 
 export const ConfigurationTarget = {
 	Global: 1,
 	Workspace: 2,
 	WorkspaceFolder: 3,
-}
+};
 
 export class ThemeColor {
 	constructor(public id: string) {}
 }
 
-export const Range = vi.fn()
-export const WorkspaceEdit = vi.fn()
+export const Range = vi.fn();
+export const WorkspaceEdit = vi.fn();
 
 export const mockExtensionContext = {
 	subscriptions: {
@@ -127,4 +127,4 @@ export const mockExtensionContext = {
 		store: vi.fn(),
 		delete: vi.fn(),
 	},
-}
+};

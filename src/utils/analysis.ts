@@ -1,4 +1,10 @@
-import type { AnalysisResult, Configuration, DomainAnalysis, SecurityAnalysis, UrlProtocol } from '../types'
+import type {
+	AnalysisResult,
+	Configuration,
+	DomainAnalysis,
+	SecurityAnalysis,
+	UrlProtocol,
+} from '../types';
 import {
 	detectUrlProtocol,
 	getDomainFromUrl,
@@ -6,11 +12,14 @@ import {
 	isExpiredDomain,
 	isSecureUrl,
 	isSuspiciousUrl,
-} from './urlValidation'
+} from './urlValidation';
 
-export function analyzeUrls(lines: string[], config: Configuration): AnalysisResult {
-	const urls = lines.filter((line) => line.trim().length > 0)
-	const uniqueUrls = new Set(urls)
+export function analyzeUrls(
+	lines: string[],
+	config: Configuration,
+): AnalysisResult {
+	const urls = lines.filter((line) => line.trim().length > 0);
+	const uniqueUrls = new Set(urls);
 
 	const protocols: Record<UrlProtocol, number> = {
 		http: 0,
@@ -20,17 +29,17 @@ export function analyzeUrls(lines: string[], config: Configuration): AnalysisRes
 		mailto: 0,
 		tel: 0,
 		unknown: 0,
-	}
+	};
 
 	urls.forEach((url) => {
 		try {
-			const protocol = detectUrlProtocol(url)
-			protocols[protocol]++
+			const protocol = detectUrlProtocol(url);
+			protocols[protocol]++;
 		} catch (_error) {
 			// Handle protocol detection errors gracefully
-			protocols.unknown++
+			protocols.unknown++;
 		}
-	})
+	});
 
 	const result: AnalysisResult = {
 		count: urls.length,
@@ -40,31 +49,31 @@ export function analyzeUrls(lines: string[], config: Configuration): AnalysisRes
 		security: undefined,
 		accessibility: undefined,
 		domains: undefined,
-	}
+	};
 
 	if (config.analysisIncludeSecurity) {
-		result.security = analyzeSecurity(urls) as SecurityAnalysis
+		result.security = analyzeSecurity(urls) as SecurityAnalysis;
 	}
 
 	if (config.analysisIncludeAccessibility) {
-		result.accessibility = analyzeAccessibility(urls)
+		result.accessibility = analyzeAccessibility(urls);
 	}
 
-	result.domains = analyzeDomains(urls)
+	result.domains = analyzeDomains(urls);
 
-	return result
+	return result;
 }
 
 function analyzeSecurity(urls: string[]): SecurityAnalysis {
-	const secure = urls.filter((url) => isSecureUrl(url)).length
-	const insecure = urls.filter((url) => url.startsWith('http://')).length
-	const suspicious = urls.filter((url) => isSuspiciousUrl(url)).length
+	const secure = urls.filter((url) => isSecureUrl(url)).length;
+	const insecure = urls.filter((url) => url.startsWith('http://')).length;
+	const suspicious = urls.filter((url) => isSuspiciousUrl(url)).length;
 
 	const issues: Array<{
-		url: string
-		issue: string
-		severity: 'warning' | 'error'
-	}> = []
+		url: string;
+		issue: string;
+		severity: 'warning' | 'error';
+	}> = [];
 
 	urls.forEach((url) => {
 		try {
@@ -73,14 +82,14 @@ function analyzeSecurity(urls: string[]): SecurityAnalysis {
 					url,
 					issue: 'Suspicious URL detected',
 					severity: 'warning',
-				})
+				});
 			}
 			if (url.startsWith('http://')) {
 				issues.push({
 					url,
 					issue: 'Insecure HTTP protocol',
 					severity: 'warning',
-				})
+				});
 			}
 		} catch (_error) {
 			// Handle security analysis errors gracefully
@@ -88,27 +97,27 @@ function analyzeSecurity(urls: string[]): SecurityAnalysis {
 				url,
 				issue: 'Security analysis failed',
 				severity: 'warning',
-			})
+			});
 		}
-	})
+	});
 
 	return {
 		secure,
 		insecure,
 		suspicious,
 		issues,
-	}
+	};
 }
 
 function analyzeAccessibility(urls: string[]) {
-	const accessible = urls.filter((url) => isAccessibleUrl(url)).length
-	const inaccessible = urls.length - accessible
+	const accessible = urls.filter((url) => isAccessibleUrl(url)).length;
+	const inaccessible = urls.length - accessible;
 
 	const issues: Array<{
-		url: string
-		issue: string
-		severity: 'warning' | 'error'
-	}> = []
+		url: string;
+		issue: string;
+		severity: 'warning' | 'error';
+	}> = [];
 
 	urls.forEach((url) => {
 		try {
@@ -117,7 +126,7 @@ function analyzeAccessibility(urls: string[]) {
 					url,
 					issue: 'URL may not be accessible',
 					severity: 'warning',
-				})
+				});
 			}
 		} catch (_error) {
 			// Handle accessibility analysis errors gracefully
@@ -125,35 +134,35 @@ function analyzeAccessibility(urls: string[]) {
 				url,
 				issue: 'Accessibility analysis failed',
 				severity: 'warning',
-			})
+			});
 		}
-	})
+	});
 
 	return {
 		accessible,
 		inaccessible,
 		issues,
-	}
+	};
 }
 
 function analyzeDomains(urls: string[]): DomainAnalysis {
-	const domainCounts: Record<string, number> = {}
-	const domains: string[] = []
+	const domainCounts: Record<string, number> = {};
+	const domains: string[] = [];
 
 	urls.forEach((url) => {
 		try {
-			const domain = getDomainFromUrl(url)
+			const domain = getDomainFromUrl(url);
 			if (domain) {
-				domainCounts[domain] = (domainCounts[domain] || 0) + 1
-				domains.push(domain)
+				domainCounts[domain] = (domainCounts[domain] || 0) + 1;
+				domains.push(domain);
 			}
 		} catch (error) {
 			// Handle domain extraction errors gracefully
-			console.warn(`[URLs-LE] Domain extraction failed for URL: ${url}`, error)
+			console.warn(`[URLs-LE] Domain extraction failed for URL: ${url}`, error);
 		}
-	})
+	});
 
-	const uniqueDomains = new Set(domains).size
+	const uniqueDomains = new Set(domains).size;
 	const commonDomains = Object.entries(domainCounts)
 		.map(([domain, count]) => ({
 			domain,
@@ -161,15 +170,17 @@ function analyzeDomains(urls: string[]): DomainAnalysis {
 			percentage: (count / urls.length) * 100,
 		}))
 		.sort((a, b) => b.count - a.count)
-		.slice(0, 10)
+		.slice(0, 10);
 
-	const expiredDomains = domains.filter((domain) => isExpiredDomain(domain))
-	const suspiciousDomains = domains.filter((domain) => isSuspiciousUrl(`https://${domain}`))
+	const expiredDomains = domains.filter((domain) => isExpiredDomain(domain));
+	const suspiciousDomains = domains.filter((domain) =>
+		isSuspiciousUrl(`https://${domain}`),
+	);
 
 	return {
 		uniqueDomains,
 		commonDomains,
 		expiredDomains,
 		suspiciousDomains,
-	}
+	};
 }

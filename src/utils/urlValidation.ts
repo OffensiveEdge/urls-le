@@ -1,71 +1,75 @@
-import type { UrlProtocol, ValidationResult } from '../types'
+import type { UrlProtocol, ValidationResult } from '../types';
 
 export function isValidUrl(url: string): boolean {
 	try {
-		const parsed = new URL(url)
+		const parsed = new URL(url);
 		// Check protocol and ensure URL has required components
-		if (!['http:', 'https:', 'ftp:', 'file:', 'mailto:', 'tel:'].includes(parsed.protocol)) {
-			return false
+		if (
+			!['http:', 'https:', 'ftp:', 'file:', 'mailto:', 'tel:'].includes(
+				parsed.protocol,
+			)
+		) {
+			return false;
 		}
 
 		// Additional validation for different protocols
 		if (parsed.protocol === 'mailto:') {
-			return parsed.pathname.includes('@') && parsed.pathname.length > 1
+			return parsed.pathname.includes('@') && parsed.pathname.length > 1;
 		}
 		if (parsed.protocol === 'tel:') {
-			return parsed.pathname.length > 1
+			return parsed.pathname.length > 1;
 		}
 		if (['http:', 'https:', 'ftp:'].includes(parsed.protocol)) {
-			return parsed.hostname.length > 0
+			return parsed.hostname.length > 0;
 		}
 		if (parsed.protocol === 'file:') {
-			return parsed.pathname.length > 1 // Need more than just "/"
+			return parsed.pathname.length > 1; // Need more than just "/"
 		}
 
-		return true
+		return true;
 	} catch {
-		return false
+		return false;
 	}
 }
 
 export function detectUrlProtocol(url: string): UrlProtocol {
 	try {
-		const parsed = new URL(url)
+		const parsed = new URL(url);
 		switch (parsed.protocol) {
 			case 'http:':
-				return 'http'
+				return 'http';
 			case 'https:':
-				return 'https'
+				return 'https';
 			case 'ftp:':
-				return 'ftp'
+				return 'ftp';
 			case 'file:':
-				return 'file'
+				return 'file';
 			case 'mailto:':
-				return 'mailto'
+				return 'mailto';
 			case 'tel:':
-				return 'tel'
+				return 'tel';
 			default:
-				return 'unknown'
+				return 'unknown';
 		}
 	} catch {
-		return 'unknown'
+		return 'unknown';
 	}
 }
 
 export function extractUrlComponents(url: string): {
-	protocol: UrlProtocol
-	domain?: string
-	path?: string
+	protocol: UrlProtocol;
+	domain?: string;
+	path?: string;
 } | null {
 	try {
-		const parsed = new URL(url)
+		const parsed = new URL(url);
 		return {
 			protocol: detectUrlProtocol(url),
 			domain: parsed.hostname,
 			path: parsed.pathname + parsed.search + parsed.hash,
-		}
+		};
 	} catch {
-		return null
+		return null;
 	}
 }
 
@@ -82,10 +86,10 @@ export async function validateUrl(
 				url,
 				status: 'invalid',
 				error: 'Invalid URL format',
-			}
+			};
 		}
 
-		const _parsed = new URL(url)
+		const _parsed = new URL(url);
 
 		// Check for suspicious patterns
 		if (isSuspiciousUrl(url)) {
@@ -93,7 +97,7 @@ export async function validateUrl(
 				url,
 				status: 'error',
 				error: 'Suspicious URL detected',
-			}
+			};
 		}
 
 		// Simulate validation result - return valid for all valid URLs
@@ -101,13 +105,13 @@ export async function validateUrl(
 			url,
 			status: 'valid',
 			statusCode: 200,
-		}
+		};
 	} catch (error) {
 		return {
 			url,
 			status: 'error',
 			error: error instanceof Error ? error.message : 'Unknown error',
-		}
+		};
 	}
 }
 
@@ -133,49 +137,55 @@ export function isSuspiciousUrl(url: string): boolean {
 		/short\.ly/i,
 		/link\.to/i,
 		/url\.short/i,
-	]
+	];
 
-	return suspiciousPatterns.some((pattern) => pattern.test(url))
+	return suspiciousPatterns.some((pattern) => pattern.test(url));
 }
 
 export function isSecureUrl(url: string): boolean {
 	try {
-		const parsed = new URL(url)
-		return parsed.protocol === 'https:'
+		const parsed = new URL(url);
+		return parsed.protocol === 'https:';
 	} catch {
-		return false
+		return false;
 	}
 }
 
 export function getDomainFromUrl(url: string): string | null {
 	try {
-		const parsed = new URL(url)
+		const parsed = new URL(url);
 		// Only return hostname for protocols that have domains
 		if (['http:', 'https:', 'ftp:'].includes(parsed.protocol)) {
-			return parsed.hostname || null
+			return parsed.hostname || null;
 		}
-		return null
+		return null;
 	} catch {
-		return null
+		return null;
 	}
 }
 
 export function normalizeUrl(url: string): string {
 	try {
-		const parsed = new URL(url)
+		const parsed = new URL(url);
 		// Remove trailing slash and normalize
-		return parsed.toString().replace(/\/$/, '')
+		return parsed.toString().replace(/\/$/, '');
 	} catch {
-		return url
+		return url;
 	}
 }
 
 export function isExpiredDomain(domain: string): boolean {
 	// This would typically involve DNS lookups
 	// For now, we'll use a simple heuristic
-	const expiredPatterns = [/expired/i, /domain.*expired/i, /parked/i, /for.*sale/i, /buy.*domain/i]
+	const expiredPatterns = [
+		/expired/i,
+		/domain.*expired/i,
+		/parked/i,
+		/for.*sale/i,
+		/buy.*domain/i,
+	];
 
-	return expiredPatterns.some((pattern) => pattern.test(domain))
+	return expiredPatterns.some((pattern) => pattern.test(domain));
 }
 
 export function isAccessibleUrl(url: string): boolean {
@@ -189,7 +199,7 @@ export function isAccessibleUrl(url: string): boolean {
 		/edge:/i,
 		/moz-extension:/i,
 		/chrome-extension:/i,
-	]
+	];
 
-	return !accessibilityIssues.some((pattern) => pattern.test(url))
+	return !accessibilityIssues.some((pattern) => pattern.test(url));
 }

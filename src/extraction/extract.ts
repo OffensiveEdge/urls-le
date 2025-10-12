@@ -1,12 +1,15 @@
-import type { ExtractionResult, FileType, ParseError, Url } from '../types'
-import { extractFromCss } from './formats/css'
-import { extractFromHtml } from './formats/html'
-import { extractFromJavaScript } from './formats/javascript'
-import { extractFromJson } from './formats/json'
-import { extractFromMarkdown } from './formats/markdown'
-import { extractFromYaml } from './formats/yaml'
+import type { ExtractionResult, FileType, ParseError, Url } from '../types';
+import { extractFromCss } from './formats/css';
+import { extractFromHtml } from './formats/html';
+import { extractFromJavaScript } from './formats/javascript';
+import { extractFromJson } from './formats/json';
+import { extractFromMarkdown } from './formats/markdown';
+import { extractFromYaml } from './formats/yaml';
 
-export async function extractUrls(content: string, languageId: string): Promise<ExtractionResult> {
+export async function extractUrls(
+	content: string,
+	languageId: string,
+): Promise<ExtractionResult> {
 	// Validate input length to prevent memory issues
 	if (content.length > 10000000) {
 		// 10MB limit
@@ -24,39 +27,39 @@ export async function extractUrls(content: string, languageId: string): Promise<
 				},
 			],
 			fileType: 'unknown',
-		}
+		};
 	}
 
-	const fileType = determineFileType(languageId)
-	const urls: Url[] = []
-	const errors: ParseError[] = []
+	const fileType = determineFileType(languageId);
+	const urls: Url[] = [];
+	const errors: ParseError[] = [];
 
 	try {
 		switch (fileType) {
 			case 'markdown':
-				urls.push(...extractFromMarkdown(content))
-				break
+				urls.push(...extractFromMarkdown(content));
+				break;
 			case 'html':
-				urls.push(...extractFromHtml(content))
-				break
+				urls.push(...extractFromHtml(content));
+				break;
 			case 'css':
-				urls.push(...extractFromCss(content))
-				break
+				urls.push(...extractFromCss(content));
+				break;
 			case 'javascript':
 			case 'typescript':
-				urls.push(...extractFromJavaScript(content))
-				break
+				urls.push(...extractFromJavaScript(content));
+				break;
 			case 'json':
-				urls.push(...extractFromJson(content))
-				break
+				urls.push(...extractFromJson(content));
+				break;
 			case 'yaml':
 			case 'yml':
-				urls.push(...extractFromYaml(content))
-				break
+				urls.push(...extractFromYaml(content));
+				break;
 			default:
 				// Try markdown extraction as fallback
-				urls.push(...extractFromMarkdown(content))
-				break
+				urls.push(...extractFromMarkdown(content));
+				break;
 		}
 	} catch (error) {
 		errors.push({
@@ -66,13 +69,13 @@ export async function extractUrls(content: string, languageId: string): Promise<
 			recoverable: true,
 			recoveryAction: 'skip' as const,
 			timestamp: Date.now(),
-		})
+		});
 	}
 
 	// Check for URL count limits to prevent memory issues
 	if (urls.length > 50000) {
 		// 50K URL limit
-		const truncatedUrls = urls.slice(0, 50000)
+		const truncatedUrls = urls.slice(0, 50000);
 		return Object.freeze({
 			success: true,
 			urls: Object.freeze(truncatedUrls),
@@ -87,7 +90,7 @@ export async function extractUrls(content: string, languageId: string): Promise<
 				},
 			]),
 			fileType,
-		})
+		});
 	}
 
 	return Object.freeze({
@@ -95,27 +98,27 @@ export async function extractUrls(content: string, languageId: string): Promise<
 		urls: Object.freeze(urls),
 		errors: Object.freeze(errors),
 		fileType,
-	})
+	});
 }
 
 function determineFileType(languageId: string): FileType {
 	switch (languageId) {
 		case 'markdown':
-			return 'markdown'
+			return 'markdown';
 		case 'html':
-			return 'html'
+			return 'html';
 		case 'css':
-			return 'css'
+			return 'css';
 		case 'javascript':
-			return 'javascript'
+			return 'javascript';
 		case 'typescript':
-			return 'typescript'
+			return 'typescript';
 		case 'json':
-			return 'json'
+			return 'json';
 		case 'yaml':
 		case 'yml':
-			return 'yaml'
+			return 'yaml';
 		default:
-			return 'unknown'
+			return 'unknown';
 	}
 }

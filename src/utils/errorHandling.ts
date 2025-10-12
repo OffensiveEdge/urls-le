@@ -1,39 +1,49 @@
-import * as nls from 'vscode-nls'
+import * as nls from 'vscode-nls';
 
-const localize = nls.config({ messageFormat: nls.MessageFormat.file })()
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 /**
  * Enhanced error handling utilities for URLs-LE
  * Provides sophisticated error categorization, recovery, and user feedback
  */
 
-export type ErrorCategory = 'parse' | 'validation' | 'safety' | 'operational' | 'file-system' | 'configuration'
+export type ErrorCategory =
+	| 'parse'
+	| 'validation'
+	| 'safety'
+	| 'operational'
+	| 'file-system'
+	| 'configuration';
 
 export interface EnhancedError {
-	readonly category: ErrorCategory
-	readonly originalError: Error
-	readonly message: string
-	readonly userFriendlyMessage: string
-	readonly suggestion: string
-	readonly recoverable: boolean
-	readonly timestamp: Date
+	readonly category: ErrorCategory;
+	readonly originalError: Error;
+	readonly message: string;
+	readonly userFriendlyMessage: string;
+	readonly suggestion: string;
+	readonly recoverable: boolean;
+	readonly timestamp: Date;
 }
 
 export interface ErrorRecoveryOptions {
-	readonly retryable: boolean
-	readonly maxRetries: number
-	readonly retryDelay: number
-	readonly fallbackAction?: () => Promise<void>
+	readonly retryable: boolean;
+	readonly maxRetries: number;
+	readonly retryDelay: number;
+	readonly fallbackAction?: () => Promise<void>;
 }
 
 /**
  * Create an enhanced error with categorization and user-friendly messaging
  */
-export function createEnhancedError(error: Error, category: ErrorCategory, context?: string): EnhancedError {
-	const _errorType = getErrorType(error, category)
-	const userFriendlyMessage = getUserFriendlyMessage(error, category, context)
-	const suggestion = getErrorSuggestion(error, category)
-	const recoverable = isRecoverableError(error, category)
+export function createEnhancedError(
+	error: Error,
+	category: ErrorCategory,
+	context?: string,
+): EnhancedError {
+	const _errorType = getErrorType(error, category);
+	const userFriendlyMessage = getUserFriendlyMessage(error, category, context);
+	const suggestion = getErrorSuggestion(error, category);
+	const recoverable = isRecoverableError(error, category);
 
 	return Object.freeze({
 		category,
@@ -43,7 +53,7 @@ export function createEnhancedError(error: Error, category: ErrorCategory, conte
 		suggestion,
 		recoverable,
 		timestamp: new Date(),
-	})
+	});
 }
 
 /**
@@ -52,19 +62,19 @@ export function createEnhancedError(error: Error, category: ErrorCategory, conte
 function getErrorType(_error: Error, category: ErrorCategory): string {
 	switch (category) {
 		case 'parse':
-			return 'url-parse-error'
+			return 'url-parse-error';
 		case 'validation':
-			return 'url-validation-error'
+			return 'url-validation-error';
 		case 'safety':
-			return 'url-safety-error'
+			return 'url-safety-error';
 		case 'file-system':
-			return 'url-file-system-error'
+			return 'url-file-system-error';
 		case 'configuration':
-			return 'url-configuration-error'
+			return 'url-configuration-error';
 		case 'operational':
-			return 'url-operational-error'
+			return 'url-operational-error';
 		default:
-			return 'unknown-error'
+			return 'unknown-error';
 	}
 }
 
@@ -75,45 +85,80 @@ function isRecoverableError(error: Error, category: ErrorCategory): boolean {
 	switch (category) {
 		case 'parse':
 			// Parse errors are recoverable if they don't prevent URL processing
-			return true
+			return true;
 		case 'file-system':
 			// File system errors might be recoverable (permissions, network issues)
-			return error.message.includes('permission') || error.message.includes('network')
+			return (
+				error.message.includes('permission') ||
+				error.message.includes('network')
+			);
 		case 'configuration':
 			// Configuration errors are recoverable (fallback to defaults)
-			return true
+			return true;
 		case 'validation':
 			// Validation errors are recoverable (skip invalid URLs)
-			return true
+			return true;
 		case 'safety':
 			// Safety errors are not recoverable (user must take action)
-			return false
+			return false;
 		case 'operational':
-			return !error.message.includes('fatal')
+			return !error.message.includes('fatal');
 		default:
-			return false
+			return false;
 	}
 }
 
 /**
  * Get user-friendly error message
  */
-function getUserFriendlyMessage(error: Error, category: ErrorCategory, context?: string): string {
+function getUserFriendlyMessage(
+	error: Error,
+	category: ErrorCategory,
+	context?: string,
+): string {
 	switch (category) {
 		case 'parse':
-			return localize('runtime.error.parse', 'Failed to parse URL values: {0}', context || 'unknown file')
+			return localize(
+				'runtime.error.parse',
+				'Failed to parse URL values: {0}',
+				context || 'unknown file',
+			);
 		case 'file-system':
-			return localize('runtime.error.file-system', 'File system error: {0}', error.message)
+			return localize(
+				'runtime.error.file-system',
+				'File system error: {0}',
+				error.message,
+			);
 		case 'configuration':
-			return localize('runtime.error.configuration', 'Configuration error: {0}', error.message)
+			return localize(
+				'runtime.error.configuration',
+				'Configuration error: {0}',
+				error.message,
+			);
 		case 'validation':
-			return localize('runtime.error.validation', 'URL validation failed: {0}', error.message)
+			return localize(
+				'runtime.error.validation',
+				'URL validation failed: {0}',
+				error.message,
+			);
 		case 'safety':
-			return localize('runtime.error.safety', 'Safety threshold exceeded: {0}', error.message)
+			return localize(
+				'runtime.error.safety',
+				'Safety threshold exceeded: {0}',
+				error.message,
+			);
 		case 'operational':
-			return localize('runtime.error.operational', 'URL extraction failed: {0}', error.message)
+			return localize(
+				'runtime.error.operational',
+				'URL extraction failed: {0}',
+				error.message,
+			);
 		default:
-			return localize('runtime.error.unknown', 'Unknown error: {0}', error.message)
+			return localize(
+				'runtime.error.unknown',
+				'Unknown error: {0}',
+				error.message,
+			);
 	}
 }
 
@@ -123,48 +168,62 @@ function getUserFriendlyMessage(error: Error, category: ErrorCategory, context?:
 function getErrorSuggestion(_error: Error, category: ErrorCategory): string {
 	switch (category) {
 		case 'parse':
-			return localize('runtime.error.parse.suggestion', 'Check the URL format and ensure values are valid')
+			return localize(
+				'runtime.error.parse.suggestion',
+				'Check the URL format and ensure values are valid',
+			);
 		case 'file-system':
-			return localize('runtime.error.file-system.suggestion', 'Check file permissions and ensure the file exists')
+			return localize(
+				'runtime.error.file-system.suggestion',
+				'Check file permissions and ensure the file exists',
+			);
 		case 'configuration':
 			return localize(
 				'runtime.error.configuration.suggestion',
 				'Reset to default settings or check configuration syntax',
-			)
+			);
 		case 'validation':
 			return localize(
 				'runtime.error.validation.suggestion',
 				'Review URL values and ensure they meet validation criteria',
-			)
+			);
 		case 'safety':
-			return localize('runtime.error.safety.suggestion', 'Reduce file size or adjust safety thresholds')
+			return localize(
+				'runtime.error.safety.suggestion',
+				'Reduce file size or adjust safety thresholds',
+			);
 		case 'operational':
-			return localize('runtime.error.operational.suggestion', 'Try again or check system resources')
+			return localize(
+				'runtime.error.operational.suggestion',
+				'Try again or check system resources',
+			);
 		default:
 			return localize(
 				'runtime.error.unknown.suggestion',
 				'Check the logs for more details and consider reporting this issue',
-			)
+			);
 	}
 }
 
 /**
  * Get error recovery options
  */
-export function getErrorRecoveryOptions(error: EnhancedError): ErrorRecoveryOptions {
+export function getErrorRecoveryOptions(
+	error: EnhancedError,
+): ErrorRecoveryOptions {
 	switch (error.category) {
 		case 'parse':
 			return {
 				retryable: false,
 				maxRetries: 0,
 				retryDelay: 0,
-			}
+			};
 		case 'file-system':
 			return {
 				retryable: true,
 				maxRetries: 3,
 				retryDelay: 1000,
-			}
+			};
 		case 'configuration':
 			return {
 				retryable: false,
@@ -173,31 +232,31 @@ export function getErrorRecoveryOptions(error: EnhancedError): ErrorRecoveryOpti
 				fallbackAction: async () => {
 					// Fallback to default configuration
 				},
-			}
+			};
 		case 'validation':
 			return {
 				retryable: false,
 				maxRetries: 0,
 				retryDelay: 0,
-			}
+			};
 		case 'safety':
 			return {
 				retryable: false,
 				maxRetries: 0,
 				retryDelay: 0,
-			}
+			};
 		case 'operational':
 			return {
 				retryable: true,
 				maxRetries: 2,
 				retryDelay: 2000,
-			}
+			};
 		default:
 			return {
 				retryable: false,
 				maxRetries: 0,
 				retryDelay: 0,
-			}
+			};
 	}
 }
 
@@ -212,16 +271,16 @@ export function sanitizeErrorMessage(message: string): string {
 		.replace(/C:\\Users\\[^\\]+\\/g, 'C:\\Users\\***\\')
 		.replace(/password[=:]\s*[^\s]+/gi, 'password=***')
 		.replace(/token[=:]\s*[^\s]+/gi, 'token=***')
-		.replace(/key[=:]\s*[^\s]+/gi, 'key=***')
+		.replace(/key[=:]\s*[^\s]+/gi, 'key=***');
 }
 
 /**
  * Handle error with appropriate user feedback
  */
 export function handleError(error: EnhancedError): void {
-	const sanitizedMessage = sanitizeErrorMessage(error.userFriendlyMessage)
-	const timestamp = error.timestamp.toISOString()
-	const logLevel = error.recoverable ? 'WARN' : 'ERROR'
+	const sanitizedMessage = sanitizeErrorMessage(error.userFriendlyMessage);
+	const timestamp = error.timestamp.toISOString();
+	const logLevel = error.recoverable ? 'WARN' : 'ERROR';
 
 	// Structured logging with context
 	const logEntry = {
@@ -232,14 +291,14 @@ export function handleError(error: EnhancedError): void {
 		suggestion: error.suggestion,
 		recoverable: error.recoverable,
 		originalError: error.originalError.message,
-	}
+	};
 
 	if (error.recoverable) {
 		// Show warning for recoverable errors
-		console.warn(`[URLs-LE] ${logLevel}: ${sanitizedMessage}`, logEntry)
+		console.warn(`[URLs-LE] ${logLevel}: ${sanitizedMessage}`, logEntry);
 	} else {
 		// Show error for non-recoverable errors
-		console.error(`[URLs-LE] ${logLevel}: ${sanitizedMessage}`, logEntry)
+		console.error(`[URLs-LE] ${logLevel}: ${sanitizedMessage}`, logEntry);
 	}
 }
 
@@ -247,24 +306,24 @@ export function handleError(error: EnhancedError): void {
  * Error Handler interface for dependency injection
  */
 export interface ErrorHandler {
-	handle(error: EnhancedError): void
-	dispose(): void
+	handle(error: EnhancedError): void;
+	dispose(): void;
 }
 
 /**
  * Error Logger interface for dependency injection
  */
 export interface ErrorLogger {
-	log(error: EnhancedError): void
-	dispose(): void
+	log(error: EnhancedError): void;
+	dispose(): void;
 }
 
 /**
  * Error Notifier interface for dependency injection
  */
 export interface ErrorNotifier {
-	notify(error: EnhancedError): void
-	dispose(): void
+	notify(error: EnhancedError): void;
+	dispose(): void;
 }
 
 /**
@@ -273,12 +332,12 @@ export interface ErrorNotifier {
 export function createErrorHandler(): ErrorHandler {
 	return {
 		handle(error: EnhancedError): void {
-			handleError(error)
+			handleError(error);
 		},
 		dispose(): void {
 			// Cleanup if needed
 		},
-	}
+	};
 }
 
 /**
@@ -287,13 +346,13 @@ export function createErrorHandler(): ErrorHandler {
 export function createErrorLogger(): ErrorLogger {
 	return {
 		log(error: EnhancedError): void {
-			const sanitizedMessage = sanitizeErrorMessage(error.message)
-			console.error(`[URLs-LE] ${sanitizedMessage}`)
+			const sanitizedMessage = sanitizeErrorMessage(error.message);
+			console.error(`[URLs-LE] ${sanitizedMessage}`);
 		},
 		dispose(): void {
 			// Cleanup if needed
 		},
-	}
+	};
 }
 
 /**
@@ -302,28 +361,35 @@ export function createErrorLogger(): ErrorLogger {
 export function createErrorNotifier(): ErrorNotifier {
 	return {
 		notify(error: EnhancedError): void {
-			const sanitizedMessage = sanitizeErrorMessage(error.userFriendlyMessage)
-			console.warn(`[URLs-LE] ${sanitizedMessage}`)
+			const sanitizedMessage = sanitizeErrorMessage(error.userFriendlyMessage);
+			console.warn(`[URLs-LE] ${sanitizedMessage}`);
 		},
 		dispose(): void {
 			// Cleanup if needed
 		},
-	}
+	};
 }
 
 /**
  * Create performance error for performance monitoring
  */
-export function createPerformanceError(operation: string, error: Error): EnhancedError {
-	return createEnhancedError(error, 'operational', `Performance monitoring for ${operation}`)
+export function createPerformanceError(
+	operation: string,
+	error: Error,
+): EnhancedError {
+	return createEnhancedError(
+		error,
+		'operational',
+		`Performance monitoring for ${operation}`,
+	);
 }
 
 /**
  * Error recovery strategies
  */
 export interface ErrorRecoveryStrategy {
-	canRecover(error: EnhancedError): boolean
-	recover(error: EnhancedError): Promise<boolean>
+	canRecover(error: EnhancedError): boolean;
+	recover(error: EnhancedError): Promise<boolean>;
 }
 
 /**
@@ -332,25 +398,25 @@ export interface ErrorRecoveryStrategy {
 export const defaultRecoveryStrategies: ErrorRecoveryStrategy[] = [
 	{
 		canRecover(error: EnhancedError): boolean {
-			return error.category === 'file-system' && error.recoverable
+			return error.category === 'file-system' && error.recoverable;
 		},
 		async recover(_error: EnhancedError): Promise<boolean> {
 			// For file system errors, we can retry after a delay
-			await new Promise((resolve) => setTimeout(resolve, 1000))
-			return true
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+			return true;
 		},
 	},
 	{
 		canRecover(error: EnhancedError): boolean {
-			return error.category === 'configuration' && error.recoverable
+			return error.category === 'configuration' && error.recoverable;
 		},
 		async recover(_error: EnhancedError): Promise<boolean> {
 			// For configuration errors, we can fallback to defaults
-			console.info('[URLs-LE] Falling back to default configuration')
-			return true
+			console.info('[URLs-LE] Falling back to default configuration');
+			return true;
 		},
 	},
-]
+];
 
 /**
  * Attempt to recover from an error using available strategies
@@ -359,15 +425,17 @@ export async function attemptRecovery(error: EnhancedError): Promise<boolean> {
 	for (const strategy of defaultRecoveryStrategies) {
 		if (strategy.canRecover(error)) {
 			try {
-				const recovered = await strategy.recover(error)
+				const recovered = await strategy.recover(error);
 				if (recovered) {
-					console.info(`[URLs-LE] Successfully recovered from ${error.category} error`)
-					return true
+					console.info(
+						`[URLs-LE] Successfully recovered from ${error.category} error`,
+					);
+					return true;
 				}
 			} catch (recoveryError) {
-				console.error(`[URLs-LE] Recovery failed: ${recoveryError}`)
+				console.error(`[URLs-LE] Recovery failed: ${recoveryError}`);
 			}
 		}
 	}
-	return false
+	return false;
 }
