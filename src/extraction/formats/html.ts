@@ -19,7 +19,6 @@ const ACTION_PATTERN = /action\s*=\s*["']([^"']+)["']/gi;
 
 export function extractFromHtml(content: string): Url[] {
 	const urls: Url[] = [];
-	const seenUrls = new Set<string>();
 	const lines = content.split('\n');
 
 	// Helper function to check if a position is inside an HTML comment
@@ -37,13 +36,7 @@ export function extractFromHtml(content: string): Url[] {
 			let match;
 			while ((match = HREF_PATTERN.exec(line)) !== null) {
 				const url = match[1];
-				if (
-					url &&
-					isValidUrl(url) &&
-					!seenUrls.has(url) &&
-					!isInComment(line, match.index ?? 0)
-				) {
-					seenUrls.add(url);
+				if (url && isValidUrl(url) && !isInComment(line, match.index ?? 0)) {
 					const components = extractUrlComponents(url);
 					// Position should be where the URL starts, not where href starts
 					const _urlStartIndex =
@@ -63,13 +56,7 @@ export function extractFromHtml(content: string): Url[] {
 			SRC_PATTERN.lastIndex = 0;
 			while ((match = SRC_PATTERN.exec(line)) !== null) {
 				const url = match[1];
-				if (
-					url &&
-					isValidUrl(url) &&
-					!seenUrls.has(url) &&
-					!isInComment(line, match.index ?? 0)
-				) {
-					seenUrls.add(url);
+				if (url && isValidUrl(url) && !isInComment(line, match.index ?? 0)) {
 					const components = extractUrlComponents(url);
 					const _urlStartIndex =
 						(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
@@ -88,13 +75,7 @@ export function extractFromHtml(content: string): Url[] {
 			ACTION_PATTERN.lastIndex = 0;
 			while ((match = ACTION_PATTERN.exec(line)) !== null) {
 				const url = match[1];
-				if (
-					url &&
-					isValidUrl(url) &&
-					!seenUrls.has(url) &&
-					!isInComment(line, match.index ?? 0)
-				) {
-					seenUrls.add(url);
+				if (url && isValidUrl(url) && !isInComment(line, match.index ?? 0)) {
 					const components = extractUrlComponents(url);
 					const _urlStartIndex =
 						(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
@@ -113,8 +94,7 @@ export function extractFromHtml(content: string): Url[] {
 			URL_PATTERN.lastIndex = 0;
 			while ((match = URL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue) && !isInComment(line, match.index ?? 0)) {
-					seenUrls.add(urlValue);
+				if (!isInComment(line, match.index ?? 0)) {
 					const components = extractUrlComponents(urlValue);
 					urls.push({
 						value: urlValue,
@@ -131,8 +111,7 @@ export function extractFromHtml(content: string): Url[] {
 			FTP_PATTERN.lastIndex = 0;
 			while ((match = FTP_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue) && !isInComment(line, match.index ?? 0)) {
-					seenUrls.add(urlValue);
+				if (!isInComment(line, match.index ?? 0)) {
 					const components = extractUrlComponents(urlValue);
 					urls.push({
 						value: urlValue,
@@ -149,8 +128,7 @@ export function extractFromHtml(content: string): Url[] {
 			MAILTO_PATTERN.lastIndex = 0;
 			while ((match = MAILTO_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue) && !isInComment(line, match.index ?? 0)) {
-					seenUrls.add(urlValue);
+				if (!isInComment(line, match.index ?? 0)) {
 					urls.push({
 						value: urlValue,
 						protocol: detectUrlProtocol(urlValue),
@@ -164,8 +142,7 @@ export function extractFromHtml(content: string): Url[] {
 			TEL_PATTERN.lastIndex = 0;
 			while ((match = TEL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue) && !isInComment(line, match.index ?? 0)) {
-					seenUrls.add(urlValue);
+				if (!isInComment(line, match.index ?? 0)) {
 					urls.push({
 						value: urlValue,
 						protocol: detectUrlProtocol(urlValue),
@@ -179,8 +156,7 @@ export function extractFromHtml(content: string): Url[] {
 			FILE_PATTERN.lastIndex = 0;
 			while ((match = FILE_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue) && !isInComment(line, match.index ?? 0)) {
-					seenUrls.add(urlValue);
+				if (!isInComment(line, match.index ?? 0)) {
 					urls.push({
 						value: urlValue,
 						protocol: detectUrlProtocol(urlValue),

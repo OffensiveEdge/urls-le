@@ -29,24 +29,62 @@ export function registerValidateCommand(
 
 				const document = editor.document;
 				const text = document.getText();
-				const lines = text.split('\n');
+				const lines = text
+					.split('\n')
+					.filter((line) => line.trim().length > 0)
+					.map((line) => line.trim());
 				const config = getConfiguration();
 
-				// Extract URLs from lines
-				const urls = lines.filter((line) => line.trim().length > 0);
+				// Check if this looks like a URLs file (simple heuristic)
+				const isUrlFile =
+					lines.length > 0 &&
+					lines.every((line) => {
+						const trimmed = line.trim();
+						return trimmed === '' || /^https?:\/\//.test(trimmed);
+					});
+
+				let urlsToValidate: string[];
+				if (isUrlFile) {
+					// Use lines directly as URLs
+					urlsToValidate = lines;
+				} else {
+					// Extract URLs from source file first
+					// For simplicity, filter lines that look like URLs
+					urlsToValidate = lines.filter((line) => /^https?:\/\//.test(line));
+				}
 
 				// Validate URLs
-				const validationResults = await validateUrls(urls, config);
+				const validationResults = await validateUrls(urlsToValidate, config);
 
 				// Generate validation report
 				const report = generateValidationReport(validationResults);
 
-				// Open validation report in new document
-				const doc = await vscode.workspace.openTextDocument({
-					content: report,
-					language: 'markdown',
-				});
-				await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
+				// Check config for in-place vs new file
+				if (config.postProcessOpenInNewFile) {
+					// Open validation report in new document
+					const doc = await vscode.workspace.openTextDocument({
+						content: report,
+						language: 'markdown',
+					});
+					const viewColumn = config.openResultsSideBySide
+						? vscode.ViewColumn.Beside
+						: undefined;
+					await vscode.window.showTextDocument(doc, viewColumn);
+				} else {
+					// Replace content in current editor
+					const success = await editor.edit((editBuilder) => {
+						const fullRange = new vscode.Range(
+							editor.document.positionAt(0),
+							editor.document.positionAt(editor.document.getText().length),
+						);
+						editBuilder.replace(fullRange, report);
+					});
+
+					if (!success) {
+						deps.notifier.showError('Failed to update editor content');
+						return;
+					}
+				}
 
 				const validCount = validationResults.filter(
 					(r) => r.status === 'valid',

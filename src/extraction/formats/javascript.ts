@@ -12,7 +12,6 @@ const STRING_URL_PATTERN = /['"`]([^'"`]*?)['"`]/g;
 
 export function extractFromJavaScript(content: string): Url[] {
 	const urls: Url[] = [];
-	const seenUrls = new Set<string>();
 	const lines = content.split('\n');
 
 	lines.forEach((line, lineIndex) => {
@@ -22,12 +21,7 @@ export function extractFromJavaScript(content: string): Url[] {
 			let match;
 			while ((match = STRING_URL_PATTERN.exec(line)) !== null) {
 				const stringValue = match[1];
-				if (
-					stringValue &&
-					isValidUrl(stringValue) &&
-					!seenUrls.has(stringValue)
-				) {
-					seenUrls.add(stringValue);
+				if (stringValue && isValidUrl(stringValue)) {
 					urls.push({
 						value: stringValue,
 						protocol: detectUrlProtocol(stringValue),
@@ -41,75 +35,60 @@ export function extractFromJavaScript(content: string): Url[] {
 			URL_PATTERN.lastIndex = 0;
 			while ((match = URL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue)) {
-					seenUrls.add(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: urlValue.startsWith('https') ? 'https' : 'http',
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
-				}
+				urls.push({
+					value: urlValue,
+					protocol: urlValue.startsWith('https') ? 'https' : 'http',
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				});
 			}
 
 			// Extract FTP URLs
 			FTP_PATTERN.lastIndex = 0;
 			while ((match = FTP_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue)) {
-					seenUrls.add(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: 'ftp' as UrlProtocol,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
-				}
+				urls.push({
+					value: urlValue,
+					protocol: 'ftp' as UrlProtocol,
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				});
 			}
 
 			// Extract mailto URLs
 			MAILTO_PATTERN.lastIndex = 0;
 			while ((match = MAILTO_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue)) {
-					seenUrls.add(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: 'mailto' as UrlProtocol,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
-				}
+				urls.push({
+					value: urlValue,
+					protocol: 'mailto' as UrlProtocol,
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				});
 			}
 
 			// Extract tel URLs
 			TEL_PATTERN.lastIndex = 0;
 			while ((match = TEL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue)) {
-					seenUrls.add(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: 'tel' as UrlProtocol,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
-				}
+				urls.push({
+					value: urlValue,
+					protocol: 'tel' as UrlProtocol,
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				});
 			}
 
 			// Extract file URLs
 			FILE_PATTERN.lastIndex = 0;
 			while ((match = FILE_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (!seenUrls.has(urlValue)) {
-					seenUrls.add(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: 'file' as UrlProtocol,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
-				}
+				urls.push({
+					value: urlValue,
+					protocol: 'file' as UrlProtocol,
+					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+					context: line.trim(),
+				});
 			}
 		} catch (error) {
 			// Skip lines that cause regex errors to prevent crashes

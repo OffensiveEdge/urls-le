@@ -18,7 +18,6 @@ const MARKDOWN_AUTOLINK_PATTERN = /<([^>]+)>/g;
 
 export function extractFromMarkdown(content: string): Url[] {
 	const urls: Url[] = [];
-	const seenUrls = new Set<string>();
 	const lines = content.split('\n');
 	let inCodeBlock = false;
 
@@ -44,14 +43,9 @@ export function extractFromMarkdown(content: string): Url[] {
 			let match;
 			while ((match = MARKDOWN_LINK_PATTERN.exec(line)) !== null) {
 				const url = match[2];
-				if (
-					url &&
-					!seenUrls.has(url) &&
-					!isInInlineCode(line, match.index ?? 0)
-				) {
+				if (url && !isInInlineCode(line, match.index ?? 0)) {
 					// Only extract absolute URLs with protocols (remove relative URL support)
 					if (isValidUrl(url)) {
-						seenUrls.add(url);
 						const components = extractUrlComponents(url);
 						urls.push({
 							value: url,
@@ -73,13 +67,7 @@ export function extractFromMarkdown(content: string): Url[] {
 			MARKDOWN_AUTOLINK_PATTERN.lastIndex = 0;
 			while ((match = MARKDOWN_AUTOLINK_PATTERN.exec(line)) !== null) {
 				const url = match[1];
-				if (
-					url &&
-					isValidUrl(url) &&
-					!seenUrls.has(url) &&
-					!isInInlineCode(line, match.index ?? 0)
-				) {
-					seenUrls.add(url);
+				if (url && isValidUrl(url) && !isInInlineCode(line, match.index ?? 0)) {
 					const components = extractUrlComponents(url);
 					urls.push({
 						value: url,
@@ -102,10 +90,8 @@ export function extractFromMarkdown(content: string): Url[] {
 				if (
 					urlValue &&
 					isValidUrl(urlValue) &&
-					!seenUrls.has(urlValue) &&
 					!isInInlineCode(line, match.index ?? 0)
 				) {
-					seenUrls.add(urlValue);
 					const components = extractUrlComponents(urlValue);
 					urls.push({
 						value: urlValue,
@@ -128,10 +114,8 @@ export function extractFromMarkdown(content: string): Url[] {
 				if (
 					urlValue &&
 					isValidUrl(urlValue) &&
-					!seenUrls.has(urlValue) &&
 					!isInInlineCode(line, match.index ?? 0)
 				) {
-					seenUrls.add(urlValue);
 					const components = extractUrlComponents(urlValue);
 					urls.push({
 						value: urlValue,
@@ -151,11 +135,7 @@ export function extractFromMarkdown(content: string): Url[] {
 			MAILTO_PATTERN.lastIndex = 0;
 			while ((match = MAILTO_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (
-					!seenUrls.has(urlValue) &&
-					!isInInlineCode(line, match.index ?? 0)
-				) {
-					seenUrls.add(urlValue);
+				if (!isInInlineCode(line, match.index ?? 0)) {
 					urls.push({
 						value: urlValue,
 						protocol: detectUrlProtocol(urlValue),
@@ -172,11 +152,7 @@ export function extractFromMarkdown(content: string): Url[] {
 			TEL_PATTERN.lastIndex = 0;
 			while ((match = TEL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (
-					!seenUrls.has(urlValue) &&
-					!isInInlineCode(line, match.index ?? 0)
-				) {
-					seenUrls.add(urlValue);
+				if (!isInInlineCode(line, match.index ?? 0)) {
 					urls.push({
 						value: urlValue,
 						protocol: detectUrlProtocol(urlValue),
@@ -193,11 +169,7 @@ export function extractFromMarkdown(content: string): Url[] {
 			FILE_PATTERN.lastIndex = 0;
 			while ((match = FILE_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				if (
-					!seenUrls.has(urlValue) &&
-					!isInInlineCode(line, match.index ?? 0)
-				) {
-					seenUrls.add(urlValue);
+				if (!isInInlineCode(line, match.index ?? 0)) {
 					urls.push({
 						value: urlValue,
 						protocol: detectUrlProtocol(urlValue),
