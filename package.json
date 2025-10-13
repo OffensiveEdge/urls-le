@@ -362,7 +362,7 @@
 	"scripts": {
 		"build": "tsc -p ./",
 		"clean": "rm -rf dist coverage",
-		"clean:i18n": "rm -rf package.nls.*.json vsix/",
+		"clean:i18n": "node -e \"const fs=require('fs');fs.readdirSync('.').filter(f=>f.startsWith('package.nls.')&&f.endsWith('.json')&&f!=='package.nls.json').forEach(f=>fs.unlinkSync(f));try{fs.rmSync('vsix',{recursive:true})}catch(e){}\"",
 		"copy:i18n": "cp src/i18n/package.nls.json .",
 		"watch": "tsc -watch -p ./",
 		"test": "vitest run --pool=threads",
