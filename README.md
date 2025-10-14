@@ -82,9 +82,11 @@ It intelligently detects and extracts URLs from your code, helping you manage we
 - **Scrape-LE** - Verify page reachability and detect anti-scraping measures before deploying scrapers  
   [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.scrape-le)]
 
-- **Colors-LE** - Extract and analyze colors from CSS, Sass, Less, and style attributes _(Coming Soon)_
+- **Colors-LE** - Extract and analyze colors from CSS, Sass, Less, and style attributes  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.colors-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/colors-le)]
 
-- **Dates-LE** - Extract and analyze dates from JSON, logs, and temporal data sources _(Coming Soon)_
+- **Dates-LE** - Extract and analyze dates from JSON, logs, and temporal data sources  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.dates-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/dates-le)]
 
 Each tool follows the same philosophy: **Zero Hassle, Maximum Productivity**.
 
@@ -175,10 +177,7 @@ Extract URLs from documentation to audit external links and references.
 
 ## 🌍 Language Support
 
-English + 12 translations _(Coming Soon)_:
-
-- Chinese (Simplified), Spanish, French, Russian, Portuguese (Brazil)
-- Japanese, Korean, German, Italian, Vietnamese, Ukrainian, Indonesian
+**English only** for v1.0.x. Additional languages may be added in future releases based on user feedback.
 
 ## 🧩 System Requirements
 
