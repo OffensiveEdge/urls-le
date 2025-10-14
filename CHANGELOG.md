@@ -5,6 +5,18 @@ All notable changes to URLs-LE will be documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2025-10-14
+
+### Added
+
+- **Help command** - Added comprehensive help and troubleshooting documentation
+- **Command palette entry** - "URLs-LE: Help & Troubleshooting" accessible from command palette
+- **In-editor docs** - Opens formatted markdown help in new editor tab with URL formats, use cases, and performance tips
+
+### Changed
+
+- **Command count** - Increased from 2 to 3 commands for better user support
+
 ## [1.0.5] - 2025-10-14
 
 ### Fixed

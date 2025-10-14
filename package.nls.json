@@ -4,6 +4,7 @@
 	"manifest.command.category": "URLs-LE",
 	"manifest.command.extract.title": "Extract URLs",
 	"manifest.command.settings.title": "Open Settings",
+	"manifest.command.help.title": "Help & Troubleshooting",
 	"manifest.settings.title": "URLs-LE Settings",
 	"manifest.settings.copy.clipboard.desc": "Automatically copy extraction results to the clipboard",
 	"manifest.settings.dedupe.desc": "Enable automatic deduplication of extracted URLs",
