@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext): void {
 	// Create error handling service
 	const errorHandler = createErrorHandler();
 
-	// Register all commands
+	// Register extract command
 	registerCommands(context, {
 		telemetry,
 		notifier,

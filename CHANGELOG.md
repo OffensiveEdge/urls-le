@@ -5,6 +5,24 @@ All notable changes to URLs-LE will be documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2025-10-14
+
+### Changed
+
+- Simplified to 2 core commands: Extract URLs (`Ctrl+Alt+U`) and Open Settings
+- Removed validation, analysis, accessibility, and help commands
+- Streamlined for production-ready v1.0 release focused on core extraction
+
+### Added
+
+- Sample test files (HTML, Markdown, JavaScript)
+
+### Documentation
+
+- Updated README to remove references to removed features
+- Updated COMMANDS.md to reflect streamlined command set
+- Clarified focus on URL extraction without analysis features
+
 ## [1.0.1] - 2025-10-14
 
 ### Fixed

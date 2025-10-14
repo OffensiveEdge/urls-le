@@ -2,27 +2,33 @@
 
 ## Overview
 
-URLs-LE provides comprehensive configuration options to customize behavior, performance, and user experience. All settings are organized by category and include detailed descriptions, default values, and validation rules.
+URLs-LE provides focused configuration options to customize behavior, safety, and user experience. All settings include detailed descriptions, default values, and validation rules.
 
 ## Configuration Categories
 
-### Basic Settings
+### Output Settings
 
-Core functionality and user experience options.
+Core functionality for extraction results handling.
+
+### Notification Settings
+
+Control notification verbosity and feedback.
 
 ### Safety Settings
 
 Resource limits and safety checks to prevent performance issues.
 
-### Analysis Settings
+### UI Settings
 
-URL analysis options for security, accessibility, and pattern detection.
+Status bar and visual interface options.
 
-### Validation Settings
+### Advanced Settings
 
-URL validation behavior and network request configuration.
+Telemetry and diagnostic options.
 
-## Basic Settings
+---
+
+## Output Settings
 
 ### `urls-le.copyToClipboardEnabled`
 
@@ -49,11 +55,13 @@ URL validation behavior and network request configuration.
 - May overwrite existing clipboard content
 - Requires user permission for clipboard access
 
+---
+
 ### `urls-le.dedupeEnabled`
 
 **Type**: `boolean`  
 **Default**: `false`  
-**Description**: Remove duplicate URLs from extraction results.
+**Description**: Enable automatic deduplication of extracted URLs.
 
 **Usage**:
 
@@ -65,47 +73,17 @@ URL validation behavior and network request configuration.
 
 **Benefits**:
 
-- Cleaner results
-- Reduced processing time
-- Better analysis accuracy
+- Cleaner results without duplicates
+- Easier to scan unique URLs
+- Reduced output size
 
-**Considerations**:
-
-- May hide legitimate duplicate URLs
-- Requires additional processing time
-
-### `urls-le.notificationsLevel`
-
-**Type**: `string`  
-**Default**: `"silent"`  
-**Enum**: `["all", "important", "silent"]`  
-**Description**: Control the level of notifications shown to the user.
-
-**Options**:
-
-- `"all"`: Show all notifications and status updates
-- `"important"`: Show only important notifications and errors
-- `"silent"`: Show only critical errors and warnings
-
-**Usage**:
-
-```json
-{
-  "urls-le.notificationsLevel": "important"
-}
-```
-
-**Benefits**:
-
-- Customizable user experience
-- Reduced notification noise
-- Focus on important information
+---
 
 ### `urls-le.postProcess.openInNewFile`
 
 **Type**: `boolean`  
 **Default**: `false`  
-**Description**: Open extraction results in a new VS Code document.
+**Description**: Open extraction results in a new editor window.
 
 **Usage**:
 
@@ -117,20 +95,17 @@ URL validation behavior and network request configuration.
 
 **Benefits**:
 
-- Easy result review and editing
-- Persistent results
-- Side-by-side comparison
+- Keep source file open
+- Easy comparison between source and results
+- Non-intrusive workflow
 
-**Considerations**:
-
-- Creates additional documents
-- May clutter workspace
+---
 
 ### `urls-le.openResultsSideBySide`
 
 **Type**: `boolean`  
 **Default**: `false`  
-**Description**: Open results in a split view alongside the original document.
+**Description**: Open extraction results in an editor to the side.
 
 **Usage**:
 
@@ -142,14 +117,58 @@ URL validation behavior and network request configuration.
 
 **Benefits**:
 
-- Side-by-side comparison
-- Context preservation
-- Efficient workflow
+- View source and results simultaneously
+- Easier to reference URLs
+- Better for large extractions
 
-**Considerations**:
+---
 
-- Requires additional screen space
-- May affect workspace layout
+## Notification Settings
+
+### `urls-le.notificationsLevel`
+
+**Type**: `string`  
+**Default**: `"silent"`  
+**Options**: `"all"`, `"important"`, `"silent"`  
+**Description**: Controls the verbosity of notifications.
+
+**Usage**:
+
+```json
+{
+  "urls-le.notificationsLevel": "important"
+}
+```
+
+**Options**:
+
+- `"all"` - Show all notifications including informational messages
+- `"important"` - Show only warnings and errors
+- `"silent"` - Suppress all notifications (errors still logged to Output panel)
+
+---
+
+### `urls-le.showParseErrors`
+
+**Type**: `boolean`  
+**Default**: `false`  
+**Description**: Show parse errors as VS Code notifications when parsing fails.
+
+**Usage**:
+
+```json
+{
+  "urls-le.showParseErrors": true
+}
+```
+
+**Benefits**:
+
+- Immediate feedback on parsing issues
+- Helpful for debugging
+- Identify problematic files
+
+---
 
 ## Safety Settings
 
@@ -157,7 +176,7 @@ URL validation behavior and network request configuration.
 
 **Type**: `boolean`  
 **Default**: `true`  
-**Description**: Enable safety checks and resource limits.
+**Description**: Enable safety checks for large files and operations.
 
 **Usage**:
 
@@ -170,46 +189,42 @@ URL validation behavior and network request configuration.
 **Benefits**:
 
 - Prevents performance issues
-- Protects against resource exhaustion
-- Maintains system stability
+- Warns before processing large files
+- Protects against memory issues
 
-**Considerations**:
+**Recommendation**: Keep enabled unless processing known large files regularly.
 
-- May limit processing of large files
-- Requires user confirmation for large operations
+---
 
 ### `urls-le.safety.fileSizeWarnBytes`
 
 **Type**: `number`  
-**Default**: `1000000` (1MB)  
+**Default**: `1000000` (1 MB)  
 **Minimum**: `1000`  
-**Description**: File size threshold for warning messages.
+**Description**: Warn when input file size exceeds this threshold in bytes.
 
 **Usage**:
 
 ```json
 {
-  "urls-le.safety.fileSizeWarnBytes": 2000000
+  "urls-le.safety.fileSizeWarnBytes": 5000000
 }
 ```
 
-**Benefits**:
+**Guidelines**:
 
-- Early warning for large files
-- User awareness of processing time
-- Prevents unexpected delays
+- 1 MB (1000000) - Default, suitable for most files
+- 5 MB (5000000) - For larger documentation files
+- 10 MB (10000000) - For processing large logs or datasets
 
-**Considerations**:
-
-- May trigger warnings for normal files
-- Requires user confirmation
+---
 
 ### `urls-le.safety.largeOutputLinesThreshold`
 
 **Type**: `number`  
 **Default**: `50000`  
 **Minimum**: `100`  
-**Description**: Threshold for large output warnings.
+**Description**: Warn before opening/copying when result lines exceed this threshold.
 
 **Usage**:
 
@@ -219,350 +234,100 @@ URL validation behavior and network request configuration.
 }
 ```
 
-**Benefits**:
+**Guidelines**:
 
-- Prevents overwhelming output
-- Maintains performance
-- User control over results
+- 10000 - For conservative memory usage
+- 50000 - Default, balanced
+- 100000+ - For processing large URL lists
 
-**Considerations**:
-
-- May limit result visibility
-- Requires user confirmation
+---
 
 ### `urls-le.safety.manyDocumentsThreshold`
 
 **Type**: `number`  
 **Default**: `8`  
 **Minimum**: `1`  
-**Description**: Threshold for warning about processing many documents.
+**Description**: Warn before opening multiple result documents when count exceeds this threshold.
 
 **Usage**:
 
 ```json
 {
-  "urls-le.safety.manyDocumentsThreshold": 10
+  "urls-le.safety.manyDocumentsThreshold": 5
 }
 ```
 
 **Benefits**:
 
-- Prevents workspace overload
-- Maintains performance
-- User control over scope
+- Prevents accidentally opening too many editors
+- Protects editor performance
+- User confirmation for large operations
 
-**Considerations**:
+---
 
-- May limit batch processing
-- Requires user confirmation
+## UI Settings
 
-## Analysis Settings
-
-### `urls-le.analysis.enabled`
+### `urls-le.statusBar.enabled`
 
 **Type**: `boolean`  
 **Default**: `true`  
-**Description**: Enable URL analysis features.
+**Description**: Show URLs-LE status bar entry for quick access.
 
 **Usage**:
 
 ```json
 {
-  "urls-le.analysis.enabled": true
+  "urls-le.statusBar.enabled": true
 }
 ```
 
 **Benefits**:
 
-- Comprehensive URL insights
-- Security and accessibility checks
-- Pattern recognition
+- Quick access to settings
+- Visual feedback during extraction
+- Click to open extension settings
 
-**Considerations**:
+---
 
-- Requires additional processing time
-- May generate large reports
+## Advanced Settings
 
-### `urls-le.analysis.includeSecurity`
+### `urls-le.telemetryEnabled`
 
 **Type**: `boolean`  
-**Default**: `true`  
-**Description**: Include security analysis in URL processing.
+**Default**: `false`  
+**Description**: Enable local-only telemetry logs to the Output panel.
 
 **Usage**:
 
 ```json
 {
-  "urls-le.analysis.includeSecurity": true
+  "urls-le.telemetryEnabled": true
 }
 ```
 
-**Security Checks**:
+**Privacy**:
 
-- HTTPS preference detection
-- Mixed content warnings
-- Suspicious pattern detection
-- Redirect chain analysis
-- Protocol security assessment
+- **Local only** - No data sent off your machine
+- Logs to VS Code Output panel only
+- Helpful for debugging and troubleshooting
 
-**Benefits**:
+**Note**: This is NOT cloud telemetry. All logs stay on your machine.
 
-- Security awareness
-- Risk identification
-- Best practice recommendations
+---
 
-### `urls-le.analysis.includeAccessibility`
+## Configuration Presets
 
-**Type**: `boolean`  
-**Default**: `true`  
-**Description**: Include accessibility analysis in URL processing.
-
-**Usage**:
+### Minimal (Silent Mode)
 
 ```json
 {
-  "urls-le.analysis.includeAccessibility": true
-}
-```
-
-**Accessibility Checks**:
-
-- Alt text for images
-- Descriptive link text
-- Proper contrast ratios
-- Screen reader compatibility
-- Keyboard navigation support
-
-**Benefits**:
-
-- Accessibility compliance
-- Inclusive design support
-- Best practice recommendations
-
-## Validation Settings
-
-### `urls-le.validation.enabled`
-
-**Type**: `boolean`  
-**Default**: `true`  
-**Description**: Enable URL validation features.
-
-**Usage**:
-
-```json
-{
-  "urls-le.validation.enabled": true
-}
-```
-
-**Benefits**:
-
-- URL format validation
-- Error detection and reporting
-- Quality assurance
-
-**Considerations**:
-
-- Requires additional processing time
-- May generate validation reports
-
-### `urls-le.validation.timeout`
-
-**Type**: `number`  
-**Default**: `5000` (5 seconds)  
-**Minimum**: `1000`  
-**Description**: Timeout for network-based URL validation.
-
-**Usage**:
-
-```json
-{
-  "urls-le.validation.timeout": 10000
-}
-```
-
-**Benefits**:
-
-- Prevents hanging operations
-- Configurable timeout duration
-- Network error handling
-
-**Considerations**:
-
-- May timeout on slow networks
-- Requires network connectivity
-
-### `urls-le.validation.followRedirects`
-
-**Type**: `boolean`  
-**Default**: `true`  
-**Description**: Follow HTTP redirects during validation.
-
-**Usage**:
-
-```json
-{
-  "urls-le.validation.followRedirects": true
-}
-```
-
-**Benefits**:
-
-- Complete URL validation
-- Redirect chain analysis
-- Final destination tracking
-
-**Considerations**:
-
-- May increase processing time
-- Requires network connectivity
-
-## Configuration Management
-
-### Settings Access
-
-```typescript
-// Get configuration
-const config = vscode.workspace.getConfiguration('urls-le')
-
-// Read specific setting
-const copyToClipboard = config.get('copyToClipboardEnabled', false)
-
-// Update setting
-await config.update('copyToClipboardEnabled', true, vscode.ConfigurationTarget.Global)
-```
-
-### Configuration Change Events
-
-```typescript
-// Listen for configuration changes
-vscode.workspace.onDidChangeConfiguration((event) => {
-  if (event.affectsConfiguration('urls-le')) {
-    // Reload configuration
-    const newConfig = createConfiguration()
-    // Update components
-  }
-})
-```
-
-### Configuration Validation
-
-```typescript
-export function validateConfiguration(config: any): Configuration {
-  return Object.freeze({
-    copyToClipboardEnabled: Boolean(config.copyToClipboardEnabled),
-    dedupeEnabled: Boolean(config.dedupeEnabled),
-    notificationsLevel: ['all', 'important', 'silent'].includes(config.notificationsLevel)
-      ? config.notificationsLevel
-      : 'silent',
-    // ... other validations
-  })
-}
-```
-
-## Configuration Examples
-
-### Development Setup
-
-```json
-{
-  "urls-le.copyToClipboardEnabled": true,
-  "urls-le.dedupeEnabled": true,
-  "urls-le.notificationsLevel": "all",
-  "urls-le.analysis.enabled": true,
-  "urls-le.analysis.includeSecurity": true,
-  "urls-le.analysis.includeAccessibility": true,
-  "urls-le.validation.enabled": true,
-  "urls-le.validation.timeout": 10000
-}
-```
-
-### Production Setup
-
-```json
-{
-  "urls-le.copyToClipboardEnabled": false,
-  "urls-le.dedupeEnabled": true,
-  "urls-le.notificationsLevel": "important",
-  "urls-le.analysis.enabled": true,
-  "urls-le.analysis.includeSecurity": true,
-  "urls-le.analysis.includeAccessibility": true,
-  "urls-le.validation.enabled": true,
-  "urls-le.validation.timeout": 5000
-}
-```
-
-### Performance-Optimized Setup
-
-```json
-{
-  "urls-le.copyToClipboardEnabled": false,
-  "urls-le.dedupeEnabled": true,
   "urls-le.notificationsLevel": "silent",
-  "urls-le.safety.enabled": true,
-  "urls-le.safety.fileSizeWarnBytes": 500000,
-  "urls-le.safety.largeOutputLinesThreshold": 25000,
-  "urls-le.analysis.enabled": false,
-  "urls-le.validation.enabled": false
+  "urls-le.statusBar.enabled": false,
+  "urls-le.safety.enabled": false
 }
 ```
 
-### Security-Focused Setup
-
-```json
-{
-  "urls-le.copyToClipboardEnabled": false,
-  "urls-le.dedupeEnabled": true,
-  "urls-le.notificationsLevel": "all",
-  "urls-le.analysis.enabled": true,
-  "urls-le.analysis.includeSecurity": true,
-  "urls-le.analysis.includeAccessibility": false,
-  "urls-le.validation.enabled": true,
-  "urls-le.validation.timeout": 10000,
-  "urls-le.validation.followRedirects": true
-}
-```
-
-## Configuration Best Practices
-
-### Performance Optimization
-
-- Disable unnecessary analysis features
-- Set appropriate safety thresholds
-- Use silent notifications for automation
-- Configure reasonable timeouts
-
-### Security Considerations
-
-- Enable security analysis
-- Use HTTPS validation
-- Set appropriate timeouts
-- Follow redirects cautiously
-
-### User Experience
-
-- Choose appropriate notification levels
-- Enable clipboard copying for convenience
-- Use side-by-side results for comparison
-- Configure safety warnings appropriately
-
-### Development Workflow
-
-- Use comprehensive analysis for development
-- Enable all notifications for debugging
-- Set longer timeouts for slow networks
-- Use new file results for review
-
-## Troubleshooting Configuration
-
-### Common Issues
-
-- **Settings not applying**: Restart VS Code after configuration changes
-- **Performance issues**: Adjust safety thresholds and disable unnecessary features
-- **Network errors**: Increase timeout values and check connectivity
-- **Memory issues**: Reduce safety thresholds and disable analysis features
-
-### Configuration Reset
+### Balanced (Default)
 
 ```json
 {
@@ -570,18 +335,150 @@ export function validateConfiguration(config: any): Configuration {
   "urls-le.dedupeEnabled": false,
   "urls-le.notificationsLevel": "silent",
   "urls-le.postProcess.openInNewFile": false,
-  "urls-le.openResultsSideBySide": false,
   "urls-le.safety.enabled": true,
-  "urls-le.safety.fileSizeWarnBytes": 1000000,
-  "urls-le.safety.largeOutputLinesThreshold": 50000,
-  "urls-le.safety.manyDocumentsThreshold": 8,
-  "urls-le.analysis.enabled": true,
-  "urls-le.analysis.includeSecurity": true,
-  "urls-le.analysis.includeAccessibility": true,
-  "urls-le.validation.enabled": true,
-  "urls-le.validation.timeout": 5000,
-  "urls-le.validation.followRedirects": true
+  "urls-le.statusBar.enabled": true
 }
 ```
 
-This configuration guide provides comprehensive documentation for all URLs-LE settings, ensuring developers can effectively customize the extension for their specific needs and workflows.
+### Maximum Productivity
+
+```json
+{
+  "urls-le.copyToClipboardEnabled": true,
+  "urls-le.dedupeEnabled": true,
+  "urls-le.notificationsLevel": "important",
+  "urls-le.postProcess.openInNewFile": true,
+  "urls-le.openResultsSideBySide": true,
+  "urls-le.statusBar.enabled": true
+}
+```
+
+### Development/Debugging
+
+```json
+{
+  "urls-le.notificationsLevel": "all",
+  "urls-le.showParseErrors": true,
+  "urls-le.telemetryEnabled": true,
+  "urls-le.safety.enabled": true
+}
+```
+
+---
+
+## Best Practices
+
+### For Web Developers
+
+```json
+{
+  "urls-le.dedupeEnabled": true,
+  "urls-le.postProcess.openInNewFile": true,
+  "urls-le.openResultsSideBySide": true
+}
+```
+
+### For Documentation Writers
+
+```json
+{
+  "urls-le.copyToClipboardEnabled": true,
+  "urls-le.dedupeEnabled": true,
+  "urls-le.notificationsLevel": "important"
+}
+```
+
+### For Large Projects
+
+```json
+{
+  "urls-le.safety.enabled": true,
+  "urls-le.safety.fileSizeWarnBytes": 10000000,
+  "urls-le.safety.largeOutputLinesThreshold": 100000,
+  "urls-le.notificationsLevel": "important"
+}
+```
+
+---
+
+## Configuration Tips
+
+### Accessing Settings
+
+1. **VS Code Settings UI**: `Ctrl/Cmd + ,` → Search "URLs-LE"
+2. **Command Palette**: `URLs-LE: Open Settings`
+3. **settings.json**: Add configurations directly
+
+### Setting Scope
+
+Settings can be configured at:
+
+- **User level**: Applies to all workspaces
+- **Workspace level**: Applies to current workspace only
+- **Folder level**: Applies to specific folder in multi-root workspace
+
+### Validation
+
+All settings include validation:
+
+- Type checking (boolean, number, string, enum)
+- Range validation (minimum values)
+- Enum validation (allowed values)
+
+Invalid values will fall back to defaults with a warning.
+
+---
+
+## Troubleshooting
+
+### Settings Not Taking Effect
+
+1. Reload VS Code window: `Developer: Reload Window`
+2. Check for syntax errors in settings.json
+3. Verify setting names (case-sensitive)
+4. Check workspace vs user settings precedence
+
+### Performance Issues
+
+1. Enable safety checks:
+
+   ```json
+   {
+     "urls-le.safety.enabled": true
+   }
+   ```
+
+2. Lower thresholds:
+   ```json
+   {
+     "urls-le.safety.fileSizeWarnBytes": 500000,
+     "urls-le.safety.largeOutputLinesThreshold": 10000
+   }
+   ```
+
+### Too Many Notifications
+
+```json
+{
+  "urls-le.notificationsLevel": "silent"
+}
+```
+
+---
+
+## Migration Notes
+
+If upgrading from a previous version, note that the following settings have been removed:
+
+- `urls-le.analysis.*` - Analysis features removed in v1.0.2
+- `urls-le.validation.*` - Validation features removed in v1.0.2
+- `urls-le.keyboard.*` - Keyboard shortcut settings removed in v1.0.2
+- `urls-le.presets.*` - Preset system removed in v1.0.2
+- `urls-le.performance.*` - Performance settings removed in v1.0.2
+
+The extension now focuses on core URL extraction with simplified configuration.
+
+---
+
+**Last Updated**: 2025-10-14  
+**Version**: 1.0.2

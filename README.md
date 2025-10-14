@@ -3,10 +3,10 @@
 </p>
 <h1 align="center">URLs-LE: Zero Hassle URL Extraction</h1>
 <p align="center">
-  <b>Instantly extract and analyze URLs from your codebase with precision</b><br/>
+  <b>Instantly extract URLs from your codebase with precision</b><br/>
   <i>HTML, CSS, JavaScript, JSON, YAML, Markdown, and more</i>
   <br/>
-  <i>Designed for web development, API analysis, and link validation.</i>
+  <i>Designed for web development, API documentation, and link management.</i>
 </p>
 
 <p align="center">
@@ -31,10 +31,7 @@
 ---
 
 <p align="center">
-  <img src="src/assets/images/preview.gif" alt="URL Extraction animation" style="max-width: 100%; height: auto;" />
-</p>
-<p align="right">
- <a href="https://github.com/nolindnaidoo/urls-le/blob/main/docs/SCREENSHOTS.md">Screenshot Guide</a>
+  <img src="src/assets/images/demo.gif" alt="URL Extraction Demo" style="max-width: 100%; height: auto;" />
 </p>
 
 ## 🙏 Thank You!
@@ -48,27 +45,23 @@ Thank you for your interest in URLs-LE! If this extension has been helpful in ma
 **Modern web applications use URLs everywhere** — API endpoints, asset links, external resources, and navigation paths. Keeping track of all URL references across your codebase can be complex.
 
 **URLs-LE makes URL extraction effortless.**  
-It intelligently detects and extracts URLs from your code, providing comprehensive analysis and insights to help you manage web resources effectively.
+It intelligently detects and extracts URLs from your code, helping you manage web resources effectively.
 
 - **Reliable URL detection**
 
   Automatically finds URLs in multiple formats: HTTP/HTTPS, FTP, mailto, tel, and file URLs with intelligent comment and code-block filtering.
 
-- **Smart analysis & insights**
-
-  Get detailed reports on URL usage patterns, domain analysis, and link distribution across your codebase.
-
 - **Web development support**
 
-  Perfect for analyzing API endpoints, asset references, and external links to identify broken or outdated URLs.
+  Perfect for analyzing API endpoints, asset references, and external links across your codebase.
 
 - **Multiple file format support**
 
   Works with HTML, CSS, JavaScript, TypeScript, JSON, YAML, Markdown, and more.
 
-- **Accessibility & validation**
+- **Clean output format**
 
-  Includes URL validation, accessibility checking, and link integrity analysis.
+  Extract URLs to a new editor with line numbers and original context.
 
 ## 🚀 More from the LE Family
 
@@ -99,7 +92,7 @@ Each tool follows the same philosophy: **Zero Hassle, Maximum Productivity**.
 
 ### Web Development Audit
 
-Extract and validate all URLs in a web application:
+Extract all URLs in a web application:
 
 ```html
 <!-- Extract from index.html -->
@@ -122,9 +115,9 @@ Extract API endpoints from documentation:
 - PUT https://api.example.com/users/{id}
 ```
 
-### Link Validation
+### Configuration Analysis
 
-Check for broken or outdated links:
+Extract URLs from configuration files:
 
 ```json
 // Extract from config.json
@@ -137,30 +130,48 @@ Check for broken or outdated links:
 }
 ```
 
-### SEO Analysis
+### Documentation Analysis
 
-Extract and analyze URLs for SEO optimization and link building strategies.
+Extract URLs from documentation to audit external links and references.
 
 ## 🚀 Quick Start
 
-1. **Coming Soon** - URLs-LE will be available on VS Code Marketplace and Open VSX
-2. Open any file containing URLs (`Cmd/Ctrl + P URLs-LE`)
-3. Run Quick Extract (`Cmd+Alt+E` / `Ctrl+Alt+E` / Status Bar)
+1. Install from [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le) or [Open VSX](https://open-vsx.org/extension/nolindnaidoo/urls-le)
+2. Open any file containing URLs (HTML, Markdown, JavaScript, etc.)
+3. Run **Extract URLs** (`Ctrl+Alt+U` / `Cmd+Alt+U`)
+
+<p align="center">
+  <img src="src/assets/images/command-palette.png" alt="Command Palette" style="max-width: 100%; height: auto;" />
+</p>
 
 ## ⚙️ Configuration
 
-- `urls-le.enabled` – Enable or disable the extension
-- `urls-le.extractHttp` – Extract HTTP/HTTPS URLs
-- `urls-le.extractFtp` – Extract FTP URLs
-- `urls-le.extractMailto` – Extract mailto URLs
-- `urls-le.extractTel` – Extract tel URLs
-- `urls-le.extractFile` – Extract file URLs
-- `urls-le.extractRelative` – Extract relative URLs
-- `urls-le.includeComments` – Include URLs in comments
-- `urls-le.sortByFrequency` – Sort results by usage frequency
-- `urls-le.groupByDomain` – Group URLs by domain
-- `urls-le.validateUrls` – Enable URL validation
-- `urls-le.checkAccessibility` – Enable accessibility checking
+### Output Settings
+
+- `urls-le.copyToClipboardEnabled` – Automatically copy extraction results to clipboard (default: false)
+- `urls-le.dedupeEnabled` – Enable automatic deduplication of extracted URLs (default: false)
+- `urls-le.postProcess.openInNewFile` – Open results in a new editor (default: false)
+- `urls-le.openResultsSideBySide` – Open extraction results in editor to the side (default: false)
+
+### Notification Settings
+
+- `urls-le.notificationsLevel` – Control notification verbosity: `silent`, `important`, or `all` (default: silent)
+- `urls-le.showParseErrors` – Show parse errors as notifications (default: false)
+
+### Safety Settings
+
+- `urls-le.safety.enabled` – Enable safety checks for large files and operations (default: true)
+- `urls-le.safety.fileSizeWarnBytes` – Warn when file size exceeds threshold in bytes (default: 1000000)
+- `urls-le.safety.largeOutputLinesThreshold` – Warn before opening large results (default: 50000)
+- `urls-le.safety.manyDocumentsThreshold` – Warn before opening multiple documents (default: 8)
+
+### UI Settings
+
+- `urls-le.statusBar.enabled` – Show status bar entry for quick access (default: true)
+
+### Advanced Settings
+
+- `urls-le.telemetryEnabled` – Enable local-only telemetry logs to Output panel (default: false)
 
 ## 🌍 Language Support
 
@@ -203,8 +214,6 @@ URLs-LE is built for speed across all supported formats:
 
 - **Memory Usage**: ~50MB base + 1MB per 1000 URLs processed
 - **Large Files**: Files over 15MB may show reduced throughput (200K-800K URLs/sec)
-- **URL Validation**: Adds 30-50% processing time when enabled
-- **Accessibility Checking**: Adds 40-60% processing time when enabled
 - **Domain Grouping**: Adds 10-20% processing time when enabled
 - **Hardware Requirements**: Minimum 4GB RAM, recommended 8GB+ for large web projects
 
@@ -231,20 +240,6 @@ URLs-LE is built for speed across all supported formats:
 - Ensure URLs are not inside comments if `urls-le.includeComments` is disabled
 - Check for proper URL formatting and protocols
 
-**URL validation issues**
-
-- Enable `urls-le.validateUrls: true` for URL validation
-- Check that URLs are properly formatted and accessible
-- Some URLs may be valid but not reachable from your network
-- Relative URLs may not be valid without proper context
-
-**Accessibility checking problems**
-
-- Enable `urls-le.checkAccessibility: true` for accessibility analysis
-- Check that URLs are accessible and follow accessibility guidelines
-- Some URLs may require authentication or special permissions
-- External URLs may not be accessible for accessibility checking
-
 **Domain grouping issues**
 
 - Enable `urls-le.groupByDomain: true` for domain-based grouping
@@ -270,16 +265,13 @@ URLs-LE is built for speed across all supported formats:
 A: URLs-LE extracts HTTP/HTTPS URLs (https://example.com), FTP URLs (ftp://files.example.com), mailto links (mailto:user@example.com), tel links (tel:+1234567890), and file URLs (file:///path/to/file). Relative URLs are not supported for reliability.
 
 **Q: Can I extract URLs from comments?**
-A: No, URLs-LE automatically filters out URLs found in HTML comments and Markdown code blocks to ensure reliable extraction of only user-visible URLs.
-
-**Q: How does URL validation work?**
-A: When `urls-le.validateUrls: true` is enabled, URLs-LE checks if the extracted URLs are properly formatted and accessible, reporting any broken or invalid links.
+A: By default, URLs-LE filters out URLs in HTML comments and Markdown code blocks. Enable `urls-le.includeComments: true` to include them.
 
 **Q: Can I group URLs by domain?**
 A: Yes, enable `urls-le.groupByDomain: true` to organize results by domain (example.com, github.com, etc.) for easier analysis.
 
-**Q: How does accessibility checking work?**
-A: When `urls-le.checkAccessibility: true` is enabled, URLs-LE analyzes URLs for accessibility compliance and reports any issues.
+**Q: How do I access the extracted URLs?**
+A: Extracted URLs open in a new editor window with line numbers and context. Enable `urls-le.copyToClipboardEnabled: true` to also copy them to clipboard.
 
 **Q: What's the largest file size supported?**
 A: URLs-LE can handle files up to 30MB, though performance may be reduced for very large files. Consider breaking large files into smaller chunks for better performance.

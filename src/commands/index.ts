@@ -5,11 +5,7 @@ import type { StatusBar } from '../ui/statusBar';
 import type { ErrorHandler } from '../utils/errorHandling';
 import type { Localizer } from '../utils/localization';
 import type { PerformanceMonitor } from '../utils/performance';
-import { registerAnalyzeCommand } from './analyze';
-import { registerCheckAccessibilityCommand } from './checkAccessibility';
 import { registerExtractCommand } from './extract';
-import { registerHelpCommand } from './help';
-import { registerValidateCommand } from './validate';
 
 export function registerCommands(
 	context: vscode.ExtensionContext,
@@ -23,8 +19,4 @@ export function registerCommands(
 	}>,
 ): void {
 	registerExtractCommand(context, deps);
-	registerValidateCommand(context, deps);
-	registerCheckAccessibilityCommand(context, deps);
-	registerAnalyzeCommand(context, deps);
-	registerHelpCommand(context, deps);
 }
