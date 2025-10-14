@@ -155,16 +155,16 @@
 					],
 					"description": "%manifest.settings.notifications.level.desc%"
 				},
-				"urls-le.postProcess.openInNewFile": {
-					"type": "boolean",
-					"default": false,
-					"description": "%manifest.settings.open.new-file.desc%"
-				},
-				"urls-le.openResultsSideBySide": {
-					"type": "boolean",
-					"default": false,
-					"description": "%manifest.settings.open.side-by-side.desc%"
-				},
+			"urls-le.postProcess.openInNewFile": {
+				"type": "boolean",
+				"default": true,
+				"description": "%manifest.settings.open.new-file.desc%"
+			},
+			"urls-le.openResultsSideBySide": {
+				"type": "boolean",
+				"default": true,
+				"description": "%manifest.settings.open.side-by-side.desc%"
+			},
 				"urls-le.safety.enabled": {
 					"type": "boolean",
 					"default": true,
