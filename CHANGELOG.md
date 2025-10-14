@@ -5,6 +5,12 @@ All notable changes to URLs-LE will be documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-10-14
+
+### Fixed
+
+- **Excluded sample folder from package** - Added `sample/` to `.vscodeignore` to prevent sample files from being included in VSIX package, fixing CI security warnings
+
 ## [1.0.3] - 2025-10-14
 
 ### Fixed

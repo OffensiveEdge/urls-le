@@ -12,6 +12,7 @@ vitest.config.ts
 docs/
 src/**/*.test.ts
 test/
+sample/
 README-STRINGLE.md
 src/
 !src/assets/images/preview.gif
