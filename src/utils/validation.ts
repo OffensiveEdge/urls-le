@@ -3,15 +3,15 @@ import { validateUrl } from './urlValidation';
 
 export async function validateUrls(
 	urls: string[],
-	config: Configuration,
+	_config: Configuration,
 ): Promise<ValidationResult[]> {
 	const results: ValidationResult[] = [];
 
 	for (const url of urls) {
 		try {
 			const result = await validateUrl(url, {
-				timeout: config.validationTimeout,
-				followRedirects: config.validationFollowRedirects,
+				timeout: 5000, // Default 5 second timeout
+				followRedirects: true, // Default to following redirects
 			});
 			results.push(result);
 		} catch (error) {

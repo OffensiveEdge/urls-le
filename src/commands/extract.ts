@@ -1,10 +1,13 @@
 import * as vscode from 'vscode';
+import * as nls from 'vscode-nls';
 import { getConfiguration } from '../config/config';
 import { extractUrls } from '../extraction/extract';
 import type { Telemetry } from '../telemetry/telemetry';
 import type { Notifier } from '../ui/notifier';
 import type { StatusBar } from '../ui/statusBar';
 import { handleSafetyChecks } from '../utils/safety';
+
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 export function registerExtractCommand(
 	context: vscode.ExtensionContext,
@@ -21,7 +24,9 @@ export function registerExtractCommand(
 
 			const editor = vscode.window.activeTextEditor;
 			if (!editor) {
-				deps.notifier.showWarning('No active editor found');
+				deps.notifier.showWarning(
+					localize('runtime.error.no-active-editor', 'No active editor found'),
+				);
 				return;
 			}
 
@@ -50,6 +55,7 @@ export function registerExtractCommand(
 				const result = await extractUrls(
 					document.getText(),
 					document.languageId,
+					token,
 				);
 
 				// Check for cancellation after extraction
@@ -62,12 +68,23 @@ export function registerExtractCommand(
 						result.errors && result.errors.length > 0
 							? result.errors[0]?.message || 'Unknown error'
 							: 'Unknown error';
-					deps.notifier.showError(`Failed to extract URLs: ${errorMessage}`);
+					deps.notifier.showError(
+						localize(
+							'runtime.error.extraction-failed',
+							'Failed to extract URLs: {0}',
+							errorMessage,
+						),
+					);
 					return;
 				}
 
 				if (!result.urls || result.urls.length === 0) {
-					deps.notifier.showInfo('No URLs found in the current document');
+					deps.notifier.showInfo(
+						localize(
+							'runtime.info.no-urls-found',
+							'No URLs found in the current document',
+						),
+					);
 					return;
 				}
 
@@ -90,7 +107,11 @@ export function registerExtractCommand(
 						await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
 					} catch (error) {
 						deps.notifier.showError(
-							`Failed to open results side by side: ${error instanceof Error ? error.message : 'Unknown error'}`,
+							localize(
+								'runtime.error.open-side-by-side-failed',
+								'Failed to open results side by side: {0}',
+								error instanceof Error ? error.message : 'Unknown error',
+							),
 						);
 						return;
 					}
@@ -107,7 +128,11 @@ export function registerExtractCommand(
 						await vscode.window.showTextDocument(doc);
 					} catch (error) {
 						deps.notifier.showError(
-							`Failed to open results in new file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+							localize(
+								'runtime.error.open-new-file-failed',
+								'Failed to open results in new file: {0}',
+								error instanceof Error ? error.message : 'Unknown error',
+							),
 						);
 						return;
 					}
@@ -124,10 +149,23 @@ export function registerExtractCommand(
 							new vscode.Range(0, 0, document.lineCount, 0),
 							formattedUrls.join('\n'),
 						);
-						await vscode.workspace.applyEdit(edit);
+						const success = await vscode.workspace.applyEdit(edit);
+						if (!success) {
+							deps.notifier.showError(
+								localize(
+									'runtime.error.apply-edits-failed',
+									'Failed to apply edits to document',
+								),
+							);
+							return;
+						}
 					} catch (error) {
 						deps.notifier.showError(
-							`Failed to replace document content: ${error instanceof Error ? error.message : 'Unknown error'}`,
+							localize(
+								'runtime.error.replace-content-failed',
+								'Failed to replace document content: {0}',
+								error instanceof Error ? error.message : 'Unknown error',
+							),
 						);
 						return;
 					}
@@ -137,11 +175,16 @@ export function registerExtractCommand(
 				if (config.copyToClipboardEnabled) {
 					try {
 						const clipboardText = formattedUrls.join('\n');
-						// Check clipboard text length to prevent memory issues
-						if (clipboardText.length > 1000000) {
-							// 1MB limit
+						// Check clipboard text byte size to prevent memory issues
+						const byteSize = new TextEncoder().encode(clipboardText).length;
+						if (byteSize > 1000000) {
+							// 1MB limit in bytes
 							deps.notifier.showWarning(
-								`Results too large for clipboard (${clipboardText.length} characters), skipping clipboard copy`,
+								localize(
+									'runtime.warning.clipboard-too-large',
+									'Results too large for clipboard ({0} bytes), skipping clipboard copy',
+									byteSize,
+								),
 							);
 						} else {
 							// Check for cancellation before clipboard operation
@@ -150,7 +193,11 @@ export function registerExtractCommand(
 							}
 							await vscode.env.clipboard.writeText(clipboardText);
 							deps.notifier.showInfo(
-								`Extracted ${result.urls.length} URLs and copied to clipboard`,
+								localize(
+									'runtime.info.urls-extracted-with-clipboard',
+									'Extracted {0} URLs and copied to clipboard',
+									result.urls.length,
+								),
 							);
 						}
 					} catch (error) {
@@ -164,24 +211,49 @@ export function registerExtractCommand(
 							errorMessage.includes('access')
 						) {
 							deps.notifier.showWarning(
-								'Clipboard access denied. Extracted URLs but could not copy to clipboard.',
+								localize(
+									'runtime.warning.clipboard-access-denied',
+									'Clipboard access denied. Extracted URLs but could not copy to clipboard.',
+								),
 							);
 						} else {
 							deps.notifier.showWarning(
-								`Failed to copy to clipboard: ${errorMessage}`,
+								localize(
+									'runtime.error.clipboard-failed',
+									'Failed to copy to clipboard: {0}',
+									errorMessage,
+								),
 							);
 						}
-						deps.notifier.showInfo(`Extracted ${result.urls.length} URLs`);
+						deps.notifier.showInfo(
+							localize(
+								'runtime.info.urls-extracted',
+								'Extracted {0} URLs',
+								result.urls.length,
+							),
+						);
 					}
 				} else {
-					deps.notifier.showInfo(`Extracted ${result.urls.length} URLs`);
+					deps.notifier.showInfo(
+						localize(
+							'runtime.info.urls-extracted',
+							'Extracted {0} URLs',
+							result.urls.length,
+						),
+					);
 				}
 
 				deps.telemetry.event('extract-success', { count: result.urls.length });
 			} catch (error) {
 				const message =
 					error instanceof Error ? error.message : 'Unknown error occurred';
-				deps.notifier.showError(`Extraction failed: ${message}`);
+				deps.notifier.showError(
+					localize(
+						'runtime.error.extraction-failed',
+						'Failed to extract URLs: {0}',
+						message,
+					),
+				);
 				deps.telemetry.event('extract-error', { error: message });
 			} finally {
 				deps.statusBar.hideProgress();

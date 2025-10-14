@@ -7,19 +7,28 @@ export interface Telemetry {
 }
 
 export function createTelemetry(): Telemetry {
-	const config = getConfiguration();
 	let outputChannel: vscode.OutputChannel | undefined;
-
-	if (config.telemetryEnabled) {
-		outputChannel = vscode.window.createOutputChannel('URLs-LE Telemetry');
-	}
 
 	return Object.freeze({
 		event(name: string, properties?: Record<string, unknown>): void {
-			if (outputChannel) {
+			const config = getConfiguration();
+			if (config.telemetryEnabled) {
+				// Create channel lazily if needed
+				if (!outputChannel) {
+					outputChannel =
+						vscode.window.createOutputChannel('URLs-LE Telemetry');
+				}
+
 				const timestamp = new Date().toISOString();
-				const props = properties ? ` ${JSON.stringify(properties)}` : '';
-				outputChannel.appendLine(`[${timestamp}] ${name}${props}`);
+				try {
+					const props = properties ? ` ${JSON.stringify(properties)}` : '';
+					outputChannel.appendLine(`[${timestamp}] ${name}${props}`);
+				} catch (_error) {
+					// Handle JSON.stringify errors (circular references, etc.)
+					outputChannel.appendLine(
+						`[${timestamp}] ${name} [serialization error]`,
+					);
+				}
 			}
 		},
 		dispose(): void {

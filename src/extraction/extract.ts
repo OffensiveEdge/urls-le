@@ -1,3 +1,4 @@
+import type * as vscode from 'vscode';
 import type { ExtractionResult, FileType, ParseError, Url } from '../types';
 import { extractFromCss } from './formats/css';
 import { extractFromHtml } from './formats/html';
@@ -9,7 +10,18 @@ import { extractFromYaml } from './formats/yaml';
 export async function extractUrls(
 	content: string,
 	languageId: string,
+	cancellationToken?: vscode.CancellationToken,
 ): Promise<ExtractionResult> {
+	// Check cancellation before starting
+	if (cancellationToken?.isCancellationRequested) {
+		return {
+			success: false,
+			urls: [],
+			errors: [],
+			fileType: 'unknown',
+		};
+	}
+
 	// Validate input length to prevent memory issues
 	if (content.length > 10000000) {
 		// 10MB limit
@@ -33,6 +45,16 @@ export async function extractUrls(
 	const fileType = determineFileType(languageId);
 	const urls: Url[] = [];
 	const errors: ParseError[] = [];
+
+	// Check cancellation before extraction
+	if (cancellationToken?.isCancellationRequested) {
+		return {
+			success: false,
+			urls: [],
+			errors: [],
+			fileType,
+		};
+	}
 
 	try {
 		switch (fileType) {

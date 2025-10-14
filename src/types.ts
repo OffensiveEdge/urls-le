@@ -167,18 +167,6 @@ export interface Configuration {
 	readonly showParseErrors: boolean;
 	readonly statusBarEnabled: boolean;
 	readonly telemetryEnabled: boolean;
-	readonly analysisEnabled: boolean;
-	readonly analysisIncludeSecurity: boolean;
-	readonly analysisIncludeAccessibility: boolean;
-	readonly validationEnabled: boolean;
-	readonly validationTimeout: number;
-	readonly validationFollowRedirects: boolean;
-	readonly performanceEnabled: boolean;
-	readonly performanceMaxDuration: number;
-	readonly performanceMaxMemoryUsage: number;
-	readonly performanceMaxCpuUsage: number;
-	readonly performanceMinThroughput: number;
-	readonly performanceMaxCacheSize: number;
 }
 
 // Re-export utility types for easier access

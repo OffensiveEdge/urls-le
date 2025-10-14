@@ -16,12 +16,9 @@ vi.mock('vscode', () => ({
 					safetyFileSizeWarnBytes: 1000000,
 					safetyLargeOutputLinesThreshold: 50000,
 					safetyManyDocumentsThreshold: 8,
-					analysisEnabled: true,
-					analysisIncludeSecurity: true,
-					analysisIncludeAccessibility: true,
-					validationEnabled: true,
-					validationTimeout: 5000,
-					validationFollowRedirects: true,
+					showParseErrors: false,
+					'statusBar.enabled': true,
+					telemetryEnabled: false,
 				};
 				return config[key] ?? defaultValue;
 			},
@@ -43,12 +40,9 @@ describe('Configuration', () => {
 			expect(config.safetyFileSizeWarnBytes).toBe(1000000);
 			expect(config.safetyLargeOutputLinesThreshold).toBe(50000);
 			expect(config.safetyManyDocumentsThreshold).toBe(8);
-			expect(config.analysisEnabled).toBe(true);
-			expect(config.analysisIncludeSecurity).toBe(true);
-			expect(config.analysisIncludeAccessibility).toBe(true);
-			expect(config.validationEnabled).toBe(true);
-			expect(config.validationTimeout).toBe(5000);
-			expect(config.validationFollowRedirects).toBe(true);
+			expect(config.showParseErrors).toBe(false);
+			expect(config.statusBarEnabled).toBe(true);
+			expect(config.telemetryEnabled).toBe(false);
 		});
 
 		it('should return frozen configuration object', () => {

@@ -203,25 +203,24 @@ describe('URL Analysis', () => {
 			expect(result.domains.commonDomains).toBeDefined();
 		});
 
-		it('should not include security analysis when disabled', () => {
-			const config = { ...createTestConfig(), analysisIncludeSecurity: false };
+		it('should always include security analysis', () => {
+			const config = createTestConfig();
 			const urls = ['https://example.com/page'];
 
 			const result = analyzeUrls(urls, config);
 
-			expect(result.security).toBeUndefined();
+			expect(result.security).toBeDefined();
+			expect(result.security?.secure).toBe(1);
 		});
 
-		it('should not include accessibility analysis when disabled', () => {
-			const config = {
-				...createTestConfig(),
-				analysisIncludeAccessibility: false,
-			};
+		it('should always include accessibility analysis', () => {
+			const config = createTestConfig();
 			const urls = ['https://example.com/page'];
 
 			const result = analyzeUrls(urls, config);
 
-			expect(result.accessibility).toBeUndefined();
+			expect(result.accessibility).toBeDefined();
+			expect(result.accessibility?.accessible).toBe(1);
 		});
 	});
 });

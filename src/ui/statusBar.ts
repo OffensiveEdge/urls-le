@@ -4,8 +4,6 @@ import { getConfiguration } from '../config/config';
 export interface StatusBar {
 	showIdle(): void;
 	showExtracting(): void;
-	showValidating(): void;
-	showAnalyzing(): void;
 	showSuccess(count: number): void;
 	showError(message: string): void;
 	showWarning(message: string): void;
@@ -65,34 +63,6 @@ export function createStatusBarService(
 					'statusBarItem.activeBackground',
 				);
 				mainItem.tooltip = 'URLs-LE: Extracting URLs from document';
-				mainItem.show();
-			}
-		},
-
-		showValidating(): void {
-			if (mainItem) {
-				mainItem.text = 'URLs-LE: Validating...';
-				mainItem.color = new vscode.ThemeColor(
-					'statusBarItem.activeForeground',
-				);
-				mainItem.backgroundColor = new vscode.ThemeColor(
-					'statusBarItem.activeBackground',
-				);
-				mainItem.tooltip = 'URLs-LE: Validating extracted URLs';
-				mainItem.show();
-			}
-		},
-
-		showAnalyzing(): void {
-			if (mainItem) {
-				mainItem.text = 'URLs-LE: Analyzing...';
-				mainItem.color = new vscode.ThemeColor(
-					'statusBarItem.activeForeground',
-				);
-				mainItem.backgroundColor = new vscode.ThemeColor(
-					'statusBarItem.activeBackground',
-				);
-				mainItem.tooltip = 'URLs-LE: Analyzing URL patterns';
 				mainItem.show();
 			}
 		},

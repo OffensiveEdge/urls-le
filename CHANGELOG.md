@@ -5,6 +5,53 @@ All notable changes to URLs-LE will be documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-10-14
+
+### Fixed
+
+#### Critical Issues
+
+- **Notifier now respects notificationsLevel setting** - Info messages only show when level is 'all', warnings show for 'all' or 'important', errors always show
+- **Removed unused config properties** - Cleaned up 13 unused settings (analysis, validation, performance) that were removed from package.json but still in code
+
+#### High Priority Issues
+
+- **Fixed memory leak** - Registered errorHandler as disposable to prevent memory leaks on extension reload
+- **Cancellation token support** - Added cancellation token parameter to extractUrls() function with checks before expensive operations
+- **Dynamic telemetry** - Telemetry now checks config on each event() call and creates output channel lazily
+- **JSON.stringify error handling** - Added try-catch to handle circular references and unserializable values in telemetry
+
+#### Medium Priority Issues
+
+- **WorkspaceEdit validation** - Now checks success after applyEdit() and shows error notification if edit fails
+- **Clipboard size calculation** - Changed from character count to actual byte size using TextEncoder for accurate 1MB limit
+- **URL validation** - Enhanced filtering for url.value existence and type checking
+
+#### Code Quality
+
+- **Removed dead code** - Deleted unused StatusBar methods (showValidating, showAnalyzing)
+- **Removed unused dependencies** - Cleaned up Localizer, PerformanceMonitor, and ErrorHandler from command registration
+- **Fixed analysis.ts** - Now always includes security and accessibility analysis
+- **Fixed validation.ts** - Uses default timeout values instead of removed config properties
+
+### Added
+
+- **Complete i18n support** - Added 30+ runtime localization strings for all user-facing messages
+- **Localized extract command** - All hardcoded strings now use localize() function with proper placeholders
+- **Enhanced error messages** - Added localized error suggestions for better user guidance
+
+### Changed
+
+- **Updated Configuration interface** - Removed unused properties to match actual available settings
+- **Simplified config validation** - Removed validation for deleted configuration properties
+- **Test updates** - Updated all tests to match new Configuration interface
+
+### Testing
+
+- All 102 tests passing
+- Test coverage generated and verified
+- No linter errors
+
 ## [1.0.2] - 2025-10-14
 
 ### Changed

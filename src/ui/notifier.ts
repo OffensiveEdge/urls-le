@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
+import { getConfiguration } from '../config/config';
 
 const _localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
@@ -12,12 +13,19 @@ export interface Notifier {
 export function createNotifier(): Notifier {
 	return Object.freeze({
 		showInfo(message: string): void {
-			vscode.window.showInformationMessage(message);
+			const config = getConfiguration();
+			if (config.notificationsLevel === 'all') {
+				vscode.window.showInformationMessage(message);
+			}
 		},
 		showWarning(message: string): void {
-			vscode.window.showWarningMessage(message);
+			const config = getConfiguration();
+			if (config.notificationsLevel !== 'silent') {
+				vscode.window.showWarningMessage(message);
+			}
 		},
 		showError(message: string): void {
+			// Always show errors regardless of notification level
 			vscode.window.showErrorMessage(message);
 		},
 	});

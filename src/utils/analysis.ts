@@ -16,7 +16,7 @@ import {
 
 export function analyzeUrls(
 	lines: string[],
-	config: Configuration,
+	_config: Configuration,
 ): AnalysisResult {
 	const urls = lines.filter((line) => line.trim().length > 0);
 	const uniqueUrls = new Set(urls);
@@ -51,14 +51,9 @@ export function analyzeUrls(
 		domains: undefined,
 	};
 
-	if (config.analysisIncludeSecurity) {
-		result.security = analyzeSecurity(urls) as SecurityAnalysis;
-	}
-
-	if (config.analysisIncludeAccessibility) {
-		result.accessibility = analyzeAccessibility(urls);
-	}
-
+	// Always include security and accessibility analysis
+	result.security = analyzeSecurity(urls) as SecurityAnalysis;
+	result.accessibility = analyzeAccessibility(urls);
 	result.domains = analyzeDomains(urls);
 
 	return result;

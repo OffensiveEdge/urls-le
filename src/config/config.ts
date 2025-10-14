@@ -39,42 +39,6 @@ export function getConfiguration(): Configuration {
 		showParseErrors: Boolean(config.get('showParseErrors', false)),
 		statusBarEnabled: Boolean(config.get('statusBar.enabled', true)),
 		telemetryEnabled: Boolean(config.get('telemetryEnabled', false)),
-		analysisEnabled: Boolean(config.get('analysis.enabled', true)),
-		analysisIncludeSecurity: Boolean(
-			config.get('analysis.includeSecurity', true),
-		),
-		analysisIncludeAccessibility: Boolean(
-			config.get('analysis.includeAccessibility', true),
-		),
-		validationEnabled: Boolean(config.get('validation.enabled', true)),
-		validationTimeout: Math.max(
-			1000,
-			Number(config.get('validation.timeout', 5000)),
-		),
-		validationFollowRedirects: Boolean(
-			config.get('validation.followRedirects', true),
-		),
-		performanceEnabled: Boolean(config.get('performance.enabled', true)),
-		performanceMaxDuration: Math.max(
-			1000,
-			Number(config.get('performance.maxDuration', 5000)),
-		),
-		performanceMaxMemoryUsage: Math.max(
-			1048576,
-			Number(config.get('performance.maxMemoryUsage', 104857600)),
-		),
-		performanceMaxCpuUsage: Math.max(
-			100000,
-			Number(config.get('performance.maxCpuUsage', 1000000)),
-		),
-		performanceMinThroughput: Math.max(
-			100,
-			Number(config.get('performance.minThroughput', 1000)),
-		),
-		performanceMaxCacheSize: Math.max(
-			100,
-			Number(config.get('performance.maxCacheSize', 1000)),
-		),
 	});
 }
 
