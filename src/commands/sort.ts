@@ -1,86 +1,88 @@
-import * as vscode from 'vscode'
+import * as vscode from 'vscode';
 
 export function registerSortCommand(context: vscode.ExtensionContext): void {
-  const command = vscode.commands.registerCommand(
-    'urls-le.postProcess.sort',
-    async () => {
-      const editor = vscode.window.activeTextEditor
-      if (!editor) {
-        vscode.window.showWarningMessage('No active editor found')
-        return
-      }
+	const command = vscode.commands.registerCommand(
+		'urls-le.postProcess.sort',
+		async () => {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showWarningMessage('No active editor found');
+				return;
+			}
 
-      // Prompt user for sort order
-      const sortOrder = await vscode.window.showQuickPick(
-        [
-          { label: 'Alphabetical (A → Z)', value: 'asc' },
-          { label: 'Alphabetical (Z → A)', value: 'desc' },
-          { label: 'By Domain', value: 'domain' },
-          { label: 'By Length (Short → Long)', value: 'length-asc' },
-          { label: 'By Length (Long → Short)', value: 'length-desc' },
-        ],
-        { placeHolder: 'Select sort order' },
-      )
+			// Prompt user for sort order
+			const sortOrder = await vscode.window.showQuickPick(
+				[
+					{ label: 'Alphabetical (A → Z)', value: 'asc' },
+					{ label: 'Alphabetical (Z → A)', value: 'desc' },
+					{ label: 'By Domain', value: 'domain' },
+					{ label: 'By Length (Short → Long)', value: 'length-asc' },
+					{ label: 'By Length (Long → Short)', value: 'length-desc' },
+				],
+				{ placeHolder: 'Select sort order' },
+			);
 
-      if (!sortOrder) {
-        return // User cancelled
-      }
+			if (!sortOrder) {
+				return; // User cancelled
+			}
 
-      try {
-        const document = editor.document
-        const text = document.getText()
-        const lines = text
-          .split('\n')
-          .map((line) => line.trim())
-          .filter((line) => line.length > 0)
+			try {
+				const document = editor.document;
+				const text = document.getText();
+				const lines = text
+					.split('\n')
+					.map((line) => line.trim())
+					.filter((line) => line.length > 0);
 
-        let sorted: string[]
-        if (sortOrder.value === 'domain') {
-          // Sort by domain (extract hostname from URL)
-          sorted = [...lines].sort((a, b) => {
-            try {
-              const urlA = new URL(a)
-              const urlB = new URL(b)
-              return urlA.hostname.localeCompare(urlB.hostname)
-            } catch {
-              // If URL parsing fails, fall back to string comparison
-              return a.localeCompare(b)
-            }
-          })
-        } else if (sortOrder.value === 'length-asc' || sortOrder.value === 'length-desc') {
-          sorted = [...lines].sort((a, b) => {
-            return sortOrder.value === 'length-asc'
-              ? a.length - b.length
-              : b.length - a.length
-          })
-        } else {
-          sorted = [...lines].sort((a, b) => {
-            return sortOrder.value === 'asc'
-              ? a.localeCompare(b)
-              : b.localeCompare(a)
-          })
-        }
+				let sorted: string[];
+				if (sortOrder.value === 'domain') {
+					// Sort by domain (extract hostname from URL)
+					sorted = [...lines].sort((a, b) => {
+						try {
+							const urlA = new URL(a);
+							const urlB = new URL(b);
+							return urlA.hostname.localeCompare(urlB.hostname);
+						} catch {
+							// If URL parsing fails, fall back to string comparison
+							return a.localeCompare(b);
+						}
+					});
+				} else if (
+					sortOrder.value === 'length-asc' ||
+					sortOrder.value === 'length-desc'
+				) {
+					sorted = [...lines].sort((a, b) => {
+						return sortOrder.value === 'length-asc'
+							? a.length - b.length
+							: b.length - a.length;
+					});
+				} else {
+					sorted = [...lines].sort((a, b) => {
+						return sortOrder.value === 'asc'
+							? a.localeCompare(b)
+							: b.localeCompare(a);
+					});
+				}
 
-        // Replace document content
-        const edit = new vscode.WorkspaceEdit()
-        edit.replace(
-          document.uri,
-          new vscode.Range(0, 0, document.lineCount, 0),
-          sorted.join('\n'),
-        )
-        await vscode.workspace.applyEdit(edit)
+				// Replace document content
+				const edit = new vscode.WorkspaceEdit();
+				edit.replace(
+					document.uri,
+					new vscode.Range(0, 0, document.lineCount, 0),
+					sorted.join('\n'),
+				);
+				await vscode.workspace.applyEdit(edit);
 
-        vscode.window.showInformationMessage(
-          `Sorted ${sorted.length} URLs (${sortOrder.label})`,
-        )
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : 'Unknown error occurred'
-        vscode.window.showErrorMessage(`Sorting failed: ${message}`)
-      }
-    },
-  )
+				vscode.window.showInformationMessage(
+					`Sorted ${sorted.length} URLs (${sortOrder.label})`,
+				);
+			} catch (error) {
+				const message =
+					error instanceof Error ? error.message : 'Unknown error occurred';
+				vscode.window.showErrorMessage(`Sorting failed: ${message}`);
+			}
+		},
+	);
 
-  context.subscriptions.push(command)
+	context.subscriptions.push(command);
 }
-
