@@ -23,15 +23,14 @@ body {
 @font-face {
   font-family: 'CustomFont';
   src: url('./fonts/custom-font.woff2') format('woff2'),
-       url('https://cdn.example.com/fonts/custom-font.woff') format('woff');
+    url('https://cdn.example.com/fonts/custom-font.woff') format('woff');
 }
 
 @font-face {
   font-family: 'IconFont';
   src: url('../fonts/icons.eot');
   src: url('../fonts/icons.eot?#iefix') format('embedded-opentype'),
-       url('../fonts/icons.woff2') format('woff2'),
-       url('../fonts/icons.ttf') format('truetype');
+    url('../fonts/icons.woff2') format('woff2'), url('../fonts/icons.ttf') format('truetype');
 }
 
 /* Cursors */
@@ -45,8 +44,7 @@ body {
 
 /* Gradients with URLs (edge case - URLs in gradients) */
 .complex-bg {
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)),
-              url('./images/overlay.jpg');
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url('./images/overlay.jpg');
 }
 
 /* Border images */
@@ -84,13 +82,13 @@ ul.custom {
 .protocols {
   /* HTTP */
   background: url('http://example.com/http-image.jpg');
-  
+
   /* HTTPS */
   background: url('https://secure.example.com/https-image.jpg');
-  
+
   /* Protocol-relative */
   background: url('//cdn.example.com/image.jpg');
-  
+
   /* Data URL (should be excluded) */
   background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiPjwvc3ZnPg==');
 }
@@ -109,14 +107,13 @@ ul.custom {
 }
 
 /* Complex selectors */
-a[href="https://example.com"]::after {
+a[href="https://example.com"]::after
+{
   content: url('./icons/external-link.svg');
 }
 
 /* Multiple URLs in single property */
 .multiple {
-  background: url('./bg1.jpg') top left,
-              url('https://cdn.example.com/bg2.jpg') bottom right,
-              url('../images/bg3.png') center;
+  background: url('./bg1.jpg') top left, url('https://cdn.example.com/bg2.jpg') bottom right,
+    url('../images/bg3.png') center;
 }
-

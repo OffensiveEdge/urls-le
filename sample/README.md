@@ -6,14 +6,14 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 
 ## 📋 Sample Files Overview
 
-| File                 | Format     | URLs | Description                                    |
-| -------------------- | ---------- | ---- | ---------------------------------------------- |
-| `web-page.html`      | HTML       | ~20  | Web page with links, images, scripts, styles  |
-| `app-imports.js`     | JavaScript | ~10  | JavaScript with external resource URLs         |
-| `documentation.md`   | Markdown   | ~15  | Documentation with various URL types           |
-| `styles.css`         | CSS        | ~40  | Stylesheet with fonts, images, imports         |
-| `api-config.json`    | JSON       | ~50  | API configuration with endpoints and resources |
-| `config.yaml`        | YAML       | ~45  | Application config with service URLs           |
+| File               | Format     | URLs | Description                                    |
+| ------------------ | ---------- | ---- | ---------------------------------------------- |
+| `web-page.html`    | HTML       | ~20  | Web page with links, images, scripts, styles   |
+| `app-imports.js`   | JavaScript | ~10  | JavaScript with external resource URLs         |
+| `documentation.md` | Markdown   | ~15  | Documentation with various URL types           |
+| `styles.css`       | CSS        | ~40  | Stylesheet with fonts, images, imports         |
+| `api-config.json`  | JSON       | ~50  | API configuration with endpoints and resources |
+| `config.yaml`      | YAML       | ~45  | Application config with service URLs           |
 
 **Total**: ~180 URLs across 6 file types demonstrating comprehensive format coverage
 
@@ -68,6 +68,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Purpose**: Standard HTML page with various URL types
 
 **Contents**:
+
 - External stylesheets (`<link>`)
 - Images (`<img src>`)
 - Scripts (`<script src>`)
@@ -76,6 +77,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 - Video sources
 
 **URL Types**:
+
 - HTTPS URLs
 - Relative URLs (./path, ../path)
 - CDN URLs
@@ -92,12 +94,14 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Purpose**: JavaScript file with external resources
 
 **Contents**:
+
 - CDN script URLs
 - External library URLs
 - API endpoint URLs
 - Asset URLs
 
 **URL Types**:
+
 - HTTPS URLs
 - HTTP URLs (legacy)
 - CDN URLs with version numbers
@@ -113,12 +117,14 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Purpose**: Documentation with various link types
 
 **Contents**:
+
 - External documentation links
 - GitHub repository links
 - API reference URLs
 - Related resource links
 
 **URL Types**:
+
 - HTTPS URLs
 - GitHub URLs
 - Documentation site URLs
@@ -134,6 +140,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Purpose**: Comprehensive CSS with URL references
 
 **Contents**:
+
 - `@import` statements
 - `url()` in backgrounds
 - Font face declarations
@@ -141,6 +148,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 - Multiple protocols
 
 **URL Types**:
+
 - Google Fonts URLs
 - CDN URLs
 - Relative paths (./fonts, ../images)
@@ -159,6 +167,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Purpose**: JSON API configuration file
 
 **Contents**:
+
 - API endpoints
 - OAuth URLs
 - Webhook URLs
@@ -168,6 +177,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 - Resource URLs
 
 **URL Types**:
+
 - HTTPS API endpoints
 - HTTP legacy APIs
 - WebSocket URLs (wss://)
@@ -186,6 +196,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Purpose**: YAML application configuration
 
 **Contents**:
+
 - API endpoints
 - External services
 - OAuth providers
@@ -195,6 +206,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 - Integration URLs
 
 **URL Types**:
+
 - HTTPS URLs
 - HTTP URLs
 - WebSocket URLs
@@ -211,6 +223,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 
 **Goal**: Extract all URLs in original format  
 **Steps**:
+
 1. Open any sample file
 2. Run **Extract URLs**
 3. Verify all URLs extracted
@@ -225,6 +238,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Goal**: Remove duplicate URLs  
 **Settings**: `urls-le.dedupeEnabled: true`  
 **Steps**:
+
 1. Open `api-config.json` (may have duplicate CDN URLs)
 2. Run **Extract URLs**
 3. Verify duplicates removed
@@ -238,6 +252,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Goal**: Extract only HTTPS URLs  
 **Settings**: Configure protocol filters  
 **Steps**:
+
 1. Open `api-config.json` (has mixed protocols)
 2. Enable HTTPS only
 3. Run **Extract URLs**
@@ -251,6 +266,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Goal**: Open results beside source  
 **Settings**: `urls-le.openResultsSideBySide: true`  
 **Steps**:
+
 1. Open any sample file
 2. Run **Extract URLs**
 3. Verify split view
@@ -264,6 +280,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Goal**: Auto-copy results  
 **Settings**: `urls-le.copyToClipboardEnabled: true`  
 **Steps**:
+
 1. Open any sample file
 2. Run **Extract URLs**
 3. Paste clipboard (Cmd/Ctrl+V)
@@ -277,6 +294,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Goal**: Test safety warning for large files  
 **Settings**: `urls-le.safety.enabled: true`  
 **Steps**:
+
 1. Create large HTML file (>1MB)
 2. Run **Extract URLs**
 3. Verify warning appears
@@ -289,6 +307,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 
 **Goal**: Test notification verbosity  
 **Settings**: Try each:
+
 - `urls-le.notificationsLevel: "silent"` - No notifications
 - `urls-le.notificationsLevel: "important"` - Important only
 - `urls-le.notificationsLevel: "all"` - All messages
@@ -301,6 +320,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 
 **Goal**: Test comment exclusion  
 **Steps**:
+
 1. Add URLs in HTML comments to `web-page.html`
 2. Run **Extract URLs**
 3. Verify commented URLs excluded
@@ -314,6 +334,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Goal**: Verify data: URLs excluded  
 **File**: `styles.css` (has data URL)  
 **Steps**:
+
 1. Open `styles.css`
 2. Run **Extract URLs**
 3. Check results
@@ -327,6 +348,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Goal**: Test various URL protocols  
 **File**: `api-config.json` → protocols section  
 **Steps**:
+
 1. Open `api-config.json`
 2. Run **Extract URLs**
 3. Verify all protocols extracted
@@ -418,11 +440,13 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 ### Issue: No URLs Extracted
 
 **Possible Causes**:
+
 1. File type not supported
 2. No valid URLs in file
 3. Parse error
 
 **Solution**:
+
 - Verify file extension (.html, .css, .js, .json, .yaml, .md)
 - Check that URLs use valid protocols
 - Enable `urls-le.showParseErrors: true`
@@ -432,10 +456,12 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 ### Issue: Performance Issues
 
 **Possible Causes**:
+
 1. Very large file (> 10MB)
 2. Sorting/deduplication on large output
 
 **Solution**:
+
 - Enable safety warnings: `urls-le.safety.enabled: true`
 - Disable sorting: `urls-le.sortEnabled: false`
 - Disable deduplication: `urls-le.dedupeEnabled: false`
@@ -445,11 +471,13 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 ### Issue: Missing URLs
 
 **Possible Causes**:
+
 1. URLs in comments (excluded by default)
 2. Invalid URL format
 3. Protocol not supported
 
 **Solution**:
+
 - Check URL format (must have valid protocol)
 - Verify not in HTML/CSS comments
 - Check supported protocols (HTTP, HTTPS, FTP, WS, WSS, mailto, tel)
@@ -459,9 +487,11 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 ### Issue: Data URLs Extracted
 
 **Possible Causes**:
+
 1. Filter not working
 
 **Solution**:
+
 - Data URLs should be automatically excluded
 - Check for extension bug if appearing
 - Report issue with sample
@@ -581,6 +611,7 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 **Need Help?** Check [GitHub Issues](https://github.com/nolindnaidoo/urls-le/issues) or open a new issue.
 
 **Found a bug?** Report with:
+
 1. Sample file (or minimal reproduction)
 2. Expected URLs
 3. Actual results
@@ -590,4 +621,3 @@ Test files for URLs-LE URL extraction functionality across all supported formats
 ---
 
 Copyright © 2025 @nolindnaidoo. All rights reserved.
-
