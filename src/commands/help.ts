@@ -129,7 +129,10 @@ Key settings:
 			content: helpText,
 			language: 'markdown',
 		});
-		await vscode.window.showTextDocument(doc);
+		await vscode.window.showTextDocument(doc, {
+			preview: false,
+			viewColumn: vscode.ViewColumn.Beside,
+		});
 	});
 
 	context.subscriptions.push(command);
