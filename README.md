@@ -83,14 +83,17 @@ It intelligently detects and extracts URLs from your code, providing comprehensi
 - **Numbers-LE** - Extract and analyze numeric data from JSON, YAML, CSV, TOML, INI, and .env  
   [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.numbers-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/numbers-le)]
 
-- **Colors-LE** - Extract and analyze colors from CSS, SCSS, JavaScript, HTML, and more  
-  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.colors-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/colors-le)]
-
-- **Dates-LE** - Extract and analyze dates from logs, JSON, YAML, CSV, and temporal data  
-  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.dates-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/dates-le)]
-
 - **Paths-LE** - Extract and analyze file paths from imports, configs, and code  
   [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.paths-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/paths-le)]
+
+- **Scrape-LE** - Verify page reachability and detect anti-scraping measures before deploying scrapers  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.scrape-le)]
+
+- **Colors-LE** - Extract and analyze colors from CSS, HTML, JavaScript, and TypeScript  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.colors-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/colors-le)]
+
+- **Dates-LE** - Extract and analyze dates from logs, APIs, and temporal data  
+  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.dates-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/dates-le)]
 
 Each tool follows the same philosophy: **Zero Hassle, Maximum Productivity**.
 
