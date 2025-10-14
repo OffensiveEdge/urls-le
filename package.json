@@ -56,7 +56,10 @@
 		"onLanguage:yaml",
 		"onLanguage:yml",
 		"onCommand:urls-le.extractUrls",
-		"onCommand:urls-le.openSettings"
+		"onCommand:urls-le.postProcess.dedupe",
+		"onCommand:urls-le.postProcess.sort",
+		"onCommand:urls-le.openSettings",
+		"onCommand:urls-le.help"
 	],
 	"capabilities": {
 		"virtualWorkspaces": {

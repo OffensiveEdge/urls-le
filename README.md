@@ -51,6 +51,14 @@ It intelligently detects and extracts URLs from your code, helping you manage we
 
   Automatically finds URLs in multiple formats: HTTP/HTTPS, FTP, mailto, tel, and file URLs with intelligent comment and code-block filtering.
 
+- **Powerful post-processing**
+
+  Deduplicate URLs and sort with multiple modes including smart domain-based sorting for cleaner results.
+
+- **Interactive sorting options**
+
+  Sort URLs alphabetically, by domain, or by length with user-friendly quick pick selection.
+
 - **Web development support**
 
   Perfect for analyzing API endpoints, asset references, and external links across your codebase.
@@ -141,6 +149,30 @@ Extract URLs from documentation to audit external links and references.
 1. Install from [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.urls-le) or [Open VSX](https://open-vsx.org/extension/nolindnaidoo/urls-le)
 2. Open any file containing URLs (HTML, Markdown, JavaScript, etc.)
 3. Run **Extract URLs** (`Ctrl+Alt+U` / `Cmd+Alt+U`)
+4. Use **Deduplicate URLs** or **Sort URLs** commands for post-processing
+
+## 📋 Available Commands
+
+URLs-LE provides **5 commands** accessible via Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
+
+### Core Extraction
+
+- **Extract URLs** (`Cmd/Ctrl+Alt+U`) - Extract all URLs from current document
+
+### Post-Processing
+
+- **Deduplicate URLs** - Remove duplicate URL entries while preserving order
+- **Sort URLs** - Sort extracted URLs with multiple modes:
+  - Alphabetical (A → Z)
+  - Alphabetical (Z → A)
+  - By Domain (smart hostname extraction)
+  - By Length (Short → Long)
+  - By Length (Long → Short)
+
+### Settings & Help
+
+- **Open Settings** - Quick access to extension settings
+- **Help & Troubleshooting** - Comprehensive in-editor documentation
 
 <p align="center">
   <img src="src/assets/images/command-palette.png" alt="Command Palette" style="max-width: 100%; height: auto;" />

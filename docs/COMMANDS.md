@@ -2,7 +2,7 @@
 
 ## Overview
 
-URLs-LE provides two focused commands for URL extraction and settings management. Both commands are designed to be lightweight, unobtrusive, and focused on developer productivity.
+URLs-LE provides **5 commands** for URL extraction, post-processing, and settings management. All commands are designed to be lightweight, unobtrusive, and focused on developer productivity.
 
 ## Commands
 
@@ -54,6 +54,80 @@ Line 18: https://cdn.example.com/image.png
 Total: 15 URLs
 ```
 
+## Post-Processing Commands
+
+### Deduplicate URLs (`urls-le.postProcess.dedupe`)
+
+**Purpose**: Remove duplicate URLs from the current document while preserving the original order.
+
+**Usage**:
+
+- Command Palette: `URLs-LE: Deduplicate URLs`
+
+**Features**:
+
+- Removes duplicate URL entries while maintaining first occurrence
+- Preserves original URL order
+- Works on any text document with URLs (one per line)
+- Shows count of removed duplicates
+- Provides clear feedback on completion
+
+**Example**:
+
+```
+Before:
+https://example.com
+https://api.example.com
+https://example.com
+https://cdn.example.com
+
+After:
+https://example.com
+https://api.example.com
+https://cdn.example.com
+```
+
+### Sort URLs (`urls-le.postProcess.sort`)
+
+**Purpose**: Sort URLs in the current document with multiple sort modes.
+
+**Usage**:
+
+- Command Palette: `URLs-LE: Sort URLs`
+
+**Sort Modes**:
+
+1. **Alphabetical (A → Z)** - Sort URLs as strings, A to Z
+2. **Alphabetical (Z → A)** - Sort URLs as strings, Z to A
+3. **By Domain** - Sort by hostname (smart parsing)
+4. **By Length (Short → Long)** - Sort by URL length, shortest first
+5. **By Length (Long → Short)** - Sort by URL length, longest first
+
+**Features**:
+
+- Interactive sort mode selection via quick pick
+- Smart domain extraction for domain-based sorting
+- Handles invalid URLs gracefully (alphabetical fallback)
+- Works with any URL format
+- Shows count of sorted URLs
+- Provides clear feedback on completion
+
+**Example**:
+
+```
+Before:
+https://example.com/very/long/path/to/resource
+https://api.example.com
+https://example.com
+
+After (Alphabetical A→Z):
+https://api.example.com
+https://example.com
+https://example.com/very/long/path/to/resource
+```
+
+## Settings & Help Commands
+
 ### Open Settings (`urls-le.openSettings`)
 
 **Purpose**: Open the URLs-LE extension settings in VS Code.
@@ -75,6 +149,30 @@ Total: 15 URLs
 - **Extraction**: URL types to extract (HTTP, FTP, mailto, tel, file)
 - **Output**: Clipboard, deduplication, notifications
 - **Performance**: File size limits, processing thresholds
+
+### Help & Troubleshooting (`urls-le.help`)
+
+**Purpose**: Display comprehensive help and troubleshooting information.
+
+**Usage**:
+
+- Command Palette: `URLs-LE: Help & Troubleshooting`
+
+**Help Sections**:
+
+- **Command Overview**: Description of all commands
+- **Supported Formats**: List of supported URL schemes and file types
+- **Features**: Detailed feature descriptions
+- **Common Issues**: Troubleshooting guide
+- **Configuration**: Settings explanations
+- **Performance Tips**: Optimization suggestions
+
+**Features**:
+
+- Opens in a new editor tab
+- Markdown formatted for readability
+- Searchable content
+- External links to documentation and GitHub
 
 ## Error Handling
 
