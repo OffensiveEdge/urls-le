@@ -20,6 +20,7 @@ const ACTION_PATTERN = /action\s*=\s*["']([^"']+)["']/gi;
 export function extractFromHtml(content: string): Url[] {
 	const urls: Url[] = [];
 	const lines = content.split('\n');
+	const extractedPositions = new Set<string>();
 
 	// Helper function to check if a position is inside an HTML comment
 	const isInComment = (line: string, index: number): boolean => {
@@ -37,18 +38,22 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = HREF_PATTERN.exec(line)) !== null) {
 				const url = match[1];
 				if (url && isValidUrl(url) && !isInComment(line, match.index ?? 0)) {
-					const components = extractUrlComponents(url);
-					// Position should be where the URL starts, not where href starts
-					const _urlStartIndex =
-						(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
-					urls.push({
-						value: url,
-						protocol: detectUrlProtocol(url),
-						domain: components?.domain,
-						path: components?.path,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${url}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						const components = extractUrlComponents(url);
+						// Position should be where the URL starts, not where href starts
+						const _urlStartIndex =
+							(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
+						urls.push({
+							value: url,
+							protocol: detectUrlProtocol(url),
+							domain: components?.domain,
+							path: components?.path,
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -57,17 +62,21 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = SRC_PATTERN.exec(line)) !== null) {
 				const url = match[1];
 				if (url && isValidUrl(url) && !isInComment(line, match.index ?? 0)) {
-					const components = extractUrlComponents(url);
-					const _urlStartIndex =
-						(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
-					urls.push({
-						value: url,
-						protocol: detectUrlProtocol(url),
-						domain: components?.domain,
-						path: components?.path,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${url}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						const components = extractUrlComponents(url);
+						const _urlStartIndex =
+							(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
+						urls.push({
+							value: url,
+							protocol: detectUrlProtocol(url),
+							domain: components?.domain,
+							path: components?.path,
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -76,17 +85,21 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = ACTION_PATTERN.exec(line)) !== null) {
 				const url = match[1];
 				if (url && isValidUrl(url) && !isInComment(line, match.index ?? 0)) {
-					const components = extractUrlComponents(url);
-					const _urlStartIndex =
-						(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
-					urls.push({
-						value: url,
-						protocol: detectUrlProtocol(url),
-						domain: components?.domain,
-						path: components?.path,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${url}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						const components = extractUrlComponents(url);
+						const _urlStartIndex =
+							(match.index ?? 0) + match[0].indexOf(match[1] ?? '');
+						urls.push({
+							value: url,
+							protocol: detectUrlProtocol(url),
+							domain: components?.domain,
+							path: components?.path,
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -95,15 +108,19 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = URL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInComment(line, match.index ?? 0)) {
-					const components = extractUrlComponents(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						domain: components?.domain,
-						path: components?.path,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						const components = extractUrlComponents(urlValue);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							domain: components?.domain,
+							path: components?.path,
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -112,15 +129,19 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = FTP_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInComment(line, match.index ?? 0)) {
-					const components = extractUrlComponents(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						domain: components?.domain,
-						path: components?.path,
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						const components = extractUrlComponents(urlValue);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							domain: components?.domain,
+							path: components?.path,
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -129,12 +150,16 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = MAILTO_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInComment(line, match.index ?? 0)) {
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -143,12 +168,16 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = TEL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInComment(line, match.index ?? 0)) {
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -157,12 +186,16 @@ export function extractFromHtml(content: string): Url[] {
 			while ((match = FILE_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInComment(line, match.index ?? 0)) {
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 		} catch (error) {

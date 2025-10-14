@@ -20,6 +20,7 @@ export function extractFromMarkdown(content: string): Url[] {
 	const urls: Url[] = [];
 	const lines = content.split('\n');
 	let inCodeBlock = false;
+	const extractedPositions = new Set<string>();
 
 	lines.forEach((line, lineIndex) => {
 		try {
@@ -46,10 +47,68 @@ export function extractFromMarkdown(content: string): Url[] {
 				if (url && !isInInlineCode(line, match.index ?? 0)) {
 					// Only extract absolute URLs with protocols (remove relative URL support)
 					if (isValidUrl(url)) {
+						const posKey = `${url}`;
+						if (!extractedPositions.has(posKey)) {
+							extractedPositions.add(posKey);
+							const components = extractUrlComponents(url);
+							urls.push({
+								value: url,
+								protocol: detectUrlProtocol(url),
+								domain: components?.domain,
+								path: components?.path,
+								position: {
+									line: lineIndex + 1,
+									column:
+										(match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
+								},
+								context: line.trim(),
+							});
+						}
+					}
+				}
+			}
+
+			// Extract URLs from markdown autolinks
+			MARKDOWN_AUTOLINK_PATTERN.lastIndex = 0;
+			while ((match = MARKDOWN_AUTOLINK_PATTERN.exec(line)) !== null) {
+				const url = match[1];
+				if (url && isValidUrl(url) && !isInInlineCode(line, match.index ?? 0)) {
+					const posKey = `${url}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
 						const components = extractUrlComponents(url);
 						urls.push({
 							value: url,
 							protocol: detectUrlProtocol(url),
+							domain: components?.domain,
+							path: components?.path,
+							position: {
+								line: lineIndex + 1,
+								column:
+									(match.index ?? 0) + match[0].indexOf(match[1] ?? '') + 1,
+							},
+							context: line.trim(),
+						});
+					}
+				}
+			}
+
+			// Extract HTTP/HTTPS URLs from plain text
+			URL_PATTERN.lastIndex = 0;
+			while ((match = URL_PATTERN.exec(line)) !== null) {
+				const urlValue = match[1];
+				if (
+					urlValue &&
+					isValidUrl(urlValue) &&
+					!isInInlineCode(line, match.index ?? 0)
+				) {
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						const components = extractUrlComponents(urlValue);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
 							domain: components?.domain,
 							path: components?.path,
 							position: {
@@ -63,50 +122,6 @@ export function extractFromMarkdown(content: string): Url[] {
 				}
 			}
 
-			// Extract URLs from markdown autolinks
-			MARKDOWN_AUTOLINK_PATTERN.lastIndex = 0;
-			while ((match = MARKDOWN_AUTOLINK_PATTERN.exec(line)) !== null) {
-				const url = match[1];
-				if (url && isValidUrl(url) && !isInInlineCode(line, match.index ?? 0)) {
-					const components = extractUrlComponents(url);
-					urls.push({
-						value: url,
-						protocol: detectUrlProtocol(url),
-						domain: components?.domain,
-						path: components?.path,
-						position: {
-							line: lineIndex + 1,
-							column: (match.index ?? 0) + match[0].indexOf(match[1] ?? '') + 1,
-						},
-						context: line.trim(),
-					});
-				}
-			}
-
-			// Extract HTTP/HTTPS URLs from plain text
-			URL_PATTERN.lastIndex = 0;
-			while ((match = URL_PATTERN.exec(line)) !== null) {
-				const urlValue = match[1];
-				if (
-					urlValue &&
-					isValidUrl(urlValue) &&
-					!isInInlineCode(line, match.index ?? 0)
-				) {
-					const components = extractUrlComponents(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						domain: components?.domain,
-						path: components?.path,
-						position: {
-							line: lineIndex + 1,
-							column: (match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
-						},
-						context: line.trim(),
-					});
-				}
-			}
-
 			// Extract FTP URLs
 			FTP_PATTERN.lastIndex = 0;
 			while ((match = FTP_PATTERN.exec(line)) !== null) {
@@ -116,18 +131,23 @@ export function extractFromMarkdown(content: string): Url[] {
 					isValidUrl(urlValue) &&
 					!isInInlineCode(line, match.index ?? 0)
 				) {
-					const components = extractUrlComponents(urlValue);
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						domain: components?.domain,
-						path: components?.path,
-						position: {
-							line: lineIndex + 1,
-							column: (match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
-						},
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						const components = extractUrlComponents(urlValue);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							domain: components?.domain,
+							path: components?.path,
+							position: {
+								line: lineIndex + 1,
+								column:
+									(match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
+							},
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -136,15 +156,20 @@ export function extractFromMarkdown(content: string): Url[] {
 			while ((match = MAILTO_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInInlineCode(line, match.index ?? 0)) {
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						position: {
-							line: lineIndex + 1,
-							column: (match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
-						},
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							position: {
+								line: lineIndex + 1,
+								column:
+									(match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
+							},
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -153,15 +178,20 @@ export function extractFromMarkdown(content: string): Url[] {
 			while ((match = TEL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInInlineCode(line, match.index ?? 0)) {
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						position: {
-							line: lineIndex + 1,
-							column: (match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
-						},
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							position: {
+								line: lineIndex + 1,
+								column:
+									(match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
+							},
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -170,15 +200,20 @@ export function extractFromMarkdown(content: string): Url[] {
 			while ((match = FILE_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
 				if (!isInInlineCode(line, match.index ?? 0)) {
-					urls.push({
-						value: urlValue,
-						protocol: detectUrlProtocol(urlValue),
-						position: {
-							line: lineIndex + 1,
-							column: (match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
-						},
-						context: line.trim(),
-					});
+					const posKey = `${urlValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						urls.push({
+							value: urlValue,
+							protocol: detectUrlProtocol(urlValue),
+							position: {
+								line: lineIndex + 1,
+								column:
+									(match.index ?? 0) + match[0].indexOf(match[2] ?? '') + 1,
+							},
+							context: line.trim(),
+						});
+					}
 				}
 			}
 		} catch (error) {

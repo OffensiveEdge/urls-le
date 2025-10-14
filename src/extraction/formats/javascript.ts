@@ -13,6 +13,7 @@ const STRING_URL_PATTERN = /['"`]([^'"`]*?)['"`]/g;
 export function extractFromJavaScript(content: string): Url[] {
 	const urls: Url[] = [];
 	const lines = content.split('\n');
+	const extractedPositions = new Set<string>();
 
 	lines.forEach((line, lineIndex) => {
 		try {
@@ -22,12 +23,16 @@ export function extractFromJavaScript(content: string): Url[] {
 			while ((match = STRING_URL_PATTERN.exec(line)) !== null) {
 				const stringValue = match[1];
 				if (stringValue && isValidUrl(stringValue)) {
-					urls.push({
-						value: stringValue,
-						protocol: detectUrlProtocol(stringValue),
-						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-						context: line.trim(),
-					});
+					const posKey = `${stringValue}`;
+					if (!extractedPositions.has(posKey)) {
+						extractedPositions.add(posKey);
+						urls.push({
+							value: stringValue,
+							protocol: detectUrlProtocol(stringValue),
+							position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+							context: line.trim(),
+						});
+					}
 				}
 			}
 
@@ -35,60 +40,80 @@ export function extractFromJavaScript(content: string): Url[] {
 			URL_PATTERN.lastIndex = 0;
 			while ((match = URL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				urls.push({
-					value: urlValue,
-					protocol: urlValue.startsWith('https') ? 'https' : 'http',
-					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-					context: line.trim(),
-				});
+				const posKey = `${urlValue}`;
+				if (!extractedPositions.has(posKey)) {
+					extractedPositions.add(posKey);
+					urls.push({
+						value: urlValue,
+						protocol: urlValue.startsWith('https') ? 'https' : 'http',
+						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+						context: line.trim(),
+					});
+				}
 			}
 
 			// Extract FTP URLs
 			FTP_PATTERN.lastIndex = 0;
 			while ((match = FTP_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				urls.push({
-					value: urlValue,
-					protocol: 'ftp' as UrlProtocol,
-					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-					context: line.trim(),
-				});
+				const posKey = `${urlValue}`;
+				if (!extractedPositions.has(posKey)) {
+					extractedPositions.add(posKey);
+					urls.push({
+						value: urlValue,
+						protocol: 'ftp' as UrlProtocol,
+						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+						context: line.trim(),
+					});
+				}
 			}
 
 			// Extract mailto URLs
 			MAILTO_PATTERN.lastIndex = 0;
 			while ((match = MAILTO_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				urls.push({
-					value: urlValue,
-					protocol: 'mailto' as UrlProtocol,
-					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-					context: line.trim(),
-				});
+				const posKey = `${urlValue}`;
+				if (!extractedPositions.has(posKey)) {
+					extractedPositions.add(posKey);
+					urls.push({
+						value: urlValue,
+						protocol: 'mailto' as UrlProtocol,
+						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+						context: line.trim(),
+					});
+				}
 			}
 
 			// Extract tel URLs
 			TEL_PATTERN.lastIndex = 0;
 			while ((match = TEL_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				urls.push({
-					value: urlValue,
-					protocol: 'tel' as UrlProtocol,
-					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-					context: line.trim(),
-				});
+				const posKey = `${urlValue}`;
+				if (!extractedPositions.has(posKey)) {
+					extractedPositions.add(posKey);
+					urls.push({
+						value: urlValue,
+						protocol: 'tel' as UrlProtocol,
+						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+						context: line.trim(),
+					});
+				}
 			}
 
 			// Extract file URLs
 			FILE_PATTERN.lastIndex = 0;
 			while ((match = FILE_PATTERN.exec(line)) !== null) {
 				const urlValue = match[0];
-				urls.push({
-					value: urlValue,
-					protocol: 'file' as UrlProtocol,
-					position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
-					context: line.trim(),
-				});
+				const posKey = `${urlValue}`;
+				if (!extractedPositions.has(posKey)) {
+					extractedPositions.add(posKey);
+					urls.push({
+						value: urlValue,
+						protocol: 'file' as UrlProtocol,
+						position: { line: lineIndex + 1, column: (match.index ?? 0) + 1 },
+						context: line.trim(),
+					});
+				}
 			}
 		} catch (error) {
 			// Skip lines that cause regex errors to prevent crashes

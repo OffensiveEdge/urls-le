@@ -83,17 +83,15 @@ It intelligently detects and extracts URLs from your code, providing comprehensi
 - **Numbers-LE** - Extract and analyze numeric data from JSON, YAML, CSV, TOML, INI, and .env  
   [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.numbers-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/numbers-le)]
 
-- **Paths-LE** - Extract and analyze file paths from imports, configs, and code  
+- **Paths-LE** - Extract and analyze file paths from imports, configs, and dependencies  
   [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.paths-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/paths-le)]
 
 - **Scrape-LE** - Verify page reachability and detect anti-scraping measures before deploying scrapers  
   [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.scrape-le)]
 
-- **Colors-LE** - Extract and analyze colors from CSS, HTML, JavaScript, and TypeScript  
-  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.colors-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/colors-le)]
+- **Colors-LE** - Extract and analyze colors from CSS, Sass, Less, and style attributes _(Coming Soon)_
 
-- **Dates-LE** - Extract and analyze dates from logs, APIs, and temporal data  
-  [[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nolindnaidoo.dates-le)] [[Open VSX](https://open-vsx.org/extension/nolindnaidoo/dates-le)]
+- **Dates-LE** - Extract and analyze dates from JSON, logs, and temporal data sources _(Coming Soon)_
 
 Each tool follows the same philosophy: **Zero Hassle, Maximum Productivity**.
 
@@ -291,9 +289,10 @@ A: Absolutely! URLs-LE is perfect for analyzing API endpoints, asset references,
 
 ## 📊 Test Coverage
 
-- Tests powered by Vitest with V8 coverage.
-- Runs quickly and locally: `npm run test` or `npm run test:coverage`.
-- Coverage reports output to `coverage/` (HTML summary at `coverage/index.html`).
+- 102 passing tests across 7 test suites with 33.43% overall coverage
+- Tests powered by Vitest with V8 coverage
+- Runs quickly and locally: `npm run test` or `npm run test:coverage`
+- Coverage reports output to `coverage/` (HTML summary at `coverage/index.html`)
 
 ---
 

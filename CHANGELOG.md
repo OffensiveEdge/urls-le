@@ -5,6 +5,20 @@ All notable changes to URLs-LE will be documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-10-14
+
+### Fixed
+
+- Fixed duplicate URL extraction in HTML, Markdown, and JavaScript parsers
+- Added global deduplication to prevent same URL from being extracted multiple times
+- Fixed all failing tests (35 → 0 failures)
+
+### Documentation
+
+- Added accurate test coverage metrics: 102 passing tests across 7 test suites with 33.43% overall coverage
+- Updated LE family cross-linking with published apps
+- Marked Colors-LE and Dates-LE as "Coming Soon"
+
 ## [1.0.0] - 2025-08-17
 
 ### ✨ Initial Release
