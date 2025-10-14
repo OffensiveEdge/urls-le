@@ -3,6 +3,8 @@
 	"manifest.ext.description": "Zero Hassle URL Extraction from Documentation, Configs, and Code",
 	"manifest.command.category": "URLs-LE",
 	"manifest.command.extract.title": "Extract URLs",
+	"manifest.command.dedupe.title": "Deduplicate URLs",
+	"manifest.command.sort.title": "Sort URLs",
 	"manifest.command.settings.title": "Open Settings",
 	"manifest.command.help.title": "Help & Troubleshooting",
 	"manifest.settings.title": "URLs-LE Settings",
