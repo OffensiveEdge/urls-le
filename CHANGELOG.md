@@ -5,24 +5,32 @@ All notable changes to URLs-LE will be documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.7] - 2025-10-14
+## [1.1.0] - 2025-10-14
 
 ### Added
 
-- **Deduplicate command** - Added `urls-le.postProcess.dedupe` command to remove duplicate URLs
-- **Sort command** - Added `urls-le.postProcess.sort` command with multiple sort modes:
+- **Command parity achievement** - Full parity with other LE extraction extensions
+- **Help command** - Added `urls-le.help` with comprehensive documentation and troubleshooting
+- **Deduplicate command** - Added `urls-le.postProcess.dedupe` to remove duplicate URLs while preserving order
+- **Sort command** - Added `urls-le.postProcess.sort` with 5 interactive sort modes:
   - Alphabetical (A → Z)
   - Alphabetical (Z → A)
-  - By Domain
+  - By Domain (smart hostname extraction)
   - By Length (Short → Long)
   - By Length (Long → Short)
-- **Interactive sorting** - User can choose sort order via quick pick menu
-- **Smart domain sorting** - Parses URLs to extract hostname for domain-based sorting
-- **i18n entries** - Added localized command titles for dedupe and sort
+- **Comprehensive documentation** - Added complete command list to README with examples
+- **Extended COMMANDS.md** - Full documentation for all post-processing and help commands
+- **i18n support** - Localized command titles for dedupe, sort, and help
 
 ### Changed
 
-- **Command count** - Increased from 3 to 5 commands for full parity with other extraction extensions
+- **Infrastructure completion** - Fixed activation events and command registry for all commands
+- **Command count** - Increased from 2 to 5 commands (Extract, Dedupe, Sort, Settings, Help)
+- **Documentation updates** - Updated all docs to reflect command parity achievement
+
+### Fixed
+
+- **Linting issues** - Resolved formatting and code style warnings
 
 ## [1.0.6] - 2025-10-14
 
