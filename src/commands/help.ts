@@ -11,12 +11,10 @@ export function registerHelpCommand(
 		statusBar: StatusBar;
 	}>,
 ): void {
-	const command = vscode.commands.registerCommand(
-		'urls-le.help',
-		async () => {
-			deps.telemetry.event('command-help');
+	const command = vscode.commands.registerCommand('urls-le.help', async () => {
+		deps.telemetry.event('command-help');
 
-			const helpText = `
+		const helpText = `
 # URLs-LE Help & Troubleshooting
 
 ## Commands
@@ -127,14 +125,12 @@ Key settings:
 - Documentation: https://github.com/nolindnaidoo/urls-le#readme
 		`.trim();
 
-			const doc = await vscode.workspace.openTextDocument({
-				content: helpText,
-				language: 'markdown',
-			});
-			await vscode.window.showTextDocument(doc);
-		},
-	);
+		const doc = await vscode.workspace.openTextDocument({
+			content: helpText,
+			language: 'markdown',
+		});
+		await vscode.window.showTextDocument(doc);
+	});
 
 	context.subscriptions.push(command);
 }
-
