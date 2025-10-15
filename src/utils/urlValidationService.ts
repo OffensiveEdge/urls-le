@@ -1,3 +1,4 @@
+import * as nls from 'vscode-nls';
 import type { Configuration, Url, ValidationResult } from '../types';
 import { createEnhancedError } from './errorHandling';
 import {
@@ -5,6 +6,8 @@ import {
 	extractUrlComponents,
 	isValidUrl,
 } from './urlValidation';
+
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 /**
  * URL validation service interface
@@ -30,7 +33,12 @@ export function createUrlValidationService(): UrlValidationService {
 			_config: Configuration,
 		): Promise<ValidationResult> {
 			if (disposed) {
-				throw new Error('URL validation service has been disposed');
+				throw new Error(
+					localize(
+						'runtime.validation.service-disposed',
+						'URL validation service has been disposed',
+					),
+				);
 			}
 
 			try {
@@ -39,7 +47,10 @@ export function createUrlValidationService(): UrlValidationService {
 					return {
 						url,
 						status: 'invalid',
-						error: 'Invalid URL format',
+						error: localize(
+							'runtime.validation.invalid-format',
+							'Invalid URL format',
+						),
 					};
 				}
 
@@ -49,7 +60,10 @@ export function createUrlValidationService(): UrlValidationService {
 					return {
 						url,
 						status: 'invalid',
-						error: 'Failed to parse URL components',
+						error: localize(
+							'runtime.validation.parse-failed',
+							'Failed to parse URL components',
+						),
 					};
 				}
 
@@ -59,7 +73,10 @@ export function createUrlValidationService(): UrlValidationService {
 					return {
 						url,
 						status: 'invalid',
-						error: 'Unsupported URL protocol',
+						error: localize(
+							'runtime.validation.unsupported-protocol',
+							'Unsupported URL protocol',
+						),
 					};
 				}
 
@@ -75,7 +92,12 @@ export function createUrlValidationService(): UrlValidationService {
 				const enhancedError = createEnhancedError(
 					error instanceof Error
 						? error
-						: new Error('Unknown validation error'),
+						: new Error(
+								localize(
+									'runtime.validation.unknown-error',
+									'Unknown validation error',
+								),
+							),
 					'validation',
 					`URL validation failed for: ${url}`,
 				);
@@ -93,7 +115,12 @@ export function createUrlValidationService(): UrlValidationService {
 			config: Configuration,
 		): Promise<readonly ValidationResult[]> {
 			if (disposed) {
-				throw new Error('URL validation service has been disposed');
+				throw new Error(
+					localize(
+						'runtime.validation.service-disposed',
+						'URL validation service has been disposed',
+					),
+				);
 			}
 
 			const results: ValidationResult[] = [];
@@ -122,7 +149,10 @@ export function createUrlValidationService(): UrlValidationService {
 								error:
 									individualError instanceof Error
 										? individualError.message
-										: 'Unknown error',
+										: localize(
+												'runtime.error.unknown-fallback',
+												'Unknown error',
+											),
 							});
 						}
 					}

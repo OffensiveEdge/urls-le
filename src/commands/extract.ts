@@ -45,7 +45,7 @@ export function registerExtractCommand(
 			const token = cancellationToken.token;
 
 			try {
-				deps.statusBar.showProgress('Extracting URLs...');
+				deps.statusBar.showExtracting();
 
 				// Check for cancellation before starting
 				if (token.isCancellationRequested) {

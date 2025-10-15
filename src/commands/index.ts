@@ -6,6 +6,7 @@ import { registerDedupeCommand } from './dedupe';
 import { registerExtractCommand } from './extract';
 import { registerHelpCommand } from './help';
 import { registerSortCommand } from './sort';
+import { registerToggleCsvStreamingCommand } from './toggleCsvStreaming';
 
 export function registerCommands(
 	context: vscode.ExtensionContext,
@@ -19,4 +20,5 @@ export function registerCommands(
 	registerDedupeCommand(context);
 	registerSortCommand(context);
 	registerHelpCommand(context, deps);
+	registerToggleCsvStreamingCommand(context);
 }

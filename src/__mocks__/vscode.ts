@@ -21,6 +21,7 @@ export const window = {
 	showWarningMessage: vi.fn(),
 	showErrorMessage: vi.fn(),
 	showQuickPick: vi.fn(),
+	showInputBox: vi.fn(),
 	withProgress: vi.fn((options, task) => task()),
 	setStatusBarMessage: vi.fn(),
 	createStatusBarItem: vi.fn(() => ({
@@ -108,6 +109,15 @@ export class ThemeColor {
 
 export const Range = vi.fn();
 export const WorkspaceEdit = vi.fn();
+
+export class CancellationTokenSource {
+	token = {
+		isCancellationRequested: false,
+		onCancellationRequested: vi.fn(),
+	};
+	cancel = vi.fn();
+	dispose = vi.fn();
+}
 
 export const mockExtensionContext = {
 	subscriptions: {

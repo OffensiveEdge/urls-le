@@ -22,6 +22,26 @@ Resource limits and safety checks to prevent performance issues.
 
 Status bar and visual interface options.
 
+### CSV Settings
+
+Configuration for CSV file processing.
+
+### Analysis Settings
+
+URL analysis and validation options.
+
+### Performance Settings
+
+Performance monitoring and optimization.
+
+### Keyboard Settings
+
+Customizable keyboard shortcuts.
+
+### Preset Settings
+
+Pre-configured setting combinations.
+
 ### Advanced Settings
 
 Telemetry and diagnostic options.
@@ -289,6 +309,200 @@ Telemetry and diagnostic options.
 
 ---
 
+## CSV Settings
+
+### `urls-le.csv.streamingEnabled`
+
+**Type**: `boolean`  
+**Default**: `false`  
+**Description**: Enable incremental CSV streaming for large file processing.
+
+**Usage**:
+
+```json
+{
+  "urls-le.csv.streamingEnabled": true
+}
+```
+
+**Benefits**:
+
+- Improved performance for large CSV files
+- Reduced memory usage during processing
+- Real-time progress feedback
+- Keeps VS Code responsive
+
+**Use Cases**:
+
+- Processing CSV files larger than 10MB
+- Extracting URLs from large datasets
+- Working with memory-constrained environments
+
+---
+
+## Analysis Settings
+
+### `urls-le.analysis.enabled`
+
+**Type**: `boolean`  
+**Default**: `false`  
+**Description**: Enable comprehensive URL analysis including security and accessibility checks.
+
+**Usage**:
+
+```json
+{
+  "urls-le.analysis.enabled": true
+}
+```
+
+### `urls-le.analysis.includeStats`
+
+**Type**: `boolean`  
+**Default**: `true`  
+**Description**: Include statistical analysis in extraction results.
+
+### `urls-le.analysis.includeSecurity`
+
+**Type**: `boolean`  
+**Default**: `false`  
+**Description**: Include security analysis for extracted URLs.
+
+### `urls-le.analysis.includeAccessibility`
+
+**Type**: `boolean`  
+**Default**: `false`  
+**Description**: Include accessibility analysis for extracted URLs.
+
+---
+
+## Performance Settings
+
+### `urls-le.performance.enabled`
+
+**Type**: `boolean`  
+**Default**: `false`  
+**Description**: Enable performance monitoring and optimization features.
+
+**Usage**:
+
+```json
+{
+  "urls-le.performance.enabled": true
+}
+```
+
+### `urls-le.performance.maxDuration`
+
+**Type**: `number`  
+**Default**: `30000` (30 seconds)  
+**Minimum**: `1000`  
+**Maximum**: `300000` (5 minutes)  
+**Description**: Maximum allowed processing duration in milliseconds.
+
+### `urls-le.performance.maxMemoryUsage`
+
+**Type**: `number`  
+**Default**: `134217728` (128 MB)  
+**Minimum**: `1048576` (1 MB)  
+**Maximum**: `1073741824` (1 GB)  
+**Description**: Maximum allowed memory usage in bytes.
+
+### `urls-le.performance.maxCpuUsage`
+
+**Type**: `number`  
+**Default**: `80`  
+**Minimum**: `1`  
+**Maximum**: `100`  
+**Description**: Maximum allowed CPU usage percentage.
+
+### `urls-le.performance.minThroughput`
+
+**Type**: `number`  
+**Default**: `100`  
+**Minimum**: `1`  
+**Maximum**: `10000000`  
+**Description**: Minimum required throughput in URLs per second.
+
+### `urls-le.performance.maxCacheSize`
+
+**Type**: `number`  
+**Default**: `10485760` (10 MB)  
+**Minimum**: `100`  
+**Maximum**: `100000000`  
+**Description**: Maximum cache size in bytes.
+
+---
+
+## Keyboard Settings
+
+### `urls-le.keyboard.shortcuts.enabled`
+
+**Type**: `boolean`  
+**Default**: `true`  
+**Description**: Enable customizable keyboard shortcuts for URLs-LE commands.
+
+**Usage**:
+
+```json
+{
+  "urls-le.keyboard.shortcuts.enabled": true
+}
+```
+
+### `urls-le.keyboard.extractShortcut`
+
+**Type**: `string`  
+**Default**: `"ctrl+alt+u"`  
+**Description**: Keyboard shortcut for the Extract URLs command.
+
+### `urls-le.keyboard.dedupeShortcut`
+
+**Type**: `string`  
+**Default**: `""`  
+**Description**: Keyboard shortcut for the Deduplicate URLs command.
+
+### `urls-le.keyboard.sortShortcut`
+
+**Type**: `string`  
+**Default**: `""`  
+**Description**: Keyboard shortcut for the Sort URLs command.
+
+---
+
+## Preset Settings
+
+### `urls-le.presets.enabled`
+
+**Type**: `boolean`  
+**Default**: `true`  
+**Description**: Enable configuration presets for quick setup.
+
+**Usage**:
+
+```json
+{
+  "urls-le.presets.enabled": true
+}
+```
+
+### `urls-le.presets.defaultPreset`
+
+**Type**: `string`  
+**Default**: `"balanced"`  
+**Options**: `"minimal"`, `"balanced"`, `"comprehensive"`, `"performance"`, `"urls"`  
+**Description**: Default preset to apply when initializing settings.
+
+**Preset Options**:
+
+- `"minimal"` - Minimal features, silent operation
+- `"balanced"` - Default configuration, balanced features
+- `"comprehensive"` - All features enabled, maximum functionality
+- `"performance"` - Optimized for large files and performance
+- `"urls"` - Focused on URL extraction with enhanced processing
+
+---
+
 ## Advanced Settings
 
 ### `urls-le.telemetryEnabled`
@@ -468,17 +682,28 @@ Invalid values will fall back to defaults with a warning.
 
 ## Migration Notes
 
-If upgrading from a previous version, note that the following settings have been removed:
+### From v1.0.x to v1.4.0
 
-- `urls-le.analysis.*` - Analysis features removed in v1.0.2
-- `urls-le.validation.*` - Validation features removed in v1.0.2
-- `urls-le.keyboard.*` - Keyboard shortcut settings removed in v1.0.2
-- `urls-le.presets.*` - Preset system removed in v1.0.2
-- `urls-le.performance.*` - Performance settings removed in v1.0.2
+**Features Restored**: The following features that were temporarily removed in v1.0.2 have been restored and enhanced in v1.4.0:
 
-The extension now focuses on core URL extraction with simplified configuration.
+- `urls-le.analysis.*` - **Restored** with improved security and accessibility analysis
+- `urls-le.validation.*` - **Restored** with enhanced URL validation capabilities
+- `urls-le.keyboard.*` - **Restored** with customizable keyboard shortcuts
+- `urls-le.presets.*` - **Restored** with expanded preset system
+- `urls-le.performance.*` - **Restored** with comprehensive performance monitoring
+
+**New Features in v1.4.0**:
+
+- `urls-le.csv.*` - CSV streaming for large file processing
+- Enhanced WebView help system
+- Service Factory architecture
+- Settings schema validation
+- Collection utilities
+- Comprehensive internationalization (13 languages)
+
+**Breaking Changes**: None. All existing configurations remain compatible.
 
 ---
 
-**Last Updated**: 2025-10-14  
-**Version**: 1.0.2
+**Last Updated**: 2025-10-15  
+**Version**: 1.4.0

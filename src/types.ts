@@ -49,6 +49,7 @@ export interface ParseError extends UrlsLeError {
 export interface Url {
 	readonly value: string;
 	readonly protocol: UrlProtocol;
+	readonly type?: string;
 	readonly domain?: string;
 	readonly path?: string;
 	readonly position?: {

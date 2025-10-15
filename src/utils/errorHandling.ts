@@ -33,6 +33,89 @@ export interface ErrorRecoveryOptions {
 }
 
 /**
+ * Categorize an error based on its type and message
+ */
+export function categorizeError(error: Error): ErrorCategory {
+	const message = error.message.toLowerCase();
+	const name = error.name.toLowerCase();
+
+	if (
+		name.includes('syntax') ||
+		message.includes('parse') ||
+		message.includes('invalid json')
+	) {
+		return 'parse';
+	}
+	if (
+		message.includes('validation') ||
+		message.includes('invalid') ||
+		message.includes('required')
+	) {
+		return 'validation';
+	}
+	if (
+		message.includes('file') ||
+		message.includes('enoent') ||
+		message.includes('permission')
+	) {
+		return 'file-system';
+	}
+	if (message.includes('config') || message.includes('setting')) {
+		return 'configuration';
+	}
+	if (
+		message.includes('size') ||
+		message.includes('limit') ||
+		message.includes('threshold')
+	) {
+		return 'safety';
+	}
+
+	return 'operational';
+}
+
+/**
+ * Create a user-friendly error message
+ */
+export function createErrorMessage(error: Error, context?: string): string {
+	const category = categorizeError(error);
+	return getUserFriendlyMessage(error, category, context);
+}
+
+/**
+ * Format an error for user display
+ */
+export function formatErrorForUser(error: Error, includeStack = false): string {
+	const enhanced = createEnhancedError(error, categorizeError(error));
+	let formatted = `${enhanced.userFriendlyMessage}\n\nSuggestion: ${enhanced.suggestion}`;
+
+	if (includeStack && error.stack) {
+		formatted += `\n\nTechnical details:\n${error.stack}`;
+	}
+
+	return formatted;
+}
+
+/**
+ * Check if an error is a known/handled error type
+ */
+export function isKnownError(error: Error): boolean {
+	const knownPatterns = [
+		/syntax.*error/i,
+		/parse.*error/i,
+		/validation.*failed/i,
+		/file.*not.*found/i,
+		/permission.*denied/i,
+		/invalid.*configuration/i,
+		/size.*limit.*exceeded/i,
+	];
+
+	return knownPatterns.some(
+		(pattern) => pattern.test(error.message) || pattern.test(error.name),
+	);
+}
+
+/**
  * Create an enhanced error with categorization and user-friendly messaging
  */
 export function createEnhancedError(
@@ -165,7 +248,10 @@ function getUserFriendlyMessage(
 /**
  * Get error recovery suggestion
  */
-function getErrorSuggestion(_error: Error, category: ErrorCategory): string {
+export function getErrorSuggestion(
+	_error: Error,
+	category: ErrorCategory,
+): string {
 	switch (category) {
 		case 'parse':
 			return localize(

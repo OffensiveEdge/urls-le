@@ -1,7 +1,10 @@
 import * as vscode from 'vscode';
+import * as nls from 'vscode-nls';
 import type { Telemetry } from '../telemetry/telemetry';
 import type { Notifier } from '../ui/notifier';
 import type { StatusBar } from '../ui/statusBar';
+
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 export function registerHelpCommand(
 	context: vscode.ExtensionContext,
@@ -15,35 +18,25 @@ export function registerHelpCommand(
 		deps.telemetry.event('command-help');
 
 		const helpText = `
-# URLs-LE Help & Troubleshooting
+# ${localize('runtime.help.title', 'URLs-LE Help')}
+
+## ${localize('runtime.help.quick-start', 'Quick Start')}
+${localize(
+	'runtime.help.quick-start',
+	'1. Open a file with URLs (Markdown, HTML, JSON, etc.)\n2. Run "URLs-LE: Extract URLs"\n3. View extracted URLs in results',
+)}
 
 ## Commands
-- **Extract URLs** (Ctrl+Alt+U / Cmd+Alt+U): Extract all URLs from the current document
-- **Open Settings**: Configure URLs-LE settings
-- **Help**: Open this help documentation
+${localize(
+	'runtime.help.commands',
+	'**Extract URLs**: Extract from current document\n**Sort URLs**: Sort alphabetically, by domain, or by length\n**Deduplicate URLs**: Remove duplicate URLs\n**Toggle CSV Streaming**: Enable for large CSV files\n**Settings**: Configure options',
+)}
 
-## Supported File Types
-- Markdown - Links, reference URLs
-- HTML - href attributes, src attributes
-- JSON/JSONC - URL values
-- YAML - URL values
-- XML - URL attributes and values
-- JavaScript/TypeScript - String literals with URLs
-- CSS - url() functions, @import statements
-- Plain text - Any URLs in text content
-
-## URL Formats Supported
-- HTTP/HTTPS: https://example.com
-- FTP: ftp://files.example.com
-- File: file:///path/to/file
-- Data URLs: data:image/png;base64,...
-- Mailto: mailto:user@example.com
-- Tel: tel:+1234567890
-- Relative URLs: /path/to/page, ./relative/path
-- Absolute paths: /absolute/path/to/resource
-- URLs with query parameters: https://example.com?key=value
-- URLs with fragments: https://example.com#section
-- URLs with authentication: https://user:pass@example.com
+## ${localize('runtime.help.formats', 'Supported Formats')}
+${localize(
+	'runtime.help.formats',
+	'**Supported**: Markdown, HTML, JSON, YAML, XML, JavaScript, CSS, Plain text\n**URL Formats**: HTTP/HTTPS, FTP, File, Data URLs, Mailto, Tel, Relative, Absolute',
+)}
 
 ## Extraction Features
 - Automatically detects all URL formats
@@ -52,39 +45,17 @@ export function registerHelpCommand(
 - Handles encoded URLs
 - Supports internationalized domain names (IDN)
 
-## Troubleshooting
+## ${localize('runtime.help.troubleshooting', 'Troubleshooting')}
+${localize(
+	'runtime.help.troubleshooting',
+	'**No URLs found?** Check file format and URL patterns\n**Performance issues?** Enable safety settings for large files\n**Need help?** Check Output panel for details',
+)}
 
-### No URLs found
-- Ensure the file contains valid URL patterns
-- Check that the file type is supported
-- Verify URL format is recognized
-- Some obfuscated or encoded URLs may not be detected
-
-### Performance issues
-- Large files may take time to process
-- Use safety settings to limit processing
-- Consider breaking large files into smaller chunks
-
-### Incorrect extraction
-- Verify URL syntax is valid
-- Check for proper protocol (http://, https://, etc.)
-- Partial URLs may need protocol prefix
-
-### Relative URLs
-- Relative URLs are extracted as-is
-- Context base URL is not automatically applied
-- Use find/replace to add base URL if needed
-
-## Settings
-Access settings via Command Palette: "URLs-LE: Open Settings"
-
-Key settings:
-- **Copy to clipboard**: Auto-copy results (default: false)
-- **Side-by-side view**: Open results beside source (default: false)
-- **Safety checks**: File size warnings (default: 1MB threshold)
-- **Notification levels**: silent, important, or all (default: silent)
-- **Status bar**: Show/hide status bar item (default: true)
-- **Telemetry**: Local logging only (default: false)
+## ${localize('runtime.help.settings', 'Settings')}
+${localize(
+	'runtime.help.settings',
+	'Access via Command Palette: "URLs-LE: Open Settings"\nKey settings: Copy to clipboard, CSV streaming, side-by-side view, safety checks, notification levels',
+)}
 
 ## Common Use Cases
 
@@ -120,9 +91,8 @@ Key settings:
 - **URL validation**: Check if URLs are reachable (coming soon)
 - **Format URLs**: Normalize URL formatting (coming soon)
 
-## Support
-- GitHub Issues: https://github.com/nolindnaidoo/urls-le/issues
-- Documentation: https://github.com/nolindnaidoo/urls-le#readme
+## ${localize('runtime.help.support', 'Support')}
+${localize('runtime.help.support', 'GitHub Issues: https://github.com/nolindnaidoo/urls-le/issues')}
 		`.trim();
 
 		const doc = await vscode.workspace.openTextDocument({

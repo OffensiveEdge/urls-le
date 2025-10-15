@@ -1,4 +1,7 @@
+import * as nls from 'vscode-nls';
 import type { UrlProtocol, ValidationResult } from '../types';
+
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 export function isValidUrl(url: string): boolean {
 	try {
@@ -85,7 +88,10 @@ export async function validateUrl(
 			return {
 				url,
 				status: 'invalid',
-				error: 'Invalid URL format',
+				error: localize(
+					'runtime.validation.invalid-format',
+					'Invalid URL format',
+				),
 			};
 		}
 
@@ -96,7 +102,10 @@ export async function validateUrl(
 			return {
 				url,
 				status: 'error',
-				error: 'Suspicious URL detected',
+				error: localize(
+					'runtime.validation.suspicious-url',
+					'Suspicious URL detected',
+				),
 			};
 		}
 

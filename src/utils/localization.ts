@@ -1,5 +1,7 @@
 import * as nls from 'vscode-nls';
 
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
+
 export interface Localizer {
 	localize(key: string, ...args: unknown[]): string;
 	localizeCommand(command: string): string;
@@ -290,7 +292,8 @@ export function formatProtocolDistribution(
 	protocols: Record<string, number>,
 ): string {
 	const entries = Object.entries(protocols).filter(([, count]) => count > 0);
-	if (entries.length === 0) return 'No protocols';
+	if (entries.length === 0)
+		return localize('runtime.protocols.none', 'No protocols');
 
 	const total = entries.reduce((sum, [, count]) => sum + count, 0);
 	const formatted = entries.map(
@@ -336,13 +339,17 @@ export function formatRemainingTime(
 
 export function formatMemoryUsage(): string {
 	const usage = process.memoryUsage();
-	return `Heap: ${formatBytes(usage.heapUsed)}/${formatBytes(usage.heapTotal)}, RSS: ${formatBytes(usage.rss)}`;
+	return `Heap: ${formatBytes(usage.heapUsed)}/${formatBytes(usage.heapTotal)}, RSS: ${formatBytes(
+		usage.rss,
+	)}`;
 }
 
 export function formatCpuUsage(): string {
 	const usage = process.cpuUsage();
 	const total = usage.user + usage.system;
-	return `User: ${formatDuration(usage.user)}, System: ${formatDuration(usage.system)}, Total: ${formatDuration(total)}`;
+	return `User: ${formatDuration(usage.user)}, System: ${formatDuration(
+		usage.system,
+	)}, Total: ${formatDuration(total)}`;
 }
 
 export function formatSystemInfo(): string {
@@ -408,12 +415,54 @@ export function formatComplianceStatus(
 	const percentage = formatPercentage(compliant, total);
 	const status =
 		compliant === total
-			? 'Fully compliant'
+			? localize('runtime.compliance.fully', 'Fully compliant')
 			: compliant > total * 0.8
-				? 'Mostly compliant'
+				? localize('runtime.compliance.mostly', 'Mostly compliant')
 				: compliant > total * 0.5
-					? 'Partially compliant'
-					: 'Non-compliant';
+					? localize('runtime.compliance.partially', 'Partially compliant')
+					: localize('runtime.compliance.non', 'Non-compliant');
 
 	return `${standard}: ${compliant}/${total} (${percentage}) - ${status}`;
+}
+
+export function formatUrlAnalysis(analysis: {
+	totalUrls: number;
+	uniqueUrls: number;
+	protocols: Record<string, number>;
+	domains: Record<string, number>;
+	securityIssues: number;
+	accessibilityIssues: number;
+}): string {
+	const lines = [
+		`Total URLs: ${analysis.totalUrls}`,
+		`Unique URLs: ${analysis.uniqueUrls}`,
+		`Protocols: ${formatProtocolDistribution(analysis.protocols)}`,
+		`Top domains: ${Object.keys(analysis.domains).slice(0, 3).join(', ')}`,
+	];
+
+	if (analysis.securityIssues > 0) {
+		lines.push(`Security issues: ${analysis.securityIssues}`);
+	}
+
+	if (analysis.accessibilityIssues > 0) {
+		lines.push(`Accessibility issues: ${analysis.accessibilityIssues}`);
+	}
+
+	return lines.join('\n');
+}
+
+export function formatUrlStatistics(stats: {
+	total: number;
+	unique: number;
+	duplicates: number;
+	protocols: Record<string, number>;
+	domains: Record<string, number>;
+}): string {
+	return [
+		`Total: ${stats.total}`,
+		`Unique: ${stats.unique}`,
+		`Duplicates: ${stats.duplicates}`,
+		`Protocols: ${formatProtocolDistribution(stats.protocols)}`,
+		`Domains: ${Object.keys(stats.domains).length}`,
+	].join(' | ');
 }

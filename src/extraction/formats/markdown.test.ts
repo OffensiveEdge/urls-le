@@ -1,8 +1,8 @@
-import { describe, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { extractFromMarkdown } from './markdown';
 
 describe('extractFromMarkdown', () => {
-	test('extractFromMarkdown: markdown links', () => {
+	it('extractFromMarkdown: markdown links', () => {
 		const markdown = `
       [Example](https://example.com)
       [GitHub](https://github.com/user/repo)
@@ -18,7 +18,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[2].value).toBe('mailto:user@example.com');
 	});
 
-	test('extractFromMarkdown: autolinks', () => {
+	it('extractFromMarkdown: autolinks', () => {
 		const markdown = `
       <https://example.com>
       <https://github.com/user/repo>
@@ -33,7 +33,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[2].value).toBe('mailto:user@example.com');
 	});
 
-	test('extractFromMarkdown: plain text URLs', () => {
+	it('extractFromMarkdown: plain text URLs', () => {
 		const markdown = `
       Visit https://example.com for more info.
       Check out https://github.com/user/repo
@@ -48,7 +48,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[2].value).toBe('https://example.com/contact');
 	});
 
-	test('extractFromMarkdown: mixed URL types', () => {
+	it('extractFromMarkdown: mixed URL types', () => {
 		const markdown = `
       [HTTPS](https://example.com)
       [HTTP](http://example.com)
@@ -69,7 +69,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[5].protocol).toBe('file');
 	});
 
-	test('extractFromMarkdown: should not extract from code blocks', () => {
+	it('extractFromMarkdown: should not extract from code blocks', () => {
 		const markdown = `
       \`\`\`
       https://example.com
@@ -85,7 +85,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[0].value).toBe('https://actual.com');
 	});
 
-	test('extractFromMarkdown: should not extract from inline code', () => {
+	it('extractFromMarkdown: should not extract from inline code', () => {
 		const markdown = `
       Use \`https://example.com\` in your code.
       [Valid Link](https://actual.com)
@@ -98,7 +98,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[0].value).toBe('https://actual.com');
 	});
 
-	test('extractFromMarkdown: should not extract invalid URLs', () => {
+	it('extractFromMarkdown: should not extract invalid URLs', () => {
 		const markdown = `
       [Valid](https://example.com)
       [Invalid](not-a-url)
@@ -113,7 +113,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[0].value).toBe('https://example.com');
 	});
 
-	test('extractFromMarkdown: URLs with query parameters', () => {
+	it('extractFromMarkdown: URLs with query parameters', () => {
 		const markdown = `
       [Search](https://example.com/search?q=test&page=1)
       [API](https://api.example.com/users?id=123&format=json)
@@ -128,7 +128,7 @@ describe('extractFromMarkdown', () => {
 		);
 	});
 
-	test('extractFromMarkdown: URLs with fragments', () => {
+	it('extractFromMarkdown: URLs with fragments', () => {
 		const markdown = `
       [Section 1](https://example.com/page#section1)
       [Section 2](https://example.com/page#section2)
@@ -141,7 +141,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[1].value).toBe('https://example.com/page#section2');
 	});
 
-	test('extractFromMarkdown: relative URLs (not supported)', () => {
+	it('extractFromMarkdown: relative URLs (not supported)', () => {
 		const markdown = `
       [Relative](/path/to/page)
       [Parent](../parent/page)
@@ -154,17 +154,17 @@ describe('extractFromMarkdown', () => {
 		expect(result.length).toBe(0);
 	});
 
-	test('extractFromMarkdown: empty markdown', () => {
+	it('extractFromMarkdown: empty markdown', () => {
 		const result = extractFromMarkdown('');
 		expect(result.length).toBe(0);
 	});
 
-	test('extractFromMarkdown: whitespace only', () => {
+	it('extractFromMarkdown: whitespace only', () => {
 		const result = extractFromMarkdown('   \n\t  ');
 		expect(result.length).toBe(0);
 	});
 
-	test('extractFromMarkdown: position tracking', () => {
+	it('extractFromMarkdown: position tracking', () => {
 		const markdown = `
       [Example](https://example.com)
     `;
@@ -176,7 +176,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[0].position.column > 0).toBeTruthy();
 	});
 
-	test('extractFromMarkdown: context tracking', () => {
+	it('extractFromMarkdown: context tracking', () => {
 		const markdown = `[Example](https://example.com)`;
 
 		const result = extractFromMarkdown(markdown);
@@ -185,7 +185,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[0].context).toBe(`[Example](https://example.com)`);
 	});
 
-	test('extractFromMarkdown: large markdown file', () => {
+	it('extractFromMarkdown: large markdown file', () => {
 		const links = Array.from(
 			{ length: 1000 },
 			(_, i) => `[Page ${i}](https://example.com/page${i})`,
@@ -200,7 +200,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[999].value).toBe('https://example.com/page999');
 	});
 
-	test('extractFromMarkdown: duplicate URLs', () => {
+	it('extractFromMarkdown: duplicate URLs', () => {
 		const markdown = `
       [Link 1](https://example.com)
       [Link 2](https://example.com)
@@ -214,7 +214,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[0].value).toBe('https://example.com');
 	});
 
-	test('extractFromMarkdown: URLs with special characters', () => {
+	it('extractFromMarkdown: URLs with special characters', () => {
 		const markdown = `
       [Spaces](https://example.com/path with spaces)
       [Dashes](https://example.com/path-with-dashes)
@@ -231,7 +231,7 @@ describe('extractFromMarkdown', () => {
 		expect(result[3].value).toBe('https://example.com/path_with_underscores');
 	});
 
-	test('extractFromMarkdown: mixed markdown and plain URLs', () => {
+	it('extractFromMarkdown: mixed markdown and plain URLs', () => {
 		const markdown = `
       [Markdown Link](https://example.com)
       https://plain-url.com

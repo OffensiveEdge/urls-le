@@ -1,3 +1,4 @@
+import * as nls from 'vscode-nls';
 import type {
 	AnalysisResult,
 	Configuration,
@@ -13,6 +14,8 @@ import {
 	isSecureUrl,
 	isSuspiciousUrl,
 } from './urlValidation';
+
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 export function analyzeUrls(
 	lines: string[],
@@ -75,14 +78,20 @@ function analyzeSecurity(urls: string[]): SecurityAnalysis {
 			if (isSuspiciousUrl(url)) {
 				issues.push({
 					url,
-					issue: 'Suspicious URL detected',
+					issue: localize(
+						'runtime.analysis.suspicious-url',
+						'Suspicious URL detected',
+					),
 					severity: 'warning',
 				});
 			}
 			if (url.startsWith('http://')) {
 				issues.push({
 					url,
-					issue: 'Insecure HTTP protocol',
+					issue: localize(
+						'runtime.analysis.insecure-http',
+						'Insecure HTTP protocol',
+					),
 					severity: 'warning',
 				});
 			}
@@ -90,7 +99,10 @@ function analyzeSecurity(urls: string[]): SecurityAnalysis {
 			// Handle security analysis errors gracefully
 			issues.push({
 				url,
-				issue: 'Security analysis failed',
+				issue: localize(
+					'runtime.analysis.security-failed',
+					'Security analysis failed',
+				),
 				severity: 'warning',
 			});
 		}
@@ -119,7 +131,10 @@ function analyzeAccessibility(urls: string[]) {
 			if (!isAccessibleUrl(url)) {
 				issues.push({
 					url,
-					issue: 'URL may not be accessible',
+					issue: localize(
+						'runtime.analysis.url-not-accessible',
+						'URL may not be accessible',
+					),
 					severity: 'warning',
 				});
 			}
@@ -127,7 +142,10 @@ function analyzeAccessibility(urls: string[]) {
 			// Handle accessibility analysis errors gracefully
 			issues.push({
 				url,
-				issue: 'Accessibility analysis failed',
+				issue: localize(
+					'runtime.analysis.accessibility-failed',
+					'Accessibility analysis failed',
+				),
 				severity: 'warning',
 			});
 		}

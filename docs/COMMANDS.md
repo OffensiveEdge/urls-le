@@ -2,7 +2,7 @@
 
 ## Overview
 
-URLs-LE provides **5 commands** for URL extraction, post-processing, and settings management. All commands are designed to be lightweight, unobtrusive, and focused on developer productivity.
+URLs-LE provides **6 commands** for URL extraction, post-processing, and settings management. All commands are designed to be lightweight, unobtrusive, and focused on developer productivity.
 
 ## Commands
 
@@ -150,9 +150,32 @@ https://example.com/very/long/path/to/resource
 - **Output**: Clipboard, deduplication, notifications
 - **Performance**: File size limits, processing thresholds
 
+### Toggle CSV Streaming (`urls-le.toggleCsvStreaming`)
+
+**Purpose**: Enable or disable incremental CSV streaming for large file processing.
+
+**Usage**:
+
+- Command Palette: `URLs-LE: Toggle CSV Streaming`
+
+**Features**:
+
+- Toggles CSV streaming mode on/off
+- Shows current state in status bar
+- Improves performance for large CSV files
+- Provides immediate feedback on state change
+- Persists setting across VS Code sessions
+
+**Benefits**:
+
+- **Performance**: Processes large CSV files incrementally
+- **Memory**: Reduces memory usage for large datasets
+- **Responsiveness**: Keeps VS Code responsive during processing
+- **Progress**: Real-time progress updates in status bar
+
 ### Help & Troubleshooting (`urls-le.help`)
 
-**Purpose**: Display comprehensive help and troubleshooting information.
+**Purpose**: Display comprehensive help and troubleshooting information using an advanced WebView system.
 
 **Usage**:
 
@@ -167,12 +190,13 @@ https://example.com/very/long/path/to/resource
 - **Configuration**: Settings explanations
 - **Performance Tips**: Optimization suggestions
 
-**Features**:
+**Advanced Features**:
 
-- Opens in a new editor tab
-- Markdown formatted for readability
-- Searchable content
-- External links to documentation and GitHub
+- **WebView Help System**: Rich, interactive documentation in a dedicated panel
+- **Theme Integration**: Adapts to VS Code light/dark themes
+- **Interactive Navigation**: Clickable links and sections
+- **Enhanced Formatting**: Styled content with syntax highlighting
+- **External Links**: Direct access to GitHub and marketplace pages
 
 ## Error Handling
 
@@ -220,7 +244,11 @@ All commands can be assigned custom keyboard shortcuts through VS Code's keyboar
 
 - **URLs-LE**: All extension commands
   - `URLs-LE: Extract URLs`
+  - `URLs-LE: Deduplicate URLs`
+  - `URLs-LE: Sort URLs`
+  - `URLs-LE: Toggle CSV Streaming`
   - `URLs-LE: Open Settings`
+  - `URLs-LE: Help & Troubleshooting`
 
 ### Search Features
 

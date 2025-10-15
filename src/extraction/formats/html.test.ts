@@ -1,8 +1,8 @@
-import { describe, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { extractFromHtml } from './html';
 
 describe('extractFromHtml', () => {
-	test('extractFromHtml: href attributes', () => {
+	it('extractFromHtml: href attributes', () => {
 		const html = `
       <a href="https://example.com">Link</a>
       <a href="https://github.com/user/repo">GitHub</a>
@@ -18,7 +18,7 @@ describe('extractFromHtml', () => {
 		expect(result[2].value).toBe('mailto:user@example.com');
 	});
 
-	test('extractFromHtml: src attributes', () => {
+	it('extractFromHtml: src attributes', () => {
 		const html = `
       <img src="https://example.com/image.jpg" alt="Image">
       <script src="https://cdn.example.com/script.js"></script>
@@ -33,7 +33,7 @@ describe('extractFromHtml', () => {
 		expect(result[2].value).toBe('https://example.com/embed');
 	});
 
-	test('extractFromHtml: action attributes', () => {
+	it('extractFromHtml: action attributes', () => {
 		const html = `
       <form action="https://example.com/submit">
       <form action="https://api.example.com/v1/users">
@@ -46,7 +46,7 @@ describe('extractFromHtml', () => {
 		expect(result[1].value).toBe('https://api.example.com/v1/users');
 	});
 
-	test('extractFromHtml: plain text URLs', () => {
+	it('extractFromHtml: plain text URLs', () => {
 		const html = `
       Visit https://example.com for more info.
       Check out https://github.com/user/repo
@@ -61,7 +61,7 @@ describe('extractFromHtml', () => {
 		expect(result[2].value).toBe('https://example.com/contact');
 	});
 
-	test('extractFromHtml: mixed URL types', () => {
+	it('extractFromHtml: mixed URL types', () => {
 		const html = `
       <a href="https://example.com">HTTPS</a>
       <a href="http://example.com">HTTP</a>
@@ -82,7 +82,7 @@ describe('extractFromHtml', () => {
 		expect(result[5].protocol).toBe('file');
 	});
 
-	test('extractFromHtml: should not extract from comments', () => {
+	it('extractFromHtml: should not extract from comments', () => {
 		const html = `
       <!-- This is a comment with https://example.com -->
       <a href="https://actual.com">Link</a>
@@ -96,7 +96,7 @@ describe('extractFromHtml', () => {
 		expect(result[0].value).toBe('https://actual.com');
 	});
 
-	test('extractFromHtml: should not extract invalid URLs', () => {
+	it('extractFromHtml: should not extract invalid URLs', () => {
 		const html = `
       <a href="https://example.com">Valid URL</a>
       <a href="not-a-url">Invalid URL</a>
@@ -111,7 +111,7 @@ describe('extractFromHtml', () => {
 		expect(result[0].value).toBe('https://example.com');
 	});
 
-	test('extractFromHtml: URLs with query parameters', () => {
+	it('extractFromHtml: URLs with query parameters', () => {
 		const html = `
       <a href="https://example.com/search?q=test&page=1">Search</a>
       <a href="https://api.example.com/users?id=123&format=json">API</a>
@@ -126,7 +126,7 @@ describe('extractFromHtml', () => {
 		);
 	});
 
-	test('extractFromHtml: URLs with fragments', () => {
+	it('extractFromHtml: URLs with fragments', () => {
 		const html = `
       <a href="https://example.com/page#section1">Section 1</a>
       <a href="https://example.com/page#section2">Section 2</a>
@@ -139,7 +139,7 @@ describe('extractFromHtml', () => {
 		expect(result[1].value).toBe('https://example.com/page#section2');
 	});
 
-	test('extractFromHtml: relative URLs (not supported)', () => {
+	it('extractFromHtml: relative URLs (not supported)', () => {
 		const html = `
       <a href="/path/to/page">Relative</a>
       <a href="../parent/page">Parent</a>
@@ -152,17 +152,17 @@ describe('extractFromHtml', () => {
 		expect(result.length).toBe(0);
 	});
 
-	test('extractFromHtml: empty HTML', () => {
+	it('extractFromHtml: empty HTML', () => {
 		const result = extractFromHtml('');
 		expect(result.length).toBe(0);
 	});
 
-	test('extractFromHtml: whitespace only', () => {
+	it('extractFromHtml: whitespace only', () => {
 		const result = extractFromHtml('   \n\t  ');
 		expect(result.length).toBe(0);
 	});
 
-	test('extractFromHtml: position tracking', () => {
+	it('extractFromHtml: position tracking', () => {
 		const html = `
       <a href="https://example.com">Link</a>
     `;
@@ -174,7 +174,7 @@ describe('extractFromHtml', () => {
 		expect(result[0].position.column > 0).toBeTruthy();
 	});
 
-	test('extractFromHtml: context tracking', () => {
+	it('extractFromHtml: context tracking', () => {
 		const html = `<a href="https://example.com">Link</a>`;
 
 		const result = extractFromHtml(html);
@@ -183,7 +183,7 @@ describe('extractFromHtml', () => {
 		expect(result[0].context).toBe(`<a href="https://example.com">Link</a>`);
 	});
 
-	test('extractFromHtml: large HTML file', () => {
+	it('extractFromHtml: large HTML file', () => {
 		const links = Array.from(
 			{ length: 1000 },
 			(_, i) => `<a href="https://example.com/page${i}">Page ${i}</a>`,
@@ -198,7 +198,7 @@ describe('extractFromHtml', () => {
 		expect(result[999].value).toBe('https://example.com/page999');
 	});
 
-	test('extractFromHtml: duplicate URLs', () => {
+	it('extractFromHtml: duplicate URLs', () => {
 		const html = `
       <a href="https://example.com">Link 1</a>
       <a href="https://example.com">Link 2</a>
@@ -212,7 +212,7 @@ describe('extractFromHtml', () => {
 		expect(result[0].value).toBe('https://example.com');
 	});
 
-	test('extractFromHtml: URLs with special characters', () => {
+	it('extractFromHtml: URLs with special characters', () => {
 		const html = `
       <a href="https://example.com/path with spaces">Spaces</a>
       <a href="https://example.com/path-with-dashes">Dashes</a>
