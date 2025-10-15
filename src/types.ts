@@ -152,6 +152,10 @@ export type FileType =
 	| 'json'
 	| 'yaml'
 	| 'yml'
+	| 'properties'
+	| 'toml'
+	| 'ini'
+	| 'xml'
 	| 'unknown';
 
 export interface Configuration {

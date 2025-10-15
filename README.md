@@ -4,7 +4,7 @@
 <h1 align="center">URLs-LE: Zero Hassle URL Extraction</h1>
 <p align="center">
   <b>Instantly extract URLs from your codebase with precision</b><br/>
-  <i>HTML, CSS, JavaScript, JSON, YAML, Markdown, and more</i>
+  <i>HTML, CSS, JavaScript, JSON, YAML, XML, TOML, INI, Properties, Markdown, and more</i>
   <br/>
   <i>Designed for web development, API documentation, and link management.</i>
 </p>
@@ -65,7 +65,7 @@ It intelligently detects and extracts URLs from your code, helping you manage we
 
 - **Multiple file format support**
 
-  Works with HTML, CSS, JavaScript, TypeScript, JSON, YAML, Markdown, and more.
+  Works with HTML, CSS, JavaScript, TypeScript, JSON, YAML, XML, TOML, INI, Properties, Markdown, and more.
 
 - **Clean output format**
 

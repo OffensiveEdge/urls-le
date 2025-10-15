@@ -5,6 +5,43 @@ All notable changes to URLs-LE will be documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-01-27
+
+### Fixed
+
+- **Command palette completeness** - Added missing `urls-le.postProcess.dedupe` and `urls-le.postProcess.sort` commands to command palette
+- **User experience** - All post-processing commands now accessible via command palette for consistent workflow
+
+### Technical
+
+- Fixed command palette inconsistency where dedupe and sort commands were defined but not accessible
+- Maintained 100% backward compatibility with existing installations
+
+## [1.2.0] - 2025-10-14
+
+### Added
+
+- **File type parity achievement** - Added support for 4 new configuration file formats
+- **.properties file support** - Extract URLs from Java properties files (Spring configs, application.properties)
+- **.toml file support** - Extract URLs from TOML files (Cargo.toml, pyproject.toml, config files)
+- **.ini file support** - Extract URLs from INI configuration files
+- **.xml file support** - Extract URLs from XML files (Maven POM, build configs, sitemap.xml)
+- **Sample files** - Added application.properties, Cargo.toml, config.ini, and pom.xml examples
+- **Dependencies** - Added `@iarna/toml` and `ini` parsers for reliable extraction
+
+### Changed
+
+- **Activation events** - Added `onLanguage` for properties, toml, ini, and xml files
+- **Context menus** - Extended to support .properties, .toml, .ini, .xml file extensions
+- **Documentation** - Updated README and COMMANDS.md with new file type support
+- **Keywords** - Added "properties", "toml", "ini", "xml", "maven", "cargo" for marketplace discoverability
+
+### Technical
+
+- Created 4 new format parsers with robust URL extraction
+- All existing commands (extract, dedupe, sort, help) work seamlessly with new file types
+- Maintained 100% backward compatibility with existing functionality
+
 ## [1.1.0] - 2025-10-14
 
 ### Added

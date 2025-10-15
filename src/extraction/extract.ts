@@ -2,9 +2,13 @@ import type * as vscode from 'vscode';
 import type { ExtractionResult, FileType, ParseError, Url } from '../types';
 import { extractFromCss } from './formats/css';
 import { extractFromHtml } from './formats/html';
+import { extractFromIni } from './formats/ini';
 import { extractFromJavaScript } from './formats/javascript';
 import { extractFromJson } from './formats/json';
 import { extractFromMarkdown } from './formats/markdown';
+import { extractFromProperties } from './formats/properties';
+import { extractFromToml } from './formats/toml';
+import { extractFromXml } from './formats/xml';
 import { extractFromYaml } from './formats/yaml';
 
 export async function extractUrls(
@@ -78,6 +82,18 @@ export async function extractUrls(
 			case 'yml':
 				urls.push(...extractFromYaml(content));
 				break;
+			case 'properties':
+				urls.push(...extractFromProperties(content));
+				break;
+			case 'toml':
+				urls.push(...extractFromToml(content));
+				break;
+			case 'ini':
+				urls.push(...extractFromIni(content));
+				break;
+			case 'xml':
+				urls.push(...extractFromXml(content));
+				break;
 			default:
 				// Try markdown extraction as fallback
 				urls.push(...extractFromMarkdown(content));
@@ -140,6 +156,14 @@ function determineFileType(languageId: string): FileType {
 		case 'yaml':
 		case 'yml':
 			return 'yaml';
+		case 'properties':
+			return 'properties';
+		case 'toml':
+			return 'toml';
+		case 'ini':
+			return 'ini';
+		case 'xml':
+			return 'xml';
 		default:
 			return 'unknown';
 	}

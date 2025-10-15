@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
+import * as nls from 'vscode-nls';
 import { getConfiguration } from '../config/config';
+
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 export interface StatusBar {
 	showIdle(): void;
@@ -36,8 +39,11 @@ export function createStatusBarService(
 
 		context.subscriptions.push(mainItem, progressItem);
 
-		mainItem.text = 'URLs-LE: Ready';
-		mainItem.tooltip = 'URLs-LE: URL extraction and validation';
+		mainItem.text = localize('runtime.statusbar.text.ready', 'URLs-LE: Ready');
+		mainItem.tooltip = localize(
+			'runtime.statusbar.tooltip.default',
+			'URLs-LE: URL extraction and validation',
+		);
 		mainItem.command = 'urls-le.extractUrls';
 		mainItem.show();
 	}
@@ -45,78 +51,120 @@ export function createStatusBarService(
 	return Object.freeze({
 		showIdle(): void {
 			if (mainItem) {
-				mainItem.text = 'URLs-LE: Ready';
+				mainItem.text = localize(
+					'runtime.statusbar.text.ready',
+					'URLs-LE: Ready',
+				);
 				mainItem.color = undefined;
 				mainItem.backgroundColor = undefined;
-				mainItem.tooltip = 'URLs-LE: Ready to extract URLs';
+				mainItem.tooltip = localize(
+					'runtime.statusbar.tooltip.ready',
+					'URLs-LE: Ready to extract URLs',
+				);
 				mainItem.show();
 			}
 		},
 
 		showExtracting(): void {
 			if (mainItem) {
-				mainItem.text = 'URLs-LE: Extracting...';
+				mainItem.text = localize(
+					'runtime.statusbar.text.extracting',
+					'URLs-LE: Extracting...',
+				);
 				mainItem.color = new vscode.ThemeColor(
 					'statusBarItem.activeForeground',
 				);
 				mainItem.backgroundColor = new vscode.ThemeColor(
 					'statusBarItem.activeBackground',
 				);
-				mainItem.tooltip = 'URLs-LE: Extracting URLs from document';
+				mainItem.tooltip = localize(
+					'runtime.statusbar.tooltip.extracting',
+					'URLs-LE: Extracting URLs from document',
+				);
 				mainItem.show();
 			}
 		},
 
 		showSuccess(count: number): void {
 			if (mainItem) {
-				mainItem.text = `URLs-LE: ${count} URLs found`;
+				mainItem.text = localize(
+					'runtime.statusbar.text.success',
+					'URLs-LE: {0} URLs found',
+					count,
+				);
 				mainItem.color = new vscode.ThemeColor(
 					'statusBarItem.successForeground',
 				);
 				mainItem.backgroundColor = new vscode.ThemeColor(
 					'statusBarItem.successBackground',
 				);
-				mainItem.tooltip = `URLs-LE: Successfully extracted ${count} URLs`;
+				mainItem.tooltip = localize(
+					'runtime.statusbar.tooltip.success',
+					'URLs-LE: Successfully extracted {0} URLs',
+					count,
+				);
 				mainItem.show();
 			}
 		},
 
 		showError(message: string): void {
 			if (mainItem) {
-				mainItem.text = 'URLs-LE: Error';
+				mainItem.text = localize(
+					'runtime.statusbar.text.error',
+					'URLs-LE: Error',
+				);
 				mainItem.color = new vscode.ThemeColor('statusBarItem.errorForeground');
 				mainItem.backgroundColor = new vscode.ThemeColor(
 					'statusBarItem.errorBackground',
 				);
-				mainItem.tooltip = `Error: ${message}`;
+				mainItem.tooltip = localize(
+					'runtime.statusbar.tooltip.error',
+					'Error: {0}',
+					message,
+				);
 				mainItem.show();
 			}
 		},
 
 		showWarning(message: string): void {
 			if (mainItem) {
-				mainItem.text = 'URLs-LE: Warning';
+				mainItem.text = localize(
+					'runtime.statusbar.text.warning',
+					'URLs-LE: Warning',
+				);
 				mainItem.color = new vscode.ThemeColor(
 					'statusBarItem.warningForeground',
 				);
 				mainItem.backgroundColor = new vscode.ThemeColor(
 					'statusBarItem.warningBackground',
 				);
-				mainItem.tooltip = `Warning: ${message}`;
+				mainItem.tooltip = localize(
+					'runtime.statusbar.tooltip.warning',
+					'Warning: {0}',
+					message,
+				);
 				mainItem.show();
 			}
 		},
 
 		showProgress(message: string): void {
 			if (progressItem) {
-				progressItem.text = `URLs-LE: ${message}`;
+				progressItem.text = localize(
+					'runtime.statusbar.text',
+					'URLs-LE: {0}',
+					message,
+				);
 				progressItem.color = new vscode.ThemeColor(
 					'statusBarItem.activeForeground',
 				);
 				progressItem.backgroundColor = new vscode.ThemeColor(
 					'statusBarItem.activeBackground',
 				);
-				progressItem.tooltip = `URLs-LE: ${message}`;
+				progressItem.tooltip = localize(
+					'runtime.statusbar.text',
+					'URLs-LE: {0}',
+					message,
+				);
 				progressItem.show();
 			}
 		},
