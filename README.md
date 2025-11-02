@@ -151,6 +151,8 @@ URLs-LE is built for speed and efficiently processes files from 100KB to 30MB+. 
 **Performance Monitoring**: Built-in real-time tracking with configurable thresholds  
 **Full Metrics**: [docs/PERFORMANCE.md](docs/PERFORMANCE.md) • Test Environment: macOS, Bun 1.2.22, Node 22.x
 
+For detailed information, see [Performance Monitoring](docs/PERFORMANCE.md).
+
 <!-- PERFORMANCE_END -->
 
 ## 🔧 Troubleshooting
@@ -181,7 +183,11 @@ Absolutely! Audit API endpoints, asset references, and external links for broken
 ## 📊 Testing
 
 **347 unit tests** • **95% function coverage, 86% line coverage**  
-Powered by Vitest • Run with `bun test --coverage`
+Powered by Vitest • Run with `bun run test:coverage`
+
+### Core Principle
+
+**No broken or failed tests are allowed in commits.** All tests must pass before code can be committed or merged.
 
 ### Test Suite Highlights
 
@@ -190,6 +196,8 @@ Powered by Vitest • Run with `bun test --coverage`
 - **37 tests** for JavaScript/TypeScript URL extraction
 - **34 tests** for content limits, cancellation, and error handling
 - **Comprehensive coverage** of all file formats and protocols
+
+For detailed testing guidelines, see [Testing Guidelines](docs/TESTING.md).
 
 ---
 
